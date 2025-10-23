@@ -3,7 +3,9 @@ spring:
     name: storeMVC
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    username:
+    username: {SPRING_DATASOURCE_USERNAME}
+    password: {SPRING_DATASOURCE_PASSWORD}
+    url: {SPRING_DATASOURCE_URL}
   jackson:
     time-zone: Asia/Ho_Chi_Minh
   jpa:
@@ -11,4 +13,25 @@ spring:
       hibernate:
         jdbc:
           time_zone: Asia/Ho_Chi-Minh
-        dialect:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        connection.useUnicode: true
+        connection.characterEncoding: UTF-8
+        jdbc.time_zone: Asia/Ho_Chi_Minh
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+          springframework:
+        security: DEBUG
+initAdmin:
+  username: {SPRING_INIT_ADMIN_USERNAME}
+  password: {SPRING_INIT_ADMIN_PASSWORD}
+  email: {SPRING_INIT_ADMIN_EMAIL}
