@@ -27,5 +27,7 @@ public class User {
     String password;
     @Column(name = "fullName" , columnDefinition = "NVARCHAR(255)")
     String fullName;
+    @Column( name = "email")
+    String email;
 
 }

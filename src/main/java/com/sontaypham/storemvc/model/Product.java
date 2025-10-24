@@ -20,4 +20,7 @@ public class Product {
     UUID id;
     @Column( name = "name")
     String name;
+    @ManyToOne( fetch = FetchType.EAGER)
+    @JoinColumn( name = "supplier_name" , nullable = false)
+    Supplier supplier;
 }

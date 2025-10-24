@@ -3,9 +3,9 @@ spring:
     name: storeMVC
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    username: {SPRING_DATASOURCE_USERNAME}
-    password: {SPRING_DATASOURCE_PASSWORD}
-    url: {SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
   jackson:
     time-zone: Asia/Ho_Chi_Minh
   jpa:
@@ -32,6 +32,7 @@ logging:
           springframework:
         security: DEBUG
 initAdmin:
-  username: {SPRING_INIT_ADMIN_USERNAME}
-  password: {SPRING_INIT_ADMIN_PASSWORD}
-  email: {SPRING_INIT_ADMIN_EMAIL}
+  default:
+    username: ${SPRING_INIT_ADMIN_USERNAME}
+    password: ${SPRING_INIT_ADMIN_PASSWORD}
+    email: ${SPRING_INIT_ADMIN_EMAIL}
