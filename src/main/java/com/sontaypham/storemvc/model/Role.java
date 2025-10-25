@@ -16,10 +16,8 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Role {
     @Id
-    @Column(name = "name")
     @EqualsAndHashCode.Exclude
     String name;
-    @Column(name = "description")
     String description;
 
     @ManyToMany(fetch = FetchType.EAGER , cascade = CascadeType.MERGE)

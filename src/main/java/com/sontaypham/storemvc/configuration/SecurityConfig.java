@@ -6,8 +6,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -20,8 +21,30 @@ public class SecurityConfig {
             "/auth/logout",
     };
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(HttpSecurity http , AuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http ,
+                                                   AuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(publicEndpoints).permitAll().anyRequest().authenticated());
+        http.formLogin(
+                form ->
+                        form.loginPage("/auth/signin")
+                            .loginProcessingUrl("/auth/signin")
+                            .successHandler(authenticationSuccessHandler)
+                            .failureUrl("/auth/signin?error=true")
+                            .permitAll());
 
+        http.logout(
+                logout ->
+                        logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/auth/signin?logout=true")
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID"));
+
+        return http.build();
+    }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

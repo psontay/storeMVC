@@ -1,13 +1,11 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "suppliers")
@@ -17,6 +15,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Supplier {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Exclude
+    UUID id;
     @Column( name = "name" , nullable = false)
     String name;
     @Column( name = "fullName" , nullable = false , columnDefinition = "NVARCHAR(255)")
@@ -25,6 +26,6 @@ public class Supplier {
     String email;
     @Column( name = "telPhone" , nullable = false)
     String telPhone;
-    @OneToMany( mappedBy = "supplier" , cascade = CascadeType.ALL ,  fetch = FetchType.EAGER , orphanRemoval = true )
+    @OneToMany( mappedBy = "supplier" , cascade = CascadeType.ALL ,  fetch = FetchType.LAZY , orphanRemoval = true )
     Set<Product> products;
 }
