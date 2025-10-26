@@ -27,6 +27,7 @@ public class User {
     @Column( columnDefinition = "NVARCHAR(255)")
     String fullName;
     String email;
+    String telPhone;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
