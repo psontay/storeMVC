@@ -4,6 +4,8 @@ package com.sontaypham.storemvc.dto.request.user;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,4 +17,5 @@ public class UserCreationRequest {
     String fullName;
     String email;
     String telPhone;
+    Set<String> roles;
 }
