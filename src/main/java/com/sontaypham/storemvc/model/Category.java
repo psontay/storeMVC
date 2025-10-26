@@ -16,7 +16,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category {
     @Id
-    @Column( columnDefinition = "uniqueIdentifier")
+    @Column( columnDefinition = "uniqueidentifier")
     @GeneratedValue( strategy = GenerationType.UUID)
     UUID id;
     @Column( nullable = false , unique = true)

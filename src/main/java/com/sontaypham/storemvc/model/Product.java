@@ -20,7 +20,7 @@ import java.util.UUID;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column( columnDefinition = "uniqueIdentifier")
+    @Column( columnDefinition = "uniqueidentifier")
     UUID id;
     String name;
     @Lob

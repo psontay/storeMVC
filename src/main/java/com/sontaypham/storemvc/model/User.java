@@ -17,19 +17,17 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
-    @Column( columnDefinition = "uniqueIdentifier")
+    @Column( columnDefinition = "uniqueidentifier")
     @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Exclude
     UUID id;
 
-    @Column(name = "username")
     String username;
-    @Column(name = "password")
     String password;
-    @Column(name = "fullName" , columnDefinition = "NVARCHAR(255)")
+    @Column( columnDefinition = "NVARCHAR(255)")
     String fullName;
-    @Column( name = "email")
     String email;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( name = "user_role" , joinColumns = @JoinColumn( name = "user_id") , inverseJoinColumns =

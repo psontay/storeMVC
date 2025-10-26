@@ -17,6 +17,7 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Exclude
+    @Column( columnDefinition = "uniqueidentifier")
     UUID id;
     @Column( name = "name" , nullable = false)
     String name;
