@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UsernameValidator.class)
 public @interface UsernameConstraint {
-    String message() default "USERNAME_TYPE_INVALID";
+    String message() default "INVALID_USERNAME";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

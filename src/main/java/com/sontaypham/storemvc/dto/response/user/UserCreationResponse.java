@@ -18,5 +18,6 @@ public class UserCreationResponse {
     String fullName;
     String email;
     String telPhone;
+    String address;
     Set<String> roles;
 }

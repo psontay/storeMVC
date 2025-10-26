@@ -17,5 +17,6 @@ public class UserCreationRequest {
     String fullName;
     String email;
     String telPhone;
+    String address;
     Set<String> roles;
 }

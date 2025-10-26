@@ -25,6 +25,7 @@ public enum ErrorCode {
             "Password type invalid, must be at least {min} characters and contain at least 1 uppercase",
             HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_NOT_MATCHES(1013, "Confirm password does not match", HttpStatus.BAD_REQUEST),
+    INVALID_TELEPHONE_NUMBER(1014, "Invalid telephone number", HttpStatus.BAD_REQUEST),
     // PRODUCT
     PRODUCT_NOT_FOUND(2001, "Product not found", HttpStatus.NOT_FOUND),
     PRODUCT_ALREADY_EXISTS(2002, "Product already exists", HttpStatus.CONFLICT),

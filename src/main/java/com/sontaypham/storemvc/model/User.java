@@ -28,6 +28,7 @@ public class User {
     String fullName;
     String email;
     String telPhone;
+    String address;
 
 
     @ManyToMany(fetch = FetchType.EAGER)

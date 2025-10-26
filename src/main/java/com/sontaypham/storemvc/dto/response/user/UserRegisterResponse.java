@@ -13,4 +13,5 @@ public class UserRegisterResponse {
     String username;
     String email;
     String telPhone;
+    String address;
 }

@@ -18,6 +18,7 @@ public class UserResponse {
     String fullName;
     String email;
     String telPhone;
+    String address;
     Set<String> roles;
     Set<String> permissions;
 }
