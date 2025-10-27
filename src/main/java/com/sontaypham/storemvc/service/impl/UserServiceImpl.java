@@ -7,14 +7,30 @@ import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
 import com.sontaypham.storemvc.model.User;
+import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.UserService;
+import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    PasswordEncoder passwordEncoder;
+    UserRepository userRepository;
     @Override
-    public UserRegisterResponse registerUser(UserRegisterRequest request) {
+    public UserRegisterResponse registerUser( @Valid UserRegisterRequest request) {
+
         return null;
     }
 
