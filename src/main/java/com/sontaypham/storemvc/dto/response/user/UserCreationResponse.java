@@ -20,4 +20,5 @@ public class UserCreationResponse {
     String telPhone;
     String address;
     Set<String> roles;
+    Set<String> permissions;
 }
