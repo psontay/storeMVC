@@ -18,6 +18,7 @@ import java.util.UUID;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uniqueidentifier")
     @EqualsAndHashCode.Exclude
     UUID id;
     @ManyToOne

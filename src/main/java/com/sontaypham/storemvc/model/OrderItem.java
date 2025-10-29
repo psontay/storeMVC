@@ -17,6 +17,8 @@ import java.util.UUID;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uniqueidentifier")
+
     UUID id;
 
     @ManyToOne

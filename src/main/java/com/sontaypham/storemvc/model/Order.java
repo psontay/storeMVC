@@ -21,6 +21,8 @@ import java.util.UUID;
 public class Order {
     @Id
     @GeneratedValue ( strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uniqueidentifier")
+
     UUID id;
 
     @ManyToOne

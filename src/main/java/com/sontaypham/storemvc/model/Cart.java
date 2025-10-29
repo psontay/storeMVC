@@ -19,6 +19,7 @@ import java.util.UUID;
 public class Cart {
     @Id
     @GeneratedValue( strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uniqueidentifier")
     UUID id;
     @OneToOne
     @JoinColumn( name = "user_id")

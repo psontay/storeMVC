@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Table(name = "products")
@@ -32,6 +33,7 @@ public class Product {
     BigDecimal price;
     @Column(precision = 15, scale = 2)
     BigDecimal originalPrice;
+    BigDecimal discountedPrice;
     int discountPercent;
     @ManyToOne( fetch = FetchType.EAGER)
     Category category;
@@ -45,4 +47,8 @@ public class Product {
     @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn( name = "supplier_id" , nullable = false)
     Supplier supplier;
+    @OneToMany( mappedBy = "user" , cascade = CascadeType.ALL)
+    Set<Order> orders;
+    @OneToOne ( mappedBy = "user" , cascade = CascadeType.ALL)
+    Cart cart;
 }
