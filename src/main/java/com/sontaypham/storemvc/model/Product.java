@@ -27,11 +27,11 @@ public class Product {
     String description;
     int age;
     String origin;
+    String imageUrl;
     int stockQuantity;
     BigDecimal price;
     @Column(precision = 15, scale = 2)
     BigDecimal originalPrice;
-    @Column(precision = 15, scale = 2)
     int discountPercent;
     @ManyToOne( fetch = FetchType.EAGER)
     Category category;

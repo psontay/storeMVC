@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,5 +25,5 @@ public class Cart {
     User user;
     @OneToMany ( mappedBy = "cart" , cascade = CascadeType.ALL , orphanRemoval = true)
     Set<CartItem> items;
-    double totalPrice;
+    BigDecimal totalPrice;
 }

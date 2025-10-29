@@ -7,25 +7,26 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table( name = "cart_items")
 @Entity
-@Getter
-@Setter
+@Table(name = "order_items")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartItem {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Exclude
     UUID id;
+
     @ManyToOne
-    @JoinColumn( name = "product_id")
+    @JoinColumn(name = "order_id")
+    Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     Product product;
-    @ManyToOne
-    @JoinColumn( name = "cart_id")
-    Cart cart;
+
     int quantity;
     BigDecimal unitPrice;
 }
