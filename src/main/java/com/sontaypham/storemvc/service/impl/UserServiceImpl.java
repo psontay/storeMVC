@@ -56,6 +56,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserCreationResponse createUser(UserCreationRequest request) {
+        if ( userRepository.existsByUsername(request.getUsername()) ) throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
+        Set<String> rolesRequest = request.getRoles();
+//        Set<Role> roles = rolesRequest.stream().map()
+
+        User user = User.builder().username(request.getUsername()).password(passwordEncoder.encode(request.getPassword())).fullName(request.getFullName()).email(request.getEmail()).telPhone(request.getTelPhone()).address(request.getAddress()).build();
         return null;
     }
 
