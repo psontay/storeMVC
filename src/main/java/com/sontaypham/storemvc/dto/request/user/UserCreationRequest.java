@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults( level = AccessLevel.PRIVATE)
-// khong su dung validate vi do admin tao.
+// do admin tao nen khong su dung valid
 public class UserCreationRequest {
     String username;
     String password;
@@ -20,4 +20,5 @@ public class UserCreationRequest {
     String telPhone;
     String address;
     Set<String> roles;
+    Set<String> permissions;
 }

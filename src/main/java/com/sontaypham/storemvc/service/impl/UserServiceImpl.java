@@ -9,7 +9,12 @@ import com.sontaypham.storemvc.dto.response.user.UserResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.enums.RoleName;
 import com.sontaypham.storemvc.exception.ApiException;
+import com.sontaypham.storemvc.helper.PermissionMapperHelper;
+import com.sontaypham.storemvc.helper.RoleMapperHelper;
+import com.sontaypham.storemvc.mapper.RoleMapper;
+import com.sontaypham.storemvc.mapper.UserCreationMapper;
 import com.sontaypham.storemvc.mapper.UserRegisterMapper;
+import com.sontaypham.storemvc.model.Permission;
 import com.sontaypham.storemvc.model.Role;
 import com.sontaypham.storemvc.model.User;
 import com.sontaypham.storemvc.repository.RoleRepository;
@@ -38,6 +43,10 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     RoleRepository roleRepository;
     UserRegisterMapper userRegisterMapper;
+    RoleMapper roleMapper;
+    UserCreationMapper userCreationMapper;
+    RoleMapperHelper roleMapperHelper;
+    PermissionMapperHelper  permissionMapperHelper;
 
     @Override
     public UserRegisterResponse registerUser(  @Valid UserRegisterRequest request) {
@@ -57,11 +66,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserCreationResponse createUser(UserCreationRequest request) {
         if ( userRepository.existsByUsername(request.getUsername()) ) throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
-        Set<String> rolesRequest = request.getRoles();
-//        Set<Role> roles = rolesRequest.stream().map()
-
-        User user = User.builder().username(request.getUsername()).password(passwordEncoder.encode(request.getPassword())).fullName(request.getFullName()).email(request.getEmail()).telPhone(request.getTelPhone()).address(request.getAddress()).build();
-        return null;
+        Set<Role> roles = UserCreationMapper.toRoleObject(request.getRoles() , roleMapperHelper);
+        Set<Permission>  permissions = UserCreationMapper.toPermissionObject(request.getPermissions() ,
+                                                                             permissionMapperHelper);
+        User user =
+                User.builder().username(request.getUsername()).password(passwordEncoder.encode(request.getPassword())).fullName(request.getFullName()).email(request.getEmail()).telPhone(request.getTelPhone()).address(request.getAddress()).roles(roles).permissions(permissions).build();
+        User saved = userRepository.save(user);
+        return userCreationMapper.toResponse(saved);
     }
 
     @Override

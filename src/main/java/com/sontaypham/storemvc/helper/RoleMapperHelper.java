@@ -21,4 +21,9 @@ public class RoleMapperHelper {
         return roleString.stream().map(String::toUpperCase).map(roleRepository::findRoleByName).filter(
                 Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
     }
+    @Named("toRoleString")
+    public Set<String> toRoleString(Set<Role> roleObject){
+        if(roleObject==null || roleObject.isEmpty()) return Set.of();
+        return roleObject.stream().map(Role::getName).collect(Collectors.toSet());
+    }
 }
