@@ -12,7 +12,6 @@ import com.sontaypham.storemvc.enums.RoleName;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.helper.PermissionMapperHelper;
 import com.sontaypham.storemvc.helper.RoleMapperHelper;
-import com.sontaypham.storemvc.mapper.RoleMapper;
 import com.sontaypham.storemvc.mapper.UserCreationMapper;
 import com.sontaypham.storemvc.mapper.UserMapper;
 import com.sontaypham.storemvc.mapper.UserRegisterMapper;
@@ -29,12 +28,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -48,7 +45,6 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     RoleRepository roleRepository;
     UserRegisterMapper userRegisterMapper;
-    RoleMapper roleMapper;
     UserCreationMapper userCreationMapper;
     RoleMapperHelper roleMapperHelper;
     PermissionMapperHelper  permissionMapperHelper;
@@ -111,14 +107,14 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setRoles(
                 request.getRoles().stream().map(name -> roleRepository.findRoleByName(name).orElseThrow( () -> {
-                    log.error("Role Not Found : " + name);
-                    throw new ApiException(ErrorCode.ROLE_NOT_FOUND);
+                    log.error("Role Not Found : {}", name);
+                    return new ApiException(ErrorCode.ROLE_NOT_FOUND);
                 })).collect(Collectors.toSet())
                      );
         user.setPermissions(
                 request.getPermissions().stream().map( name -> permissionRepository.findByName(name).orElseThrow( () -> {
-                    log.error("Permission Not Found : " + name);
-                    throw new ApiException(ErrorCode.PERMISSION_NOT_FOUND);
+                    log.error("Permission Not Found : {}", name);
+                    return new ApiException(ErrorCode.PERMISSION_NOT_FOUND);
                 })).collect(Collectors.toSet())
                            );
         return userMapper.toUserResponse(userRepository.save(user));
