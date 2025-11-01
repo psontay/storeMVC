@@ -136,7 +136,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changePassword(UUID id, String oldPassword, String newPassword) {
-
+        User user = userRepository.findById(id).orElseThrow( () -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        if ( !passwordEncoder.matches(oldPassword, user.getPassword()) ) throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 }
