@@ -16,6 +16,7 @@ public class UserUpdateRequest {
     String password;
     String fullName;
     String telPhone;
+    String email;
     String address;
     Set<String> roles;
     Set<String> permissions;

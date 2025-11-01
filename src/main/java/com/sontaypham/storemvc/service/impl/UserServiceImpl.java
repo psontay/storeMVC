@@ -19,6 +19,7 @@ import com.sontaypham.storemvc.mapper.UserRegisterMapper;
 import com.sontaypham.storemvc.model.Permission;
 import com.sontaypham.storemvc.model.Role;
 import com.sontaypham.storemvc.model.User;
+import com.sontaypham.storemvc.repository.PermissionRepository;
 import com.sontaypham.storemvc.repository.RoleRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.UserService;
@@ -36,6 +37,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
     RoleMapperHelper roleMapperHelper;
     PermissionMapperHelper  permissionMapperHelper;
     UserMapper userMapper;
+    PermissionRepository permissionRepository;
 
     @Override
     @Transactional
@@ -98,14 +101,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse updateUser(UserUpdateRequest request) {
-
-        return null;
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow( () -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setFullName(request.getFullName());
+        user.setTelPhone(request.getTelPhone());
+        user.setAddress(request.getAddress());
+        user.setEmail(request.getEmail());
+        user.setRoles(
+                request.getRoles().stream().map(name -> roleRepository.findRoleByName(name).orElseThrow( () -> {
+                    log.error("Role Not Found : " + name);
+                    throw new ApiException(ErrorCode.ROLE_NOT_FOUND);
+                })).collect(Collectors.toSet())
+                     );
+        user.setPermissions(
+                request.getPermissions().stream().map( name -> permissionRepository.findByName(name).orElseThrow( () -> {
+                    log.error("Permission Not Found : " + name);
+                    throw new ApiException(ErrorCode.PERMISSION_NOT_FOUND);
+                })).collect(Collectors.toSet())
+                           );
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override
-    public void updateUserProfile(UserUpdateProfileRequest request) {
-
+    @Transactional
+    public void updateUserProfile(String username , UserUpdateProfileRequest request) {
+        User user = userRepository.findByUsername(username).orElseThrow( () -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        user.setFullName(request.getFullName());
+        user.setTelPhone(request.getTelPhone());
+        user.setAddress(request.getAddress());
+        user.setEmail(request.getEmail());
+        userRepository.save(user);
     }
 
     @Override

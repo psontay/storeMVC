@@ -18,7 +18,7 @@ public interface UserService {
     UserResponse findByEmail(String email);
     UserResponse findByUsername(String username);
     void deleteByUsername(String username);
-    void updateUserProfile( UserUpdateProfileRequest request);
+    void updateUserProfile(String username ,  UserUpdateProfileRequest request);
     UserResponse updateUser (UserUpdateRequest request);
     void changePassword (UUID id , String oldPassword, String newPassword);
 }
