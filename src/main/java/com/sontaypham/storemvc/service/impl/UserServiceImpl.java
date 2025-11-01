@@ -20,6 +20,7 @@ import com.sontaypham.storemvc.model.User;
 import com.sontaypham.storemvc.repository.RoleRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.UserService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
     PermissionMapperHelper  permissionMapperHelper;
 
     @Override
+    @Transactional
     public UserRegisterResponse registerUser(  @Valid UserRegisterRequest request) {
         if ( userRepository.existsByUsername(request.getUsername()) ) throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
         if ( !request.getPassword().equals(request.getConfirmPassword()) ) throw new ApiException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCHES);
@@ -64,6 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserCreationResponse createUser(UserCreationRequest request) {
         if ( userRepository.existsByUsername(request.getUsername()) ) throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
         Set<Role> roles = UserCreationMapper.toRoleObject(request.getRoles() , roleMapperHelper);
@@ -77,7 +80,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserResponse> findByEmail(String email) {
-        return Optional.empty();
+        User user =
+                userRepository.findByEmail(email).orElseThrow( () -> new ApiException(ErrorCode.EMAIL_ALREADY_EXISTS)) ;
+        return null;
     }
 
     @Override
