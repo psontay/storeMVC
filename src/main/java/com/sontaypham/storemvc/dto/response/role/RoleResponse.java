@@ -1,4 +1,4 @@
-package com.sontaypham.storemvc.dto.request.role;
+package com.sontaypham.storemvc.dto.response.role;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,10 +8,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleCreationRequest {
+public class RoleResponse {
     String name;
     String description;
     Set<String> permissions;
