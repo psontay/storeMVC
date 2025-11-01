@@ -3,6 +3,7 @@ package com.sontaypham.storemvc.service.impl;
 import com.sontaypham.storemvc.dto.request.user.UserCreationRequest;
 import com.sontaypham.storemvc.dto.request.user.UserRegisterRequest;
 import com.sontaypham.storemvc.dto.request.user.UserUpdateProfileRequest;
+import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
@@ -13,6 +14,7 @@ import com.sontaypham.storemvc.helper.PermissionMapperHelper;
 import com.sontaypham.storemvc.helper.RoleMapperHelper;
 import com.sontaypham.storemvc.mapper.RoleMapper;
 import com.sontaypham.storemvc.mapper.UserCreationMapper;
+import com.sontaypham.storemvc.mapper.UserMapper;
 import com.sontaypham.storemvc.mapper.UserRegisterMapper;
 import com.sontaypham.storemvc.model.Permission;
 import com.sontaypham.storemvc.model.Role;
@@ -48,6 +50,7 @@ public class UserServiceImpl implements UserService {
     UserCreationMapper userCreationMapper;
     RoleMapperHelper roleMapperHelper;
     PermissionMapperHelper  permissionMapperHelper;
+    UserMapper userMapper;
 
     @Override
     @Transactional
@@ -79,20 +82,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserResponse> findByEmail(String email) {
-        User user =
-                userRepository.findByEmail(email).orElseThrow( () -> new ApiException(ErrorCode.EMAIL_ALREADY_EXISTS)) ;
-        return null;
+    public UserResponse findByEmail(String email) {
+        return userMapper.toUserResponse( userRepository.findByEmail(email).orElseThrow( () -> new ApiException(ErrorCode.USER_NOT_FOUND)));
     }
 
     @Override
-    public Optional<UserResponse> findByUsername(String username) {
-        return Optional.empty();
+    public UserResponse findByUsername(String username) {
+        return userMapper.toUserResponse(userRepository.findByUsername(username).orElseThrow( () -> new ApiException(ErrorCode.USER_NOT_FOUND)));
     }
 
     @Override
+    @Transactional
     public void deleteByUsername(String username) {
+        userRepository.deleteByUsername(username);
+    }
 
+    @Override
+    public UserResponse updateUser(UserUpdateRequest request) {
+
+        return null;
     }
 
     @Override
