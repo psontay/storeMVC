@@ -44,12 +44,13 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     UserRepository userRepository;
     RoleRepository roleRepository;
+    PermissionRepository permissionRepository;
     UserRegisterMapper userRegisterMapper;
     UserCreationMapper userCreationMapper;
     RoleMapperHelper roleMapperHelper;
     PermissionMapperHelper  permissionMapperHelper;
     UserMapper userMapper;
-    PermissionRepository permissionRepository;
+
 
     @Override
     @Transactional
