@@ -31,6 +31,7 @@ public class User {
     String address;
 
 
+    // rbac
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( name = "user_role" , joinColumns = @JoinColumn( name = "user_id") , inverseJoinColumns =
     @JoinColumn(name = "role_name"))
@@ -42,4 +43,11 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_name"))
     Set<Permission> permissions;
+    // shop
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<Order> orders;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    Cart cart;
+
 }

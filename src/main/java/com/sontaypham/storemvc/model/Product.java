@@ -35,8 +35,6 @@ public class Product {
     BigDecimal originalPrice;
     BigDecimal discountedPrice;
     int discountPercent;
-    @ManyToOne( fetch = FetchType.EAGER)
-    Category category;
     @Column(updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     LocalDateTime createdAt;
@@ -44,11 +42,13 @@ public class Product {
     LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     ProductStatus status;
+
     @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn( name = "supplier_id" , nullable = false)
     Supplier supplier;
-    @OneToMany( mappedBy = "user" , cascade = CascadeType.ALL)
-    Set<Order> orders;
-    @OneToOne ( mappedBy = "user" , cascade = CascadeType.ALL)
-    Cart cart;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<OrderItem> orderItems;
+    @ManyToOne( fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    Category category;
 }
