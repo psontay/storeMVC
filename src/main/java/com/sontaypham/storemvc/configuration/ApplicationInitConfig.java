@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,10 @@ public class ApplicationInitConfig {
     String adminPassword;
     @Value("${initAdmin.default.email}")
     String adminEmail;
+    private final PasswordEncoder passwordEncoder;
+    public ApplicationInitConfig(final PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
     @Bean
     ApplicationRunner applicationRunner(
             UserRepository userRepository,
@@ -60,7 +65,7 @@ public class ApplicationInitConfig {
                 if ( userRepository.findByUsername(adminUsername).isEmpty() ) {
                     User admin = User.builder()
                             .username(adminUsername)
-                            .password(adminPassword)
+                            .password(passwordEncoder.encode(adminPassword))
                             .email(adminEmail)
                             .address("null")
                             .telPhone("null")
