@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -28,7 +29,7 @@ public class ApplicationInitConfig {
     @Value("${initAdmin.default.email}")
     String adminEmail;
     private final PasswordEncoder passwordEncoder;
-    public ApplicationInitConfig(final PasswordEncoder passwordEncoder) {
+    public ApplicationInitConfig(final PasswordEncoder passwordEncoder ) {
         this.passwordEncoder = passwordEncoder;
     }
     @Bean
@@ -48,20 +49,23 @@ public class ApplicationInitConfig {
                                                       "PRODUCT_READ", "PRODUCT_UPDATE", "PRODUCT_DELETE" ,
                                                       "ROLE_CREATE" , "ROLE_READ", "ROLE_UPDATE", "ROLE_DELETE" ,
                                                       "SUPPLIER_CREATE" , "SUPPLIER_READ" , "SUPPLIER_UPDATE" ,
-                                                      "SUPPLIER_DELETE");
-                for ( String permission : allPermissions) {
-                    if ( permissionRepository.findByName(permission).isEmpty() ) {
-                        permissionRepository.save( new Permission(permission , "Permission for : " +  permission));
-                    }
-                }
-                Set<Permission> permissions = new HashSet<>(permissionRepository.findAll());
+                                                      "SUPPLIER_DELETE" , "CART_ADD" , "CART_READ" , "CART_UPDATE" ,
+                                                      "CART_DELETE" , "ORDER_CREATE" , "ORDER_READ" , "ORDER_UPDATE"
+                        , "ORDER_DELETE");
+                allPermissions.forEach( name -> permissionRepository.findByName(name).orElseGet(() -> permissionRepository.save( new Permission(name , "Permission for : " + name))) );
+                Set<Permission> allSavePermissions = new HashSet<>(permissionRepository.findAll());
+                Set<String> userPermissionsName = Set.of("CATEGORY_READ" , "PRODUCT_READ" , "SUPPLIER_READ" ,
+                                                       "CART_READ" , "CART_ADD" , "CART_UPDATE" ,"CART_DELETE",
+                                                       "ORDER_CREATE", "ORDER_READ", "ORDER_UPDATE", "ORDER_DELETE");
+                Set<Permission> userPermission =
+                        userPermissionsName.stream().map( p -> Permission.builder().name(p).description("Permission for " +
+                                                                                                    ": " + p).build()).collect(
+                                Collectors.toSet());
                 // create || add roles
-                Role adminRole = roleRepository.findByName(RoleName.ADMIN.name()).orElseGet(() -> {
-                    Role role =
-                            Role.builder().name(RoleName.ADMIN.name()).description("ADMIN ROLE").permissions(permissions).build();
-                    return roleRepository.save(role);
-                });
-                roleRepository.save(adminRole);
+                Role adminRole =
+                        roleRepository.findByName(RoleName.ADMIN.name()).orElseGet(() -> roleRepository.save(Role.builder().name(RoleName.ADMIN.name()).description("Admin vo dich thien ha").permissions(allSavePermissions)
+                                                                                                                 .build()));
+                roleRepository.findByName(RoleName.USER.name()).orElseGet(() -> roleRepository.save(Role.builder().name(RoleName.USER.name()).permissions(userPermission).build()));
                 if ( userRepository.findByUsername(adminUsername).isEmpty() ) {
                     User admin = User.builder()
                             .username(adminUsername)
@@ -71,11 +75,11 @@ public class ApplicationInitConfig {
                             .telPhone("null")
                             .fullName("Sơn Tây Phạm")
                             .roles(Set.of(adminRole))
-                            .permissions(permissions)
+                            .permissions(allSavePermissions)
                                      .build();
                     userRepository.save(admin);
-                    log.warn("Admin has been created with default username : " + adminUsername);
                 }
+                log.warn("Admin has been created with default username : " + adminUsername);
             }catch (Exception e) {
                 log.error("Error in init admin application : " , e);
             }
