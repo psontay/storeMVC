@@ -1,6 +1,5 @@
 package com.sontaypham.storemvc.helper;
 
-import com.sontaypham.storemvc.dto.request.role.RoleCreationRequest;
 import com.sontaypham.storemvc.model.Role;
 import com.sontaypham.storemvc.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public class RoleMapperHelper {
     @Named("toRoleObject")
     public Set<Role> toRoleObject(Set<String> roleString){
         if(roleString==null || roleString.isEmpty()) return Set.of();
-        return roleString.stream().map(String::toUpperCase).map(roleRepository::findRoleByName).filter(
+        return roleString.stream().map(String::toUpperCase).map(roleRepository::findByName).filter(
                 Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
     }
     @Named("toRoleString")

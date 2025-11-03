@@ -56,7 +56,7 @@ public class ApplicationInitConfig {
                 }
                 Set<Permission> permissions = new HashSet<>(permissionRepository.findAll());
                 // create || add roles
-                Role adminRole = roleRepository.findRoleByName(RoleName.ADMIN.name()).orElseGet( () -> {
+                Role adminRole = roleRepository.findByName(RoleName.ADMIN.name()).orElseGet(() -> {
                     Role role =
                             Role.builder().name(RoleName.ADMIN.name()).description("ADMIN ROLE").permissions(permissions).build();
                     return roleRepository.save(role);
