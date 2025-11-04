@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         if ( userRepository.existsByUsername(request.getUsername()) ) throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
         if ( !request.getPassword().equals(request.getConfirmPassword()) ) throw new ApiException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCHES);
 
-        Role role = roleRepository.findRoleByName(RoleName.USER.name()).orElseThrow(() -> new ApiException(ErrorCode.ROLE_NOT_FOUND));
+        Role role = roleRepository.findByName(RoleName.USER.name()).orElseThrow(() -> new ApiException(ErrorCode.ROLE_NOT_FOUND));
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         User user = User.builder()
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         user.setAddress(request.getAddress());
         user.setEmail(request.getEmail());
         user.setRoles(
-                request.getRoles().stream().map(name -> roleRepository.findRoleByName(name).orElseThrow( () -> {
+                request.getRoles().stream().map(name -> roleRepository.findByName(name).orElseThrow( () -> {
                     log.error("Role Not Found : {}", name);
                     return new ApiException(ErrorCode.ROLE_NOT_FOUND);
                 })).collect(Collectors.toSet())
