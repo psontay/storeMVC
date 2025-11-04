@@ -2,40 +2,41 @@ package com.sontaypham.storemvc.model;
 
 import com.sontaypham.storemvc.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table( name = "orders")
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@FieldDefaults( level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
-    @Id
-    @GeneratedValue ( strategy = GenerationType.UUID)
-    @Column(columnDefinition = "uniqueidentifier")
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(columnDefinition = "uniqueidentifier")
+  UUID id;
 
-    UUID id;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  User user;
 
-    @ManyToOne
-    @JoinColumn( name = "user_id")
-    User user;
-    @Column(updatable = false)
-    @org.hibernate.annotations.CreationTimestamp
-    LocalDateTime orderDate;
-    @Enumerated(EnumType.STRING)
-    OrderStatus orderStatus;
-    String shippingAddress;
-    BigDecimal totalPrice;
+  @Column(updatable = false)
+  @org.hibernate.annotations.CreationTimestamp
+  LocalDateTime orderDate;
 
-    @OneToMany ( mappedBy = "order" , cascade = CascadeType.ALL)
-    Set<OrderItem> orderItems;
+  @Enumerated(EnumType.STRING)
+  OrderStatus orderStatus;
+
+  String shippingAddress;
+  BigDecimal totalPrice;
+
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+  Set<OrderItem> orderItems;
 }

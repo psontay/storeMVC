@@ -11,17 +11,13 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults( level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRegisterRequest {
-    @UsernameConstraint
-    String username;
-    @PasswordConstraint
-    String password;
-    String confirmPassword;
-    @EmailConstraint
-    String email;
-    String fullName;
-    @TelPhoneConstraint
-    String telPhone;
-    String address;
+  @UsernameConstraint String username;
+  @PasswordConstraint String password;
+  String confirmPassword;
+  @EmailConstraint String email;
+  String fullName;
+  @TelPhoneConstraint String telPhone;
+  String address;
 }

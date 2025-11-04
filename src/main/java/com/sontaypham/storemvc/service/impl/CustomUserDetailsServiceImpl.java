@@ -4,16 +4,15 @@ import com.sontaypham.storemvc.model.CustomUserDetails;
 import com.sontaypham.storemvc.model.Permission;
 import com.sontaypham.storemvc.model.User;
 import com.sontaypham.storemvc.repository.UserRepository;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class CustomUserDetailsServiceImpl implements UserDetailsService {

@@ -1,4 +1,3 @@
 package com.sontaypham.storemvc.dto.request.category;
 
-public class CategoryCreationRequest {
-}
+public class CategoryCreationRequest {}

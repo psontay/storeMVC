@@ -12,10 +12,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateProfileRequest {
-    String fullName;
-    @EmailConstraint
-    String email;
-    @TelPhoneConstraint
-    String telPhone;
-    String address;
+  String fullName;
+  @EmailConstraint String email;
+  @TelPhoneConstraint String telPhone;
+  String address;
 }

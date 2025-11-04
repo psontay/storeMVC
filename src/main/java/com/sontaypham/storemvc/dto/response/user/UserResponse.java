@@ -1,10 +1,8 @@
 package com.sontaypham.storemvc.dto.response.user;
 
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Set;
-import java.util.UUID;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
@@ -13,12 +11,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-    String username;
-    String password;
-    String fullName;
-    String email;
-    String telPhone;
-    String address;
-    Set<String> roles;
-    Set<String> permissions;
+  String username;
+  String password;
+  String fullName;
+  String email;
+  String telPhone;
+  String address;
+  Set<String> roles;
+  Set<String> permissions;
 }

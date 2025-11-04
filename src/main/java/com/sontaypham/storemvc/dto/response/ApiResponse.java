@@ -7,9 +7,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults( level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
-    String message;
-    int status;
-    T data;
+  String message;
+  int status;
+  T data;
 }

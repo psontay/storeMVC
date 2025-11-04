@@ -1,34 +1,33 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-
 @Entity
 @Table(name = "order_items")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "uniqueidentifier")
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(columnDefinition = "uniqueidentifier")
+  UUID id;
 
-    UUID id;
+  @ManyToOne
+  @JoinColumn(name = "order_id")
+  Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    Order order;
+  @ManyToOne
+  @JoinColumn(name = "product_id")
+  Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    Product product;
-
-    int quantity;
-    BigDecimal unitPrice;
+  int quantity;
+  BigDecimal unitPrice;
 }

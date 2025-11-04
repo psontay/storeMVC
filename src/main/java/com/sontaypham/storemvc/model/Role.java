@@ -1,13 +1,12 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 @Entity
-@Table( name = "roles")
+@Table(name = "roles")
 @Builder
 @Getter
 @Setter
@@ -16,12 +15,13 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString(exclude = "permissions")
 public class Role {
-    @Id
-    @EqualsAndHashCode.Exclude
-    String name;
-    String description;
+  @Id @EqualsAndHashCode.Exclude String name;
+  String description;
 
-    @ManyToMany(fetch = FetchType.EAGER , cascade = CascadeType.MERGE)
-    @JoinTable( name = "roles_permissions" , joinColumns = @JoinColumn(name = "roles_name") , inverseJoinColumns = @JoinColumn(name = "permissions_name"))
-    Set<Permission> permissions;
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  @JoinTable(
+      name = "roles_permissions",
+      joinColumns = @JoinColumn(name = "roles_name"),
+      inverseJoinColumns = @JoinColumn(name = "permissions_name"))
+  Set<Permission> permissions;
 }

@@ -1,11 +1,10 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.util.Set;
 import java.util.UUID;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Table(name = "users")
 @Entity
@@ -16,38 +15,41 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
-    @Id
-    @Column( columnDefinition = "uniqueidentifier")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Exclude
-    UUID id;
+  @Id
+  @Column(columnDefinition = "uniqueidentifier")
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @EqualsAndHashCode.Exclude
+  UUID id;
 
-    String username;
-    String password;
-    @Column( columnDefinition = "NVARCHAR(255)")
-    String fullName;
-    String email;
-    String telPhone;
-    String address;
+  String username;
+  String password;
 
+  @Column(columnDefinition = "NVARCHAR(255)")
+  String fullName;
 
-    // rbac
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable( name = "user_role" , joinColumns = @JoinColumn( name = "user_id") , inverseJoinColumns =
-    @JoinColumn(name = "role_name"))
-    Set<Role> roles;
+  String email;
+  String telPhone;
+  String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_permission",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_name"))
-    Set<Permission> permissions;
-    // shop
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Order> orders;
+  // rbac
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_role",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_name"))
+  Set<Role> roles;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    Cart cart;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_permission",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "permission_name"))
+  Set<Permission> permissions;
 
+  // shop
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  Set<Order> orders;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  Cart cart;
 }

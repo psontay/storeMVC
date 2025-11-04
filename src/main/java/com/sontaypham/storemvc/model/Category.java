@@ -1,10 +1,9 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "categories")
@@ -15,11 +14,13 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category {
-    @Id
-    @Column( columnDefinition = "uniqueidentifier")
-    @GeneratedValue( strategy = GenerationType.UUID)
-    UUID id;
-    @Column( nullable = false , unique = true)
-    String name;
-    String description;
+  @Id
+  @Column(columnDefinition = "uniqueidentifier")
+  @GeneratedValue(strategy = GenerationType.UUID)
+  UUID id;
+
+  @Column(nullable = false, unique = true)
+  String name;
+
+  String description;
 }

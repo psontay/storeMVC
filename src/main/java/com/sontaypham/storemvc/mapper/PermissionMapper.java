@@ -5,8 +5,9 @@ import com.sontaypham.storemvc.dto.response.permission.PermissionResponse;
 import com.sontaypham.storemvc.model.Permission;
 import org.mapstruct.Mapper;
 
-@Mapper( componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface PermissionMapper {
-    Permission toPermission(PermissionCreationRequest request);
-    PermissionResponse toPermissionResponse(Permission permission);
+  Permission toPermission(PermissionCreationRequest request);
+
+  PermissionResponse toPermissionResponse(Permission permission);
 }

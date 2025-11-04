@@ -14,37 +14,43 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] publicEndpoints = {
-      "/" ,
-      "/auth/signin",
-            "/auth/register",
-            "/auth/logout",
-    };
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http ,
-                                                   AuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(publicEndpoints).permitAll().anyRequest().authenticated());
-        http.formLogin(
-                form ->
-                        form.loginPage("/auth/signin")
-                            .loginProcessingUrl("/auth/signin")
-                            .successHandler(authenticationSuccessHandler)
-                            .failureUrl("/auth/signin?error=true")
-                            .permitAll());
+  private final String[] publicEndpoints = {
+    "/", "/auth/signin", "/auth/register", "/auth/logout",
+  };
 
-        http.logout(
-                logout ->
-                        logout
-                                .logoutUrl("/logout")
-                                .logoutSuccessUrl("/auth/signin?logout=true")
-                                .invalidateHttpSession(true)
-                                .deleteCookies("JSESSIONID"));
+  @Bean
+  public SecurityFilterChain securityFilterChain(
+      HttpSecurity http, AuthenticationSuccessHandler authenticationSuccessHandler)
+      throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable);
+    http.authorizeHttpRequests(
+        authorizeRequests ->
+            authorizeRequests
+                .requestMatchers(publicEndpoints)
+                .permitAll()
+                .anyRequest()
+                .authenticated());
+    http.formLogin(
+        form ->
+            form.loginPage("/auth/signin")
+                .loginProcessingUrl("/auth/signin")
+                .successHandler(authenticationSuccessHandler)
+                .failureUrl("/auth/signin?error=true")
+                .permitAll());
 
-        return http.build();
-    }
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    http.logout(
+        logout ->
+            logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/auth/signin?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID"));
+
+    return http.build();
+  }
+
+  @Bean
+  public BCryptPasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }

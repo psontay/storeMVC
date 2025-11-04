@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegisterResponse {
-    String username;
-    String email;
-    String telPhone;
-    String address;
+  String username;
+  String email;
+  String telPhone;
+  String address;
 }
