@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
     private final String[] publicEndpoints = {
       "/" ,
-      "/auth/login",
+      "/auth/signin",
             "/auth/register",
             "/auth/logout",
     };
