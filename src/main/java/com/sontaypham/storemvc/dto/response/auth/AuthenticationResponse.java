@@ -1,14 +1,24 @@
 package com.sontaypham.storemvc.dto.response.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
-    private boolean success;
+    UUID id;
+    String username;
+    String password;
+    String email;
+    String telPhone;
+    String fullName;
+    String address;
+    List<String> roles;
+    List<String> permissions;
 }
