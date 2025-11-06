@@ -41,7 +41,8 @@ public class Product {
   @org.hibernate.annotations.CreationTimestamp
   LocalDateTime createdAt;
 
-  @org.hibernate.annotations.UpdateTimestamp LocalDateTime updatedAt;
+  @org.hibernate.annotations.UpdateTimestamp
+  LocalDateTime updatedAt;
 
   @Enumerated(EnumType.STRING)
   ProductStatus status;
