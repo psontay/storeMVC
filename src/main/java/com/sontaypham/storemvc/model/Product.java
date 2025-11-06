@@ -22,7 +22,7 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(columnDefinition = "uniqueidentifier")
   UUID id;
-
+  @Column( columnDefinition = "NVARCHAR(255)")
   String name;
   @Lob String description;
   int age;
