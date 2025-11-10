@@ -1,5 +1,23 @@
 package com.sontaypham.storemvc.service;
 
-public interface ProductService {
+import com.sontaypham.storemvc.dto.request.product.ProductCreationRequest;
+import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
+import com.sontaypham.storemvc.dto.response.product.ProductResponse;
+import com.sontaypham.storemvc.model.Product;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface ProductService {
+    ProductResponse createProduct( ProductCreationRequest request);
+    ProductResponse updateProduct( ProductUpdateRequest request);
+    Optional<ProductResponse> findById(UUID id);
+    Optional<ProductResponse> findByName(String name);
+    List<ProductResponse> findByOrigin( String origin);
+    List<ProductResponse> findByPrice( BigDecimal price);
+    List<ProductResponse> findByStatus( String status);
+    List<ProductResponse> findBySupplierId ( UUID supplierId);
+    List<ProductResponse> findByCategoryName ( String categoryName);
 }
