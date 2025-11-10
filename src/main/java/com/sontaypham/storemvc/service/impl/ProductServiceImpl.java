@@ -3,11 +3,15 @@ package com.sontaypham.storemvc.service.impl;
 import com.sontaypham.storemvc.dto.request.product.ProductCreationRequest;
 import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
+import com.sontaypham.storemvc.enums.ErrorCode;
+import com.sontaypham.storemvc.exception.ApiException;
+import com.sontaypham.storemvc.model.Category;
 import com.sontaypham.storemvc.repository.ProductRepository;
 import com.sontaypham.storemvc.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +27,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse createProduct(ProductCreationRequest request) {
+        if ( productRepository.existsByName( request.getName() ) )
+            throw new ApiException(ErrorCode.PRODUCT_ALREADY_EXISTS);
         return null;
     }
 

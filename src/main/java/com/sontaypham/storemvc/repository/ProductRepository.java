@@ -32,4 +32,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findBySupplierId( @Nonnull UUID supplierId);
     @Query("select p from Product p where p.category.name = :categoryName")
     List<Product> findByCategoryName( String categoryName );
+    boolean existsByName( String name);
 }
