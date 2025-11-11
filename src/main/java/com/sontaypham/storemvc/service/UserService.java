@@ -7,6 +7,9 @@ import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.UUID;
 
 public interface UserService {
@@ -25,4 +28,6 @@ public interface UserService {
   UserResponse updateUser(UserUpdateRequest request);
 
   void changePassword(UUID id, String oldPassword, String newPassword);
+
+  Page<UserResponse> findAll(Pageable pageable);
 }

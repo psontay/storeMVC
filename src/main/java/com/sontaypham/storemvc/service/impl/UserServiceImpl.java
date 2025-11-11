@@ -32,6 +32,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -185,4 +187,9 @@ public class UserServiceImpl implements UserService {
       throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
     user.setPassword(passwordEncoder.encode(newPassword));
   }
+
+    @Override
+    public Page<UserResponse> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userMapper::toUserResponse);
+    }
 }
