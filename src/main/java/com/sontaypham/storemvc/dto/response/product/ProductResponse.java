@@ -1,6 +1,5 @@
 package com.sontaypham.storemvc.dto.response.product;
 
-import com.sontaypham.storemvc.enums.ProductStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -24,11 +23,12 @@ public class ProductResponse {
 
     BigDecimal price;
     BigDecimal originalPrice;
-    BigDecimal discountPrice;
+    BigDecimal discountedPrice;
 
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
     String status;
+    String supplier;
     String category;
 }

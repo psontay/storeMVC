@@ -23,13 +23,13 @@ public interface RoleMapper {
 
   @Named("toPermissionObject")
   static Set<Permission> toPermissionObject(
-      Set<String> permissionString, @Context PermissionMapperHelper permissionMapperHelper) {
+      Set<String> permissionString,  PermissionMapperHelper permissionMapperHelper) {
     return permissionMapperHelper.toPermissionObject(permissionString);
   }
 
   @Named("toPermissionString")
   static Set<String> toPermissionString(
-      Set<Permission> permissionObject, @Context PermissionMapperHelper permissionMapperHelper) {
+      Set<Permission> permissionObject,  PermissionMapperHelper permissionMapperHelper) {
     return permissionMapperHelper.toPermissionString(permissionObject);
   }
 }
