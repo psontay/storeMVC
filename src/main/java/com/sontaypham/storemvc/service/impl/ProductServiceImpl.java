@@ -4,6 +4,7 @@ import com.sontaypham.storemvc.dto.request.product.ProductCreationRequest;
 import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
+import com.sontaypham.storemvc.enums.ProductStatus;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.mapper.ProductMapper;
 import com.sontaypham.storemvc.model.Category;
@@ -66,37 +67,48 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductResponse> findById(UUID id) {
-        return Optional.empty();
+    public ProductResponse findById(UUID id) {
+        return productRepository.findById(id).map(productMapper::fromEntityToResponse).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     @Override
-    public Optional<ProductResponse> findByName(String name) {
-        return Optional.empty();
+    public ProductResponse findByName(String name) {
+        return productRepository.findByName(name).map(productMapper::fromEntityToResponse).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     @Override
     public List<ProductResponse> findByOrigin(String origin) {
-        return List.of();
+        return productRepository.findByOrigin(origin).stream().map(productMapper::fromEntityToResponse).toList();
     }
 
     @Override
     public List<ProductResponse> findByPrice(BigDecimal price) {
-        return List.of();
+        return productRepository.findByPrice(price).stream().map(productMapper::fromEntityToResponse).toList();
     }
 
     @Override
     public List<ProductResponse> findByStatus(String status) {
-        return List.of();
+        ProductStatus productStatus;
+        try {
+            productStatus = ProductStatus.valueOf(status.toUpperCase());
+        }catch (IllegalArgumentException e) {
+            throw new ApiException(ErrorCode.INVALID_PRODUCT_STATUS);
+        }
+        return productRepository.findByStatus(productStatus).stream().map(productMapper::fromEntityToResponse).toList();
     }
 
     @Override
     public List<ProductResponse> findBySupplierId(UUID supplierId) {
-        return List.of();
+        return productRepository.findBySupplierId(supplierId).stream().map(productMapper::fromEntityToResponse).toList();
+    }
+
+    @Override
+    public List<ProductResponse> findBySupplierName(String supplierName) {
+        return productRepository.findBySupplierName(supplierName).stream().map(productMapper::fromEntityToResponse).toList();
     }
 
     @Override
     public List<ProductResponse> findByCategoryName(String categoryName) {
-        return List.of();
+        return productRepository.findByCategoryName(categoryName).stream().map(productMapper::fromEntityToResponse).toList();
     }
 }

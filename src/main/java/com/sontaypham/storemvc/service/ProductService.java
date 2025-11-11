@@ -13,11 +13,12 @@ import java.util.UUID;
 public interface ProductService {
     ProductResponse createProduct( ProductCreationRequest request);
     ProductResponse updateProduct(UUID id ,  ProductUpdateRequest request);
-    Optional<ProductResponse> findById(UUID id);
-    Optional<ProductResponse> findByName(String name);
+    ProductResponse findById(UUID id);
+    ProductResponse findByName(String name);
     List<ProductResponse> findByOrigin( String origin);
     List<ProductResponse> findByPrice( BigDecimal price);
     List<ProductResponse> findByStatus( String status);
     List<ProductResponse> findBySupplierId ( UUID supplierId);
+    List<ProductResponse> findBySupplierName ( String supplierName);
     List<ProductResponse> findByCategoryName ( String categoryName);
 }

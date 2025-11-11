@@ -35,6 +35,7 @@ public enum ErrorCode {
   PRODUCT_CREATION_FAILED(2006, "Failed to create product", HttpStatus.INTERNAL_SERVER_ERROR),
   PRODUCT_UPDATE_FAILED(2007, "Failed to update product", HttpStatus.INTERNAL_SERVER_ERROR),
   PRODUCT_DELETE_FAILED(2008, "Failed to delete product", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_PRODUCT_STATUS(2009, "Invalid product status", HttpStatus.BAD_REQUEST),
 
   // CATEGORY
   CATEGORY_NOT_FOUND(3001, "Category not found", HttpStatus.NOT_FOUND),
