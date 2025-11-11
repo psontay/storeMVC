@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class CartResponse {
     UUID id;
     UUID userId;
-    String userName;
+    String username;
     List<CartItemResponse> items;
     BigDecimal totalPrice;
 }
