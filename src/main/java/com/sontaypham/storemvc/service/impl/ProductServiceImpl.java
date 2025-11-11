@@ -5,6 +5,7 @@ import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.exception.ApiException;
+import com.sontaypham.storemvc.mapper.ProductMapper;
 import com.sontaypham.storemvc.model.Category;
 import com.sontaypham.storemvc.model.Product;
 import com.sontaypham.storemvc.model.Supplier;
@@ -30,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
     SupplierRepository supplierRepository;
+    ProductMapper productMapper;
 
     @Override
     public ProductResponse createProduct(ProductCreationRequest request) {
@@ -44,12 +46,23 @@ public class ProductServiceImpl implements ProductService {
         stockQuantity(request.getStockQuantity()).price(request.getPrice()).discountedPrice(request.getDiscountedPrice()).originalPrice(request.getOriginalPrice()).discountPercent(request.getDiscountPercent())
                         .status(request.getStatus()).category(category).supplier(supplier).build();
         Product saved = productRepository.save(product);
-        return null;
+        return productMapper.fromEntityToResponse(saved);
     }
 
     @Override
-    public ProductResponse updateProduct(ProductUpdateRequest request) {
-        return null;
+    public ProductResponse updateProduct(UUID id , ProductUpdateRequest request) {
+        Product product = productRepository.findById(id).orElseThrow( () -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
+        if ( request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow( () -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND));
+            product.setCategory(category);
+        }
+        if ( request.getSupplierId() != null) {
+            Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow( () -> new ApiException(ErrorCode.SUPPLIER_NOT_FOUND));
+            product.setSupplier(supplier);
+        }
+        productMapper.updateEntityFromRequest(request, product);
+        product = productRepository.save(product);
+        return productMapper.fromEntityToResponse(product);
     }
 
     @Override

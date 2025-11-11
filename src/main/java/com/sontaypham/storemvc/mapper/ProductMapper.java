@@ -18,9 +18,7 @@ public interface ProductMapper {
     @Mapping( target = "category" , source = "categoryId" , qualifiedByName = "fromIdentifyToCategoryEntity")
     public Product fromCreationToEntity (ProductCreationRequest request);
 
-    @Mapping( target = "supplier" , source = "supplierId" , qualifiedByName = "fromIdentifyToSupplierEntity")
-    @Mapping( target = "category" , source = "categoryId" , qualifiedByName = "fromIdentifyToCategoryEntity")
-    public Product fromUpdateToEntity( ProductUpdateRequest request);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(ProductUpdateRequest request, @MappingTarget Product product);
 
 

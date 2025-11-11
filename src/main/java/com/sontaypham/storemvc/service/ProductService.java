@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface ProductService {
     ProductResponse createProduct( ProductCreationRequest request);
-    ProductResponse updateProduct( ProductUpdateRequest request);
+    ProductResponse updateProduct(UUID id ,  ProductUpdateRequest request);
     Optional<ProductResponse> findById(UUID id);
     Optional<ProductResponse> findByName(String name);
     List<ProductResponse> findByOrigin( String origin);
