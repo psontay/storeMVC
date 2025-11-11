@@ -14,9 +14,12 @@ import com.sontaypham.storemvc.repository.CategoryRepository;
 import com.sontaypham.storemvc.repository.ProductRepository;
 import com.sontaypham.storemvc.repository.SupplierRepository;
 import com.sontaypham.storemvc.service.ProductService;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
     ProductMapper productMapper;
 
     @Override
+    @Transactional
     public ProductResponse createProduct(ProductCreationRequest request) {
         if ( productRepository.existsByName( request.getName() ) )
             throw new ApiException(ErrorCode.PRODUCT_ALREADY_EXISTS);
@@ -51,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse updateProduct(UUID id , ProductUpdateRequest request) {
         Product product = productRepository.findById(id).orElseThrow( () -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
         if ( request.getCategoryId() != null) {
@@ -77,38 +82,43 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> findByOrigin(String origin) {
-        return productRepository.findByOrigin(origin).stream().map(productMapper::fromEntityToResponse).toList();
+    public Page<ProductResponse> findByOrigin(String origin , Pageable pageable) {
+        return productRepository.findByOrigin(origin , pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override
-    public List<ProductResponse> findByPrice(BigDecimal price) {
-        return productRepository.findByPrice(price).stream().map(productMapper::fromEntityToResponse).toList();
+    public Page<ProductResponse> findByPrice(BigDecimal price , Pageable pageable) {
+        return productRepository.findByPrice(price , pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override
-    public List<ProductResponse> findByStatus(String status) {
+    public Page<ProductResponse> findByStatus(String status , Pageable pageable) {
         ProductStatus productStatus;
         try {
             productStatus = ProductStatus.valueOf(status.toUpperCase());
         }catch (IllegalArgumentException e) {
             throw new ApiException(ErrorCode.INVALID_PRODUCT_STATUS);
         }
-        return productRepository.findByStatus(productStatus).stream().map(productMapper::fromEntityToResponse).toList();
+        return productRepository.findByStatus(productStatus , pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override
-    public List<ProductResponse> findBySupplierId(UUID supplierId) {
-        return productRepository.findBySupplierId(supplierId).stream().map(productMapper::fromEntityToResponse).toList();
+    public Page<ProductResponse> findBySupplierId(UUID supplierId , Pageable pageable) {
+        return productRepository.findBySupplierId(supplierId , pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override
-    public List<ProductResponse> findBySupplierName(String supplierName) {
-        return productRepository.findBySupplierName(supplierName).stream().map(productMapper::fromEntityToResponse).toList();
+    public Page<ProductResponse> findBySupplierName(String supplierName , Pageable pageable) {
+        return productRepository.findBySupplierName(supplierName , pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override
-    public List<ProductResponse> findByCategoryName(String categoryName) {
-        return productRepository.findByCategoryName(categoryName).stream().map(productMapper::fromEntityToResponse).toList();
+    public Page<ProductResponse> findByCategoryName(String categoryName , Pageable pageable) {
+        return productRepository.findByCategoryName(categoryName , pageable).map(productMapper::fromEntityToResponse);
+    }
+
+    @Override
+    public Page<ProductResponse> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productMapper::fromEntityToResponse);
     }
 }
