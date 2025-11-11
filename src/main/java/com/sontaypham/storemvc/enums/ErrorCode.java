@@ -39,6 +39,9 @@ public enum ErrorCode {
   // CATEGORY
   CATEGORY_NOT_FOUND(3001, "Category not found", HttpStatus.NOT_FOUND),
   CATEGORY_ALREADY_EXISTS(3002, "Category already exists", HttpStatus.CONFLICT),
+    // SUPPLIER
+  SUPPLIER_NOT_FOUND(3003, "Supplier not found", HttpStatus.NOT_FOUND),
+    SUPPLIER_ALREADY_EXISTS(3004, "Supplier already exists", HttpStatus.CONFLICT),
   // ROLE & PERMISSION
   ROLE_NOT_FOUND(6001, "Role not found", HttpStatus.NOT_FOUND),
   ROLE_ALREADY_EXISTS(6002, "Role already exists", HttpStatus.CONFLICT),
