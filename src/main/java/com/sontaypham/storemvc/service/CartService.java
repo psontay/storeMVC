@@ -5,9 +5,9 @@ import com.sontaypham.storemvc.dto.response.cart.CartResponse;
 import java.util.UUID;
 
 public interface CartService {
-    CartResponse getCartByUserId (UUID userId);
-    void addToCart(UUID userId, UUID productId, int quantity);
-    void updateQuantity(UUID userId, UUID productId, int quantity);
-    void removeFromCart(UUID userId, UUID productId);
-    void clearCart(UUID userId);
+    CartResponse getCartByUserId ();
+    void addToCart(UUID productId, int quantity);
+    void updateQuantity(UUID productId, int quantity);
+    void removeFromCart( UUID productId);
+    void clearCart();
 }

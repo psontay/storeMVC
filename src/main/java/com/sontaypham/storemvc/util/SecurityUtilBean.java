@@ -4,6 +4,8 @@ import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.model.CustomUserDetails;
 import java.util.UUID;
+
+import com.sontaypham.storemvc.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

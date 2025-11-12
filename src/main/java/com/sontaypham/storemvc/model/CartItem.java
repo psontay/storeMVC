@@ -15,20 +15,30 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItem {
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(columnDefinition = "uniqueidentifier")
-  @EqualsAndHashCode.Exclude
-  UUID id;
 
-  @ManyToOne
-  @JoinColumn(name = "product_id")
-  Product product;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uniqueidentifier")
+    UUID id;
 
-  @ManyToOne
-  @JoinColumn(name = "cart_id")
-  Cart cart;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id")
+    Product product;
 
-  int quantity;
-  BigDecimal unitPrice;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    Cart cart;
+
+    int quantity;
+
+    @Column(precision = 15, scale = 2)
+    BigDecimal unitPrice;
+
+    @Column(precision = 18, scale = 2)
+    BigDecimal subtotal;
+
+    public void recalcSubtotal() {
+        if (unitPrice == null) unitPrice = BigDecimal.ZERO;
+        this.subtotal = unitPrice.multiply(BigDecimal.valueOf(Math.max(0, quantity)));
+    }
 }
