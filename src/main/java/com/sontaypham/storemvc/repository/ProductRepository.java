@@ -32,8 +32,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findBySupplierName( @Nonnull String supplierName , Pageable pageable);
     @Query("select p from Product p where p.supplier.id = :supplierId ")
     Page<Product> findBySupplierId( @Nonnull UUID supplierId , Pageable pageable);
-    @Query("select p from Product p where p.category.name = :categoryName")
+    @Query("select p from Product p join Category c where c.name = :categoryName")
     Page<Product> findByCategoryName(String categoryName , Pageable pageable);
+    @Query("select p from Product p join Category c where c.id = :categoryId")
+    Page<Product> findByCategoryId( @Nonnull UUID categoryId , Pageable pageable);
     Page<Product> findAll( Pageable pageable);
     boolean existsByName( String name);
 }
