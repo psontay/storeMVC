@@ -4,6 +4,7 @@ import com.sontaypham.storemvc.enums.ProductStatus;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import lombok.*;
@@ -52,9 +53,13 @@ public class Product {
   Supplier supplier;
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-  Set<OrderItem> orderItems;
+  Set<OrderItem> orderItems = new HashSet<>();
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "category_id", nullable = false)
-  Category category;
+    @ManyToMany
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    Set<Category> categories = new HashSet<>();
 }
