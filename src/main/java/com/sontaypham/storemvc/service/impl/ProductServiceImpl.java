@@ -26,7 +26,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,13 +45,22 @@ public class ProductServiceImpl implements ProductService {
         if ( productRepository.existsByName( request.getName() ) )
             throw new ApiException(ErrorCode.PRODUCT_ALREADY_EXISTS);
         Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow( () -> new ApiException(ErrorCode.SUPPLIER_NOT_FOUND));
-        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow( () -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND));
+        Set<UUID> categoryId = request.getCategoryId();
+        Set<Category> categories = categoryId.stream().map( c -> categoryRepository.findById(c).orElseThrow(() -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND))).collect(
+                Collectors.toSet());
         Product product =
                 Product.builder().name(request.getName()).description(request.getDescription()).age(request.getAge())
                        .origin(request.getOrigin())
-                        .imageUrl(request.getImageUrl()).
-        stockQuantity(request.getStockQuantity()).price(request.getPrice()).discountedPrice(request.getDiscountedPrice()).originalPrice(request.getOriginalPrice()).discountPercent(request.getDiscountPercent())
-                        .status(request.getStatus()).category(category).supplier(supplier).build();
+                       .imageUrl(request.getImageUrl())
+                       .stockQuantity(request.getStockQuantity())
+                       .price(request.getPrice())
+                       .discountedPrice(request.getDiscountedPrice())
+                       .originalPrice(request.getOriginalPrice())
+                       .discountPercent(request.getDiscountPercent())
+                       .status(request.getStatus())
+                       .supplier(supplier)
+                        .categories(categories)
+                       .build();
         Product saved = productRepository.save(product);
         return productMapper.fromEntityToResponse(saved);
     }
@@ -58,17 +69,18 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse updateProduct(UUID id , ProductUpdateRequest request) {
         Product product = productRepository.findById(id).orElseThrow( () -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
-        if ( request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow( () -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND));
-            product.setCategory(category);
+        if ( !request.getCategory().isEmpty()) {
+            Set<UUID> categoryId = request.getCategory();
+            Set<Category> categories = categoryId.stream().map( c -> categoryRepository.findById(c).orElseThrow( () -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND))).collect(Collectors.toSet());
+            product.setCategories(categories);
         }
         if ( request.getSupplierId() != null) {
             Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow( () -> new ApiException(ErrorCode.SUPPLIER_NOT_FOUND));
             product.setSupplier(supplier);
         }
         productMapper.updateEntityFromRequest(request, product);
-        product = productRepository.save(product);
-        return productMapper.fromEntityToResponse(product);
+        Product saved = productRepository.save(product);
+        return productMapper.fromEntityToResponse(saved);
     }
 
     @Override
@@ -115,6 +127,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductResponse> findByCategoryName(String categoryName , Pageable pageable) {
         return productRepository.findByCategoryName(categoryName , pageable).map(productMapper::fromEntityToResponse);
+    }
+
+    @Override
+    public Page<ProductResponse> findByCategoryId(UUID categoryId , Pageable pageable) {
+        return productRepository.findByCategoryId(categoryId, pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override

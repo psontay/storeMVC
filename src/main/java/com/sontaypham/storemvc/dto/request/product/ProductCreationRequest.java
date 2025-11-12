@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -25,6 +26,6 @@ public class ProductCreationRequest {
     BigDecimal discountedPrice;
     int discountPercent;
     ProductStatus status;
-    UUID categoryId;
+    Set<UUID> categoryId;
     UUID supplierId;
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -26,6 +27,7 @@ public class ProductUpdateRequest {
     BigDecimal discountedPrice;
     int discountPercent;
     ProductStatus status;
+    Set<UUID> category;
     UUID supplierId;
-    UUID categoryId;
+
 }

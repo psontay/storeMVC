@@ -23,5 +23,6 @@ public interface ProductService {
     Page<ProductResponse> findBySupplierId ( UUID supplierId , Pageable pageable);
     Page<ProductResponse> findBySupplierName ( String supplierName , Pageable pageable);
     Page<ProductResponse> findByCategoryName ( String categoryName , Pageable pageable);
+    Page<ProductResponse> findByCategoryId ( UUID categoryId , Pageable pageable);
     Page<ProductResponse> findAll( Pageable pageable);
 }
