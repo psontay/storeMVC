@@ -36,11 +36,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse getCartByUserId() {
         User user = getCurrentUser();
         Cart cart = getCurrentUserCart();
-        Set<CartItem> cartItems = cart.getItems();
-        BigDecimal totalPrice = cart.getTotalPrice();
-        cart.setTotalPrice(totalPrice);
-        cart.setItems(cartItems);
-        cart = cartRepository.save(cart);
+        cart.recalcTotal();
         return cartMapper.fromEntityToResponse(cart);
     }
 
@@ -52,12 +48,14 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
         Optional<CartItem> existingItem = cart.getItems().stream().filter(i -> i.getProduct().getId().equals(product.getId())).findFirst();
         if ( existingItem.isPresent()) {
-            existingItem.get().setQuantity(existingItem.get().getQuantity() + quantity);
+            CartItem item = existingItem.get();
+            item.setQuantity(item.getQuantity() + quantity);
+            item.recalcSubtotal();
         }else {
-            cart.getItems().add(CartItem.builder().cart(cart).product(product).quantity(quantity).subtotal(product.getPrice().multiply(BigDecimal.valueOf(quantity))).build());
+            cart.getItems().add(CartItem.builder().cart(cart).product(product).quantity(quantity).unitPrice(product.getPrice()).build());
         }
-        cart.setTotalPrice(calculateTotalPrice(cart.getItems()));
-        cart = cartRepository.save(cart);
+        cart.recalcTotal();
+        cartRepository.save(cart);
     }
 
     @Override
@@ -66,7 +64,17 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCurrentUserCart();
         Product product = productRepository.findById(productId).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
         Optional<CartItem> existingItem = cart.getItems().stream().filter(i -> i.getProduct().getId().equals(product.getId())).findFirst();
-        if ( existingItem.isPresent()) existingItem.get().setQuantity(existingItem.get().getQuantity() + quantity);
+        if ( existingItem.isPresent()) {
+            CartItem item = existingItem.get();
+            item.setQuantity(quantity);
+            item.recalcSubtotal();
+            cart.recalcTotal();
+            cartRepository.save(cart);
+        }else {
+            throw new ApiException(ErrorCode.PRODUCT_NOT_FOUND_IN_CART);
+        }
+        cart.recalcTotal();
+        cartRepository.save(cart);
     }
 
     @Override
@@ -86,9 +94,6 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
-    private BigDecimal calculateTotalPrice(Set<CartItem> items) {
-        return items.stream().map( item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()))).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
 
     private User getCurrentUser() {
         return userRepository.findById(SecurityUtilStatic.getUserId()).orElseThrow(() -> new ApiException(ErrorCode.UNAUTHENTICATED));

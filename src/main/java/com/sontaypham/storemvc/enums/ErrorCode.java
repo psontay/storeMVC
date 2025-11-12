@@ -36,6 +36,7 @@ public enum ErrorCode {
   PRODUCT_UPDATE_FAILED(2007, "Failed to update product", HttpStatus.INTERNAL_SERVER_ERROR),
   PRODUCT_DELETE_FAILED(2008, "Failed to delete product", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_PRODUCT_STATUS(2009, "Invalid product status", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_FOUND_IN_CART( 2010, "Product not found in cart", HttpStatus.NOT_FOUND),
 
   // CATEGORY
   CATEGORY_NOT_FOUND(3001, "Category not found", HttpStatus.NOT_FOUND),
