@@ -84,6 +84,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void addCategoryToProduct(UUID id, UUID categoryId) {
+        Product product = productRepository.findById(id).orElseThrow( () -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
+        Category category = categoryRepository.findById(categoryId).orElseThrow( () -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND));
+        product.getCategories().add(category);
+        category.getProducts().add(product);
+        productRepository.save(product);
+    }
+
+    @Override
     public ProductResponse findById(UUID id) {
         return productRepository.findById(id).map(productMapper::fromEntityToResponse).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
     }
