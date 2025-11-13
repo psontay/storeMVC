@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.repository;
 
+import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
 import com.sontaypham.storemvc.model.Category;
 
 import java.util.Optional;
