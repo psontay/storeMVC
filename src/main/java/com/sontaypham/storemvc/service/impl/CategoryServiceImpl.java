@@ -45,22 +45,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<CategoryResponse> findById(UUID id) {
-        return Optional.empty();
+    public CategoryResponse findById(UUID id) {
+        return categoryMapper.fromEntityToResponse(categoryRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND)));
     }
 
     @Override
-    public Optional<CategoryResponse> findByName(String name) {
-        return Optional.empty();
+    public CategoryResponse findByName(String name) {
+        return categoryMapper.fromEntityToResponse(categoryRepository.findByName(name).orElseThrow(() -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND)));
     }
 
     @Override
-    public Optional<CategoryResponse> findByNameIgnoreCase(String name, UUID id) {
-        return Optional.empty();
+    public CategoryResponse findByNameIgnoreCase(String name, UUID id) {
+        return categoryMapper.fromEntityToResponse(categoryRepository.findByNameIgnoreCase(name).orElseThrow(() -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND)));
     }
 
     @Override
     public Page<CategoryResponse> findByNameContainingIgnoreCase(String name, Pageable pageable) {
-        return null;
+        return categoryRepository.findByNameContainingIgnoreCase(name, pageable).map(categoryMapper::fromEntityToResponse);
     }
 }

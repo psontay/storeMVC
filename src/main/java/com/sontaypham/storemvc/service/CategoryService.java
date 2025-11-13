@@ -13,8 +13,8 @@ import java.util.UUID;
 public interface CategoryService {
     CategoryResponse createCategory(CategoryCreationRequest request);
     CategoryResponse updateCategory(CategoryUpdateRequest request);
-    Optional<CategoryResponse> findById(UUID id);
-    Optional<CategoryResponse> findByName(String name);
-    Optional<CategoryResponse> findByNameIgnoreCase(String name, UUID id);
+    CategoryResponse findById(UUID id);
+    CategoryResponse findByName(String name);
+    CategoryResponse findByNameIgnoreCase(String name, UUID id);
     Page<CategoryResponse> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
