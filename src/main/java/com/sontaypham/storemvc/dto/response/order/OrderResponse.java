@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -22,5 +23,5 @@ public class OrderResponse {
     String shippingAddress;
     BigDecimal totalPrice;
     LocalDateTime orderDate;
-    List<OrderItemResponse> items;
+    Set<OrderItemResponse> orderItems;
 }

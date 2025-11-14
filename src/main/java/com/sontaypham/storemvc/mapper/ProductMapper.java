@@ -15,7 +15,7 @@ import java.util.UUID;
 @Mapper( componentModel = "spring" , uses = { SupplierMapperHelper.class , CategoryMapperHelper.class})
 public interface ProductMapper {
     @Mapping( target = "supplier" , source = "supplierId" , qualifiedByName = "fromIdentifyToSupplierEntity")
-    @Mapping( target = "category" , source = "categoryId" , qualifiedByName = "fromIdentifyToCategoryEntity")
+    @Mapping( target = "categories" , source = "categoryId" , qualifiedByName = "fromIdentifyToCategoryEntity")
     public Product fromCreationToEntity (ProductCreationRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -23,7 +23,7 @@ public interface ProductMapper {
 
 
     @Mapping(target = "supplier" , source = "supplier" , qualifiedByName = "fromSupplierEntityToString")
-    @Mapping(target = "category" , source = "category" , qualifiedByName = "fromCategoryEntityToString")
+    @Mapping(target = "category" , source = "categories" , qualifiedByName = "fromCategoryEntityToString")
     public ProductResponse fromEntityToResponse (Product entity);
 
 
