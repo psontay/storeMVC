@@ -30,10 +30,20 @@ public class CartServiceImpl implements CartService {
     CartMapper cartMapper;
 
     @Override
-    public CartResponse getCartByUserId() {
-        Cart cart = getCurrentUserCart();
+    public CartResponse getCartByUserId(UUID userId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                                  .orElseThrow(() -> new ApiException(ErrorCode.CART_NOT_FOUND));
         cart.recalcTotal();
         return cartMapper.fromEntityToResponse(cart);
+    }
+
+
+    @Override
+    public Cart getCartEntityByUserId(UUID userId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                                  .orElseThrow(() -> new ApiException(ErrorCode.CART_NOT_FOUND));
+        cart.recalcTotal();
+        return cart;
     }
 
     @Override
@@ -87,13 +97,12 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void clearCart() {
-        Cart cart = getCurrentUserCart();
+    public void clearCart(UUID userId) {
+        Cart cart = getCartEntityByUserId(userId);
         cart.getItems().clear();
         cart.recalcTotal();
         cartRepository.save(cart);
     }
-
 
     private User getCurrentUser() {
         return userRepository.findById(SecurityUtilStatic.getUserId()).orElseThrow(() -> new ApiException(ErrorCode.UNAUTHENTICATED));

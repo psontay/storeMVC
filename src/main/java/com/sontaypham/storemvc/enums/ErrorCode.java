@@ -44,6 +44,9 @@ public enum ErrorCode {
     // SUPPLIER
   SUPPLIER_NOT_FOUND(3003, "Supplier not found", HttpStatus.NOT_FOUND),
     SUPPLIER_ALREADY_EXISTS(3004, "Supplier already exists", HttpStatus.CONFLICT),
+    // CART
+   CART_NOT_FOUND(3005, "Cart not found", HttpStatus.NOT_FOUND),
+    CART_IS_EMPTY( 3006, "Cart is empty", HttpStatus.BAD_REQUEST),
   // ROLE & PERMISSION
   ROLE_NOT_FOUND(6001, "Role not found", HttpStatus.NOT_FOUND),
   ROLE_ALREADY_EXISTS(6002, "Role already exists", HttpStatus.CONFLICT),
