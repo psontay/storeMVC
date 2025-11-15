@@ -1,6 +1,7 @@
 package com.sontaypham.storemvc.service.impl;
 
 import com.sontaypham.storemvc.dto.request.order.OrderCreationRequest;
+import com.sontaypham.storemvc.dto.request.order.OrderUpdateRequest;
 import com.sontaypham.storemvc.dto.response.order.OrderResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.enums.OrderStatus;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,5 +60,14 @@ public class OrderServiceImpl implements OrderService {
         cart.recalcTotal();
         cartRepository.save(cart);
         return orderMapper.fromEntityToResponse(saved);
+    }
+
+    @Override
+    public OrderResponse updateOrder(UUID id , OrderUpdateRequest orderUpdateRequest) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+        if ( order.getShippingAddress() != null) order.setShippingAddress(orderUpdateRequest.getShippingAddress());
+        if ( order.getOrderStatus() != null) order.setOrderStatus(orderUpdateRequest.getOrderStatus());
+        orderRepository.save(order);
+        return orderMapper.fromEntityToResponse(order);
     }
 }

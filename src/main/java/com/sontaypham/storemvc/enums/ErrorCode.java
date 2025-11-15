@@ -47,6 +47,8 @@ public enum ErrorCode {
     // CART
    CART_NOT_FOUND(3005, "Cart not found", HttpStatus.NOT_FOUND),
     CART_IS_EMPTY( 3006, "Cart is empty", HttpStatus.BAD_REQUEST),
+    // ORDER
+    ORDER_NOT_FOUND(3007, "Order not found", HttpStatus.NOT_FOUND),
   // ROLE & PERMISSION
   ROLE_NOT_FOUND(6001, "Role not found", HttpStatus.NOT_FOUND),
   ROLE_ALREADY_EXISTS(6002, "Role already exists", HttpStatus.CONFLICT),
