@@ -3,6 +3,7 @@ package com.sontaypham.storemvc.dto.request.order;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -14,4 +15,5 @@ import java.util.UUID;
 public class OrderCreationRequest {
     UUID userId;
     String shippingAddress;
+    List<UUID> selectedCartItemIds;
 }

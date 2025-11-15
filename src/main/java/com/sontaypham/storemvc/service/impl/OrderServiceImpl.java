@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,23 +37,26 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findById(orderCreationRequest.getUserId()).orElseThrow(() -> new ApiException(
                 ErrorCode.USER_NOT_FOUND));
         Cart cart = cartService.getCartEntityByUserId(user.getId());
-        if ( cart.getItems().isEmpty() ) {
+        Set<CartItem> selectedItems = cart.getItems().stream().filter( i -> orderCreationRequest.getSelectedCartItemIds().contains(i.getId())).collect(
+                Collectors.toSet());
+        if ( selectedItems.isEmpty()) {
             throw new ApiException(ErrorCode.CART_IS_EMPTY);
         }
-        Order order = orderMapper.fromCreationToEntity(orderCreationRequest);
-        order.setUser(user);
-        order.setOrderStatus(OrderStatus.PENDING);
-        BigDecimal total = BigDecimal.ZERO;
+        Order order = Order.builder().user(user).orderStatus(OrderStatus.PENDING)
+                .shippingAddress(orderCreationRequest.getShippingAddress()).build();
         Set<OrderItem> orderItems = new HashSet<>();
-        for (CartItem c : cart.getItems()) {
-            OrderItem orderItem = OrderItem.builder().order(order).unitPrice(c.getProduct().getPrice()).quantity(c.getQuantity()).product(c.getProduct()).build();
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for ( CartItem cartItem : selectedItems) {
+            OrderItem orderItem = OrderItem.builder().product(cartItem.getProduct()).order(order).quantity(cartItem.getQuantity()).unitPrice(cartItem.getUnitPrice()).build();
             orderItems.add(orderItem);
-            total = total.add( c.getProduct().getPrice().multiply(BigDecimal.valueOf(c.getQuantity())));
+            totalPrice = totalPrice.add(cartItem.getUnitPrice().multiply(new BigDecimal(cartItem.getQuantity())));
         }
         order.setOrderItems(orderItems);
-        order.setTotalPrice(total);
-        orderRepository.save(order);
-        cartService.clearCart(user.getId());
-        return orderMapper.fromEntityToResponse(order);
+        order.setTotalPrice(totalPrice);
+        Order saved = orderRepository.save(order);
+        cart.getItems().removeAll(selectedItems);
+        cart.recalcTotal();
+        cartRepository.save(cart);
+        return orderMapper.fromEntityToResponse(saved);
     }
 }
