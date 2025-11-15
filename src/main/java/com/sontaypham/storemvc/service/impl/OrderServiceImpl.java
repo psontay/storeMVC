@@ -14,6 +14,8 @@ import com.sontaypham.storemvc.repository.OrderRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.service.OrderService;
+import com.sontaypham.storemvc.util.SecurityUtilBean;
+import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -70,4 +72,12 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
         return orderMapper.fromEntityToResponse(order);
     }
+
+    @Override
+    public void deleteOrder(UUID id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+        if ( !order.getUser().getId().equals(SecurityUtilStatic.getUserId())) throw new ApiException(ErrorCode.ACCESS_DENIED);
+        orderRepository.delete(order);
+    }
+
 }

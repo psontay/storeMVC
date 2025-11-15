@@ -59,6 +59,7 @@ public enum ErrorCode {
       6006, "Failed to assign permission to role", HttpStatus.INTERNAL_SERVER_ERROR),
   ROLE_DELETE_FORBIDDEN(6007, "Cannot delete this role", HttpStatus.FORBIDDEN),
   PERMISSION_DELETE_FORBIDDEN(6008, "Cannot delete this permission", HttpStatus.FORBIDDEN),
+    ACCESS_DENIED(6009, "Access denied", HttpStatus.FORBIDDEN),
   // UNCATEGORIZED
   UNCATEGORIZED(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR);
   int code;
