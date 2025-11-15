@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -80,4 +81,14 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
     }
 
+    @Override
+    public List<OrderResponse> getAllOrders() {
+        return orderRepository.findAll().stream().map(orderMapper::fromEntityToResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrdersByUserId(UUID id) {
+        Set<Order> orders = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND)).getOrders();
+        return orders.stream().map(orderMapper::fromEntityToResponse).toList();
+    }
 }
