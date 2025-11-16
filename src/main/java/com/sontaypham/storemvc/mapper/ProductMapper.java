@@ -10,39 +10,21 @@ import com.sontaypham.storemvc.model.Product;
 import com.sontaypham.storemvc.model.Supplier;
 import org.mapstruct.*;
 
+import java.util.Set;
 import java.util.UUID;
 
-@Mapper( componentModel = "spring" , uses = { SupplierMapperHelper.class , CategoryMapperHelper.class})
+@Mapper(componentModel = "spring", uses = { SupplierMapperHelper.class, CategoryMapperHelper.class })
 public interface ProductMapper {
-    @Mapping( target = "supplier" , source = "supplierId" , qualifiedByName = "fromIdentifyToSupplierEntity")
-    @Mapping( target = "categories" , source = "categoryId" , qualifiedByName = "fromIdentifyToCategoryEntity")
-    public Product fromCreationToEntity (ProductCreationRequest request);
+
+    @Mapping(target = "supplier", source = "supplierId", qualifiedByName = "fromIdentifyToSupplierEntity")
+    @Mapping(target = "categories", source = "categoryId", qualifiedByName = "fromIdentifyToCategoryEntity")
+    Product fromCreationToEntity(ProductCreationRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromRequest(ProductUpdateRequest request, @MappingTarget Product product);
 
-
-    @Mapping(target = "supplier" , source = "supplier" , qualifiedByName = "fromSupplierEntityToString")
-    @Mapping(target = "category" , source = "categories" , qualifiedByName = "fromCategoryEntityToString")
-    public ProductResponse fromEntityToResponse (Product entity);
-
-
-
-    // helper
-    @Named("fromIdentifyToSupplierEntity")
-    static Supplier fromIdentifyToSupplierEntity(UUID id , SupplierMapperHelper supplierMapperHelper) {
-        return supplierMapperHelper.fromIdentifyToEntity(id);
-    }
-    @Named("fromIdentifyToCategoryEntity")
-    static Category fromIdentityToCategoryEntity(UUID id ,  CategoryMapperHelper categoryMapperHelper) {
-        return categoryMapperHelper.fromIdentifyToCategoryEntity(id);
-    }
-    @Named("fromSupplierEntityToString")
-    static String fromSupplierEntityToString (Supplier supplier ,  SupplierMapperHelper supplierMapperHelper) {
-        return supplierMapperHelper.fromEntityToString(supplier);
-    }
-    @Named("fromCategoryEntityToString")
-    static String fromCategoryEntityToString (Category category,  CategoryMapperHelper categoryMapperHelper) {
-        return categoryMapperHelper.fromEntityToString(category);
-    }
+    @Mapping(target = "supplier", source = "supplier", qualifiedByName = "fromSupplierEntityToString")
+    @Mapping(target = "categories", source = "categories", qualifiedByName = "categorySetToStringSet")
+    ProductResponse fromEntityToResponse(Product product);
 }
+

@@ -4,7 +4,7 @@ import com.sontaypham.storemvc.dto.response.cart.CartItemResponse;
 import com.sontaypham.storemvc.dto.response.cart.CartResponse;
 import com.sontaypham.storemvc.model.Cart;
 import com.sontaypham.storemvc.model.CartItem;
-import com.sontaypham.storemvc.util.SecurityUtilBean;
+import java.math.BigDecimal;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,7 +18,10 @@ public interface CartMapper {
 
     @Mapping( source = "product.id" , target = "productId")
     @Mapping( source = "product.name" , target = "productName")
-    @Mapping( source = "product.ImageUrl" , target = "productImageUrl")
-    @Mapping( target = "subtotal" , expression = "java(cartItem.getUnitPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))")
+    @Mapping( source = "product.imageUrl" , target = "productImageUrl")
+    @Mapping(
+            target = "subtotal",
+            expression = "java(cartItem.getUnitPrice().multiply(java.math.BigDecimal.valueOf(cartItem.getQuantity())))"
+    )
     CartItemResponse fromEntityToResponse(CartItem cartItem);
 }

@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -30,5 +31,5 @@ public class ProductResponse {
 
     String status;
     String supplier;
-    String category;
+    Set<String> categories;
 }
