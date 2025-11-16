@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderUpdateRequest {
-    String shippingAddress;
-    OrderStatus orderStatus;
+  String shippingAddress;
+  OrderStatus orderStatus;
 }

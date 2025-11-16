@@ -6,7 +6,6 @@ import com.sontaypham.storemvc.helper.PermissionMapperHelper;
 import com.sontaypham.storemvc.model.Permission;
 import com.sontaypham.storemvc.model.Role;
 import java.util.Set;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -23,13 +22,13 @@ public interface RoleMapper {
 
   @Named("toPermissionObject")
   static Set<Permission> toPermissionObject(
-      Set<String> permissionString,  PermissionMapperHelper permissionMapperHelper) {
+      Set<String> permissionString, PermissionMapperHelper permissionMapperHelper) {
     return permissionMapperHelper.toPermissionObject(permissionString);
   }
 
   @Named("toPermissionString")
   static Set<String> toPermissionString(
-      Set<Permission> permissionObject,  PermissionMapperHelper permissionMapperHelper) {
+      Set<Permission> permissionObject, PermissionMapperHelper permissionMapperHelper) {
     return permissionMapperHelper.toPermissionString(permissionObject);
   }
 }

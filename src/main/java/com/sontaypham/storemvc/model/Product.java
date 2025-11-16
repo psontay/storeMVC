@@ -23,8 +23,10 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(columnDefinition = "uniqueidentifier")
   UUID id;
-  @Column( columnDefinition = "NVARCHAR(255)")
+
+  @Column(columnDefinition = "NVARCHAR(255)")
   String name;
+
   @Lob String description;
   int age;
   String origin;
@@ -42,8 +44,7 @@ public class Product {
   @org.hibernate.annotations.CreationTimestamp
   LocalDateTime createdAt;
 
-  @org.hibernate.annotations.UpdateTimestamp
-  LocalDateTime updatedAt;
+  @org.hibernate.annotations.UpdateTimestamp LocalDateTime updatedAt;
 
   @Enumerated(EnumType.STRING)
   ProductStatus status;
@@ -55,11 +56,10 @@ public class Product {
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
   Set<OrderItem> orderItems = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    Set<Category> categories = new HashSet<>();
+  @ManyToMany
+  @JoinTable(
+      name = "product_category",
+      joinColumns = @JoinColumn(name = "product_id"),
+      inverseJoinColumns = @JoinColumn(name = "category_id"))
+  Set<Category> categories = new HashSet<>();
 }

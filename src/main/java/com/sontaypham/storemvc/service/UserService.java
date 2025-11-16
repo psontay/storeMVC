@@ -7,10 +7,9 @@ import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.UUID;
 
 public interface UserService {
   UserRegisterResponse registerUser(UserRegisterRequest request);

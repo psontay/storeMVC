@@ -22,14 +22,18 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(columnDefinition = "uniqueidentifier")
   UUID id;
+
   @ManyToOne
   @JoinColumn(name = "user_id")
   User user;
+
   @Column(updatable = false)
   @org.hibernate.annotations.CreationTimestamp
   LocalDateTime orderDate;
+
   @Enumerated(EnumType.STRING)
   OrderStatus orderStatus;
+
   String shippingAddress;
   BigDecimal totalPrice;
 

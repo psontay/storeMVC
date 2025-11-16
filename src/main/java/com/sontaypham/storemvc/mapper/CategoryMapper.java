@@ -7,11 +7,11 @@ import com.sontaypham.storemvc.model.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper( componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    public Category fromCreationToEntity(CategoryCreationRequest request);
+  public Category fromCreationToEntity(CategoryCreationRequest request);
 
-    void updateEntityFromRequest(CategoryUpdateRequest request, @MappingTarget Category category);
+  void updateEntityFromRequest(CategoryUpdateRequest request, @MappingTarget Category category);
 
-    public CategoryResponse fromEntityToResponse(Category entity);
+  public CategoryResponse fromEntityToResponse(Category entity);
 }

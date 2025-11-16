@@ -9,11 +9,14 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-    @Mapping( target = "user.id" , source = "userId")
-    Order fromCreationToEntity(OrderCreationRequest orderCreationRequest);
-    void updateEntityFromRequest(OrderCreationRequest orderCreationRequest, @MappingTarget Order order);
-    @Mapping( target = "orderId" , source = "id")
-    @Mapping(target = "userEmail" , source = "user.email")
-    @Mapping( target = "orderItems" , source = "orderItems")
-    OrderResponse fromEntityToResponse(Order order);
+  @Mapping(target = "user.id", source = "userId")
+  Order fromCreationToEntity(OrderCreationRequest orderCreationRequest);
+
+  void updateEntityFromRequest(
+      OrderCreationRequest orderCreationRequest, @MappingTarget Order order);
+
+  @Mapping(target = "orderId", source = "id")
+  @Mapping(target = "userEmail", source = "user.email")
+  @Mapping(target = "orderItems", source = "orderItems")
+  OrderResponse fromEntityToResponse(Order order);
 }

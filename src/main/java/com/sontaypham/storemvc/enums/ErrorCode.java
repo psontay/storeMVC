@@ -35,20 +35,20 @@ public enum ErrorCode {
   PRODUCT_CREATION_FAILED(2006, "Failed to create product", HttpStatus.INTERNAL_SERVER_ERROR),
   PRODUCT_UPDATE_FAILED(2007, "Failed to update product", HttpStatus.INTERNAL_SERVER_ERROR),
   PRODUCT_DELETE_FAILED(2008, "Failed to delete product", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_PRODUCT_STATUS(2009, "Invalid product status", HttpStatus.BAD_REQUEST),
-    PRODUCT_NOT_FOUND_IN_CART( 2010, "Product not found in cart", HttpStatus.NOT_FOUND),
+  INVALID_PRODUCT_STATUS(2009, "Invalid product status", HttpStatus.BAD_REQUEST),
+  PRODUCT_NOT_FOUND_IN_CART(2010, "Product not found in cart", HttpStatus.NOT_FOUND),
 
   // CATEGORY
   CATEGORY_NOT_FOUND(3001, "Category not found", HttpStatus.NOT_FOUND),
   CATEGORY_ALREADY_EXISTS(3002, "Category already exists", HttpStatus.CONFLICT),
-    // SUPPLIER
+  // SUPPLIER
   SUPPLIER_NOT_FOUND(3003, "Supplier not found", HttpStatus.NOT_FOUND),
-    SUPPLIER_ALREADY_EXISTS(3004, "Supplier already exists", HttpStatus.CONFLICT),
-    // CART
-   CART_NOT_FOUND(3005, "Cart not found", HttpStatus.NOT_FOUND),
-    CART_IS_EMPTY( 3006, "Cart is empty", HttpStatus.BAD_REQUEST),
-    // ORDER
-    ORDER_NOT_FOUND(3007, "Order not found", HttpStatus.NOT_FOUND),
+  SUPPLIER_ALREADY_EXISTS(3004, "Supplier already exists", HttpStatus.CONFLICT),
+  // CART
+  CART_NOT_FOUND(3005, "Cart not found", HttpStatus.NOT_FOUND),
+  CART_IS_EMPTY(3006, "Cart is empty", HttpStatus.BAD_REQUEST),
+  // ORDER
+  ORDER_NOT_FOUND(3007, "Order not found", HttpStatus.NOT_FOUND),
   // ROLE & PERMISSION
   ROLE_NOT_FOUND(6001, "Role not found", HttpStatus.NOT_FOUND),
   ROLE_ALREADY_EXISTS(6002, "Role already exists", HttpStatus.CONFLICT),
@@ -59,7 +59,7 @@ public enum ErrorCode {
       6006, "Failed to assign permission to role", HttpStatus.INTERNAL_SERVER_ERROR),
   ROLE_DELETE_FORBIDDEN(6007, "Cannot delete this role", HttpStatus.FORBIDDEN),
   PERMISSION_DELETE_FORBIDDEN(6008, "Cannot delete this permission", HttpStatus.FORBIDDEN),
-    ACCESS_DENIED(6009, "Access denied", HttpStatus.FORBIDDEN),
+  ACCESS_DENIED(6009, "Access denied", HttpStatus.FORBIDDEN),
   // UNCATEGORIZED
   UNCATEGORIZED(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR);
   int code;

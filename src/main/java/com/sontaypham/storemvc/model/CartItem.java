@@ -16,29 +16,29 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "uniqueidentifier")
-    UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(columnDefinition = "uniqueidentifier")
+  UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id")
-    Product product;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "product_id")
+  Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    Cart cart;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "cart_id")
+  Cart cart;
 
-    int quantity;
+  int quantity;
 
-    @Column(precision = 15, scale = 2)
-    BigDecimal unitPrice;
+  @Column(precision = 15, scale = 2)
+  BigDecimal unitPrice;
 
-    @Column(precision = 18, scale = 2)
-    BigDecimal subtotal;
+  @Column(precision = 18, scale = 2)
+  BigDecimal subtotal;
 
-    public void recalcSubtotal() {
-        if (unitPrice == null) unitPrice = BigDecimal.ZERO;
-        this.subtotal = unitPrice.multiply(BigDecimal.valueOf(Math.max(0, quantity)));
-    }
+  public void recalcSubtotal() {
+    if (unitPrice == null) unitPrice = BigDecimal.ZERO;
+    this.subtotal = unitPrice.multiply(BigDecimal.valueOf(Math.max(0, quantity)));
+  }
 }

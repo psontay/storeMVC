@@ -188,8 +188,8 @@ public class UserServiceImpl implements UserService {
     user.setPassword(passwordEncoder.encode(newPassword));
   }
 
-    @Override
-    public Page<UserResponse> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(userMapper::toUserResponse);
-    }
+  @Override
+  public Page<UserResponse> findAll(Pageable pageable) {
+    return userRepository.findAll(pageable).map(userMapper::toUserResponse);
+  }
 }

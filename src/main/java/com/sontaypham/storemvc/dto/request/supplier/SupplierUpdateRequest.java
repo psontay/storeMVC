@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SupplierUpdateRequest {
-    String name;
-    String fullName;
-    String email;
-    String telPhone;
+  String name;
+  String fullName;
+  String email;
+  String telPhone;
 }
