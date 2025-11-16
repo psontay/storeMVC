@@ -19,6 +19,7 @@ import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -82,8 +83,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll().stream().map(orderMapper::fromEntityToResponse).collect(Collectors.toList());
+    public List<OrderResponse> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable).stream().map(orderMapper::fromEntityToResponse).collect(Collectors.toList());
     }
 
     @Override
