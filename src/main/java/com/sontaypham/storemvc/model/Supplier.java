@@ -9,6 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Table(name = "suppliers")
 @Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
