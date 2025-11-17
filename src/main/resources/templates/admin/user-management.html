@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StoreMVC - Quản lý Người dùng</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/user-management.css}">
+
+    <!-- JS -->
+    <script th:src="@{/js/user-management.js}" defer></script>
+
+</head>
+<body>
+<div class="layout" id="app">
+    <!-- SIDEBAR (reuse dashboard sidebar) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="logo">SM</div>
+            <div class="brand-text">StoreMVC</div>
+        </div>
+
+        <nav class="nav">
+            <div class="nav-section">Quản lý</div>
+            <a class="nav-item active" href="#"><i class="bi bi-people-fill"></i><span> Quản lý người dùng</span></a>
+            <a class="nav-item" href="#"><i class="bi bi-building"></i><span> Quản lý nhà cung cấp</span></a>
+            <a class="nav-item" href="#"><i class="bi bi-box-seam"></i><span> Quản lý sản phẩm</span></a>
+            <a class="nav-item" href="#"><i class="bi bi-tags-fill"></i><span> Quản lý danh mục</span></a>
+            <a class="nav-item" href="#"><i class="bi bi-receipt"></i><span> Quản lý đơn hàng</span></a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="collapseBtn" class="btn small">Thu nhỏ</button>
+            <label class="switch">
+                <input id="themeToggle" type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <header class="topbar">
+            <div class="left">
+                <button id="toggleSidebar" class="icon-btn">☰</button>
+                <input id="searchUserInput" class="search" placeholder="Tìm người dùng..." />
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="actions">
+                <button class="btn" id="createUserBtn">+ Tạo người dùng</button>
+            </div>
+
+            <!-- User Form (ẩn mặc định) -->
+            <div class="card form-card" id="userFormCard" style="display:none;">
+                <h3 id="formTitle">Tạo người dùng</h3>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="username">Tên người dùng</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Vai trò</label>
+                        <select id="role" name="role">
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Lưu</button>
+                        <button type="button" class="btn secondary" id="cancelFormBtn">Hủy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- User List Table -->
+            <div class="card table-card">
+                <h3>Danh sách người dùng</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên người dùng</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user, iterStat : ${userPage.content}">
+                            <td th:text="${iterStat.index + 1 + (currentPage * pageSize)}">1</td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${#strings.arrayJoin(user.roles.toArray(), ', ')}">USER</td>
+                            <td>
+                                <button class="btn small" th:attr="data-username=${user.username}" onclick="editUser(this)">Sửa</button>
+                                <button class="btn small danger" th:attr="data-username=${user.username}" onclick="deleteUser(this)">Xóa</button>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                        <!-- Pagination -->
+                        <div class="pagination">
+                            <a th:if="${!userPage.first}" th:href="@{/admin/users(page=${currentPage - 1}, size=${pageSize})}">« Prev</a>
+                            <span>Trang <span th:text="${currentPage + 1}">1</span> / <span th:text="${userPage.totalPages}">10</span></span>
+                            <a th:if="${!userPage.last}" th:href="@{/admin/users(page=${currentPage + 1}, size=${pageSize})}">Next »</a>
+                        </div>
+
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

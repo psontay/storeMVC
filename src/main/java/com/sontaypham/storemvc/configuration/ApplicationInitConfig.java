@@ -86,8 +86,8 @@ public class ApplicationInitConfig {
                   .permissions(allPermissions)
                   .build();
           userRepository.save(admin);
+          log.warn("Admin has been created with default username : " + admin.getUsername());
         }
-        log.warn("Admin has been created with default username : " + adminUsername);
       } catch (Exception e) {
         log.error("Error in init admin application : ", e);
       }

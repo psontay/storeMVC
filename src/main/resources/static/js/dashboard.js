@@ -1,8 +1,3 @@
-/* dashboard.js
-   Minimal, robust Chart.js usage with gradient cache + safe updates.
-   Avoids infinite update loops by only updating when values change.
-*/
-
 document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     const sidebar = document.getElementById('sidebar');
@@ -20,57 +15,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (themeToggle) themeToggle.checked = false;
     }
 
-    // safe helper to read CSS var (returns trimmed string)
+    // helper
     function getCssVar(name) {
-        const v = getComputedStyle(document.documentElement).getPropertyValue(name)
-            || getComputedStyle(document.body).getPropertyValue(name)
-            || '';
-        return v.trim();
+        return (getComputedStyle(document.documentElement).getPropertyValue(name) || '').trim();
     }
 
-    // toggle theme
+    // theme toggle
     if (themeToggle) {
         themeToggle.addEventListener('change', () => {
-            if (themeToggle.checked) {
-                body.classList.add('dark');
-                localStorage.setItem('storemvc-theme', 'dark');
-            } else {
-                body.classList.remove('dark');
-                localStorage.setItem('storemvc-theme', 'light');
-            }
-            // request a single color update (debounced by microtask)
+            body.classList.toggle('dark', themeToggle.checked);
+            localStorage.setItem('storemvc-theme', themeToggle.checked ? 'dark' : 'light');
             requestAnimationFrame(() => updateChartsColors());
         });
     }
 
-    // sidebar toggles
-    if (toggleSidebar) {
-        toggleSidebar.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
-    }
-    if (collapseBtn) {
-        collapseBtn.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
-    }
-
-    // --- Sample data (replace with API calls later)
-    const revenueLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const revenueData = [12000,15000,14000,17000,19000,22000,20000,24000,23000,25000,27000,30000];
+    // sidebar toggle
+    if (toggleSidebar) toggleSidebar.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+    if (collapseBtn) collapseBtn.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
 
     // --- Chart setup
     const revenueCanvas = document.getElementById('revenueChart');
-    if (!revenueCanvas) return; // nothing to do
+    if (!revenueCanvas) return;
 
     const revenueCtx = revenueCanvas.getContext('2d');
-
-    // gradient cache to avoid re-creating new gradient objects repeatedly
     let gradientCache = { color: null, w: 0, h: 0, gradient: null };
 
     function hexToRgba(hex, a){
         if (!hex) return `rgba(0,0,0,${a})`;
         hex = hex.trim();
         if (hex.startsWith('#') && (hex.length === 7 || hex.length === 4)) {
-            // support #rgb and #rrggbb
             if (hex.length === 4) {
                 const r = hex[1], g = hex[2], b = hex[3];
                 hex = `#${r}${r}${g}${g}${b}${b}`;
@@ -79,13 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const r = (bigint>>16)&255, g=(bigint>>8)&255, b=bigint&255;
             return `rgba(${r},${g},${b},${a})`;
         }
-        // fallback: if it's already something like rgb(...) or color name, try to use it directly (Chart may accept)
         return hex;
     }
 
     function createGradient(ctx, color, alpha=0.18){
         const w = ctx.canvas.width, h = ctx.canvas.height;
-        // reuse gradient if same color and size
         if (gradientCache.color === color && gradientCache.w === w && gradientCache.h === h && gradientCache.gradient) {
             return gradientCache.gradient;
         }
@@ -96,16 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return g;
     }
 
-    // chart options factory
     function chartOptions() {
         const muted = getCssVar('--muted') || '#6b7280';
         return {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: { mode: 'index', intersect: false }
-            },
+            plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
             scales: {
                 x: { grid: { display: false }, ticks: { color: muted } },
                 y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: muted } }
@@ -113,96 +80,60 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // create revenue chart
+    // init empty chart
     const revenueConfig = {
         type: 'line',
-        data: {
-            labels: revenueLabels.slice(),
-            datasets: [{
-                label: 'Doanh thu',
-                data: revenueData.slice(),
-                fill: true,
-                tension: 0.3,
-                backgroundColor: createGradient(revenueCtx, getCssVar('--accent') || '#FF6B3A', 0.18),
-                borderColor: getCssVar('--accent') || '#FF6B3A',
-                pointRadius: 3
-            }]
-        },
+        data: { labels: [], datasets: [{ label: 'Doanh thu', data: [], fill: true, tension: 0.3, backgroundColor: '', borderColor: '', pointRadius: 3 }] },
         options: chartOptions()
     };
-
     let revenueChart = new Chart(revenueCtx, revenueConfig);
 
-    // Only update charts when values actually change (avoid loops)
-    let lastAccent = (getCssVar('--accent') || '').trim();
+    let lastAccent = getCssVar('--accent') || '';
     function updateChartsColors(){
-        const accent = (getCssVar('--accent') || '').trim();
-        if (!accent || accent === lastAccent) return; // nothing changed
-
-        // update dataset visuals
+        const accent = getCssVar('--accent') || '';
+        if (!accent || accent === lastAccent) return;
         revenueChart.data.datasets[0].borderColor = accent;
         revenueChart.data.datasets[0].backgroundColor = createGradient(revenueCtx, accent, 0.18);
-
-        // update ticks colors
         const muted = getCssVar('--muted') || '#6b7280';
-        if (revenueChart.options && revenueChart.options.scales) {
+        if (revenueChart.options.scales) {
             if (revenueChart.options.scales.x) revenueChart.options.scales.x.ticks.color = muted;
             if (revenueChart.options.scales.y) revenueChart.options.scales.y.ticks.color = muted;
         }
-
         lastAccent = accent;
         revenueChart.update();
     }
 
-    // respond to range change (slice data safely)
-    const revenueRange = document.getElementById('revenueRange');
-    if (revenueRange) {
-        revenueRange.addEventListener('change', (e) => {
-            const months = Math.max(1, Math.min(12, parseInt(e.target.value,10) || 12));
-            revenueChart.data.labels = revenueLabels.slice(12 - months);
-            revenueChart.data.datasets[0].data = revenueData.slice(12 - months);
+    // load KPI hôm nay
+    async function loadTodayRevenue() {
+        try {
+            const res = await fetch('/admin/revenueToday');
+            const json = await res.json();
+            const value = json.todayRevenue || 0;
+            document.getElementById('kpi-revenue').textContent = value.toLocaleString('vi-VN', { style:'currency', currency:'VND' });
+        } catch(e){ console.error(e); }
+    }
+
+    // load 12 tháng revenue cho chart
+    async function loadRevenue12Months() {
+        try {
+            const res = await fetch('/admin/revenue12Months');
+            const json = await res.json();
+            revenueChart.data.labels = json.labels || [];
+            revenueChart.data.datasets[0].data = json.data || [];
+            const accent = getCssVar('--accent') || '#FF6B3A';
+            revenueChart.data.datasets[0].borderColor = accent;
+            revenueChart.data.datasets[0].backgroundColor = createGradient(revenueCtx, accent, 0.18);
             revenueChart.update();
-        });
+        } catch(e){ console.error(e); }
     }
 
-    // render sample recent orders table
-    const recent = [
-        {id: 1023, name:'Nguyễn A', total:'₫ 1,200,000', status:'pending', date:'2025-11-15'},
-        {id: 1022, name:'Trần B', total:'₫ 450,000', status:'completed', date:'2025-11-14'},
-        {id: 1021, name:'Lê C', total:'₫ 2,300,000', status:'pending', date:'2025-11-13'},
-        {id: 1020, name:'Phạm D', total:'₫ 600,000', status:'cancel', date:'2025-11-12'},
-        {id: 1019, name:'Võ E', total:'₫ 750,000', status:'completed', date:'2025-11-11'}
-    ];
-    const tbody = document.getElementById('recentOrders');
-    if (tbody) {
-        tbody.innerHTML = recent.map((r,i) => `
-      <tr>
-        <td>${i+1}</td>
-        <td>${r.name}</td>
-        <td>${r.total}</td>
-        <td><span class="status ${r.status}">${r.status}</span></td>
-        <td>${r.date}</td>
-      </tr>
-    `).join('');
-    }
-
-    // Expose functions for integration/testing
-    window.adminDashboard = {
-        revenueChart,
-        updateChartsColors
-    };
-
-    // On resize, clear gradient cache (so gradient resizes correctly)
-    let resizeTimer = null;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            gradientCache = { color: null, w:0, h:0, gradient:null };
-            // chart will re-draw automatically on resize by Chart.js, but ensure colors are correct
-            updateChartsColors();
-        }, 120);
-    });
-
-    // initial safe update (no infinite loop)
+    // reload on page load
+    loadTodayRevenue();
+    loadRevenue12Months();
     requestAnimationFrame(() => updateChartsColors());
+
+    window.addEventListener('resize', () => {
+        gradientCache = { color: null, w:0, h:0, gradient:null };
+        updateChartsColors();
+    });
 });

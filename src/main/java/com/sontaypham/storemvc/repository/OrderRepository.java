@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    @Query("select coalesce(sum(o.totalPrice),0) from Order o where date(o.orderDate) = current_date and o.orderStatus = 'SHIPPED' ")
+    @Query(value = "SELECT COALESCE(SUM(total_price),0) FROM orders WHERE DATE(order_date) = CURRENT_DATE AND order_status = 'SHIPPED'", nativeQuery = true)
     BigDecimal getTodayRevenue();
+
+
 }
