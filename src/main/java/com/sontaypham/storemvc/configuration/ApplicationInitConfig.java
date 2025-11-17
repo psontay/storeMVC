@@ -52,14 +52,11 @@ public class ApplicationInitConfig {
                                                               .map(name -> permissionRepository.findByName(name)
                                                                                                .orElseGet(() -> permissionRepository.save(new Permission(name, "Permission for : " + name))))
                                                               .collect(Collectors.toSet());
-          for (Permission permission : allPermissions) {
-              log.warn("Init admin application permission is " + permission.getName());
-          }
         // get all permissions of database
         Set<String> userPermissionsName =
             Set.of("CATEGORY_READ", "PRODUCT_READ", "SUPPLIER_READ", "CART_READ", "CART_ADD", "CART_UPDATE", "CART_DELETE", "ORDER_CREATE", "ORDER_READ", "ORDER_UPDATE", "ORDER_DELETE");
           Set<Permission> userPermission = userPermissionsName.stream()
-                                                              .map(p -> permissionRepository.findByName(p).get()) // lấy từ DB
+                                                              .map(p -> permissionRepository.findByName(p).get())
                                                               .collect(Collectors.toSet());
           // create role
           Role adminRole = Role.builder()
