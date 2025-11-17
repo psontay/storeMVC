@@ -45,4 +45,5 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
             .collect(Collectors.toSet());
     return new CustomUserDetails(user, authorities);
   }
+
 }

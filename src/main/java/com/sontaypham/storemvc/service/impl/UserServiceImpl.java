@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public UserRegisterResponse registerUser(@Valid UserRegisterRequest request) {
-    if (userRepository.existsByUsername(request.getUsername()))
-      throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
+    if (userRepository.existsByUsername(request.getUsername()) || userRepository.existsByEmail(request.getEmail()))
+      throw new ApiException(ErrorCode.USER_ALREADY_EXISTS);
     if (!request.getPassword().equals(request.getConfirmPassword()))
       throw new ApiException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCHES);
 
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     roles.add(role);
     User user =
         User.builder()
-            .username(request.getPassword())
+            .username(request.getUsername())
             .password(passwordEncoder.encode(request.getPassword()))
             .email(request.getEmail())
             .fullName(request.getFullName())

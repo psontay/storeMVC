@@ -1,14 +1,18 @@
 package com.sontaypham.storemvc.controller;
 
+import com.sontaypham.storemvc.dto.request.user.UserRegisterRequest;
+import com.sontaypham.storemvc.exception.ApiException;
+import com.sontaypham.storemvc.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
+    private final UserService userService;
     @GetMapping("/signin")
     public String signinPage(
             @RequestParam(value = "error", required = false) String error,
@@ -16,17 +20,24 @@ public class AuthenticationController {
             Model model) {
 
         if (error != null) {
-            model.addAttribute("error", "Wrong username or password!");
+            model.addAttribute("loginError", "Wrong username or password!");
         }
         if (logout != null) {
             model.addAttribute("msg", "Logout success!");
         }
 
-        return "auth/signin";
+        return "auth/auth";
     }
 
-    @GetMapping("/register")
-    public String registerPage() {
-        return "auth/register"; // trả về templates/auth/register.html
+    @PostMapping("/register")
+    public String register(@ModelAttribute UserRegisterRequest request, Model model) {
+        try {
+            userService.registerUser(request);
+            model.addAttribute("success", "Register successfully! Please sign in.");
+            return "auth/auth";
+        } catch (ApiException ex) {
+            model.addAttribute("registerError", ex.getMessage());
+            return "auth/auth";
+        }
     }
 }

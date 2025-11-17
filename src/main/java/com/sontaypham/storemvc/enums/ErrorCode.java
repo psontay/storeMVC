@@ -26,6 +26,7 @@ public enum ErrorCode {
       HttpStatus.BAD_REQUEST),
   CONFIRM_PASSWORD_NOT_MATCHES(1013, "Confirm password does not match", HttpStatus.BAD_REQUEST),
   INVALID_TELEPHONE_NUMBER(1014, "Invalid telephone number", HttpStatus.BAD_REQUEST),
+    USER_ALREADY_EXISTS(1015, "User already exists", HttpStatus.BAD_REQUEST),
   // PRODUCT
   PRODUCT_NOT_FOUND(2001, "Product not found", HttpStatus.NOT_FOUND),
   PRODUCT_ALREADY_EXISTS(2002, "Product already exists", HttpStatus.CONFLICT),

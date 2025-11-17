@@ -45,92 +45,37 @@ public class ApplicationInitConfig {
       log.warn("Init admin application is running");
       try {
         // create || add permissions
-        List<String> allPermissions =
+        List<String> allPermissionsName =
             List.of(
-                "USER_CREATE",
-                "USER_READ",
-                "USER_UPDATE",
-                "USER_DELETE",
-                "CATEGORY_CREATE",
-                "CATEGORY_READ",
-                "CATEGORY_UPDATE",
-                "CATEGORY_DELETE",
-                "PERMISSION_CREATE",
-                "PERMISSION_READ",
-                "PERMISSION_UPDATE",
-                "PERMISSION_DELETE",
-                "PRODUCT_CREATE",
-                "PRODUCT_READ",
-                "PRODUCT_UPDATE",
-                "PRODUCT_DELETE",
-                "ROLE_CREATE",
-                "ROLE_READ",
-                "ROLE_UPDATE",
-                "ROLE_DELETE",
-                "SUPPLIER_CREATE",
-                "SUPPLIER_READ",
-                "SUPPLIER_UPDATE",
-                "SUPPLIER_DELETE",
-                "CART_ADD",
-                "CART_READ",
-                "CART_UPDATE",
-                "CART_DELETE",
-                "ORDER_CREATE",
-                "ORDER_READ",
-                "ORDER_UPDATE",
-                "ORDER_DELETE");
-        allPermissions.forEach(
-            name ->
-                permissionRepository
-                    .findByName(name)
-                    .orElseGet(
-                        () ->
-                            permissionRepository.save(
-                                new Permission(name, "Permission for : " + name))));
-        Set<Permission> allSavePermissions = new HashSet<>(permissionRepository.findAll());
+                "USER_CREATE", "USER_READ", "USER_UPDATE", "USER_DELETE", "CATEGORY_CREATE", "CATEGORY_READ", "CATEGORY_UPDATE", "CATEGORY_DELETE", "PERMISSION_CREATE", "PERMISSION_READ", "PERMISSION_UPDATE", "PERMISSION_DELETE", "PRODUCT_CREATE", "PRODUCT_READ", "PRODUCT_UPDATE", "PRODUCT_DELETE", "ROLE_CREATE", "ROLE_READ", "ROLE_UPDATE", "ROLE_DELETE", "SUPPLIER_CREATE", "SUPPLIER_READ", "SUPPLIER_UPDATE", "SUPPLIER_DELETE", "CART_ADD", "CART_READ", "CART_UPDATE", "CART_DELETE", "ORDER_CREATE", "ORDER_READ","ORDER_UPDATE", "ORDER_DELETE");
+          Set<Permission> allPermissions = allPermissionsName.stream()
+                                                              .map(name -> permissionRepository.findByName(name)
+                                                                                               .orElseGet(() -> permissionRepository.save(new Permission(name, "Permission for : " + name))))
+                                                              .collect(Collectors.toSet());
+          for (Permission permission : allPermissions) {
+              log.warn("Init admin application permission is " + permission.getName());
+          }
+        // get all permissions of database
         Set<String> userPermissionsName =
-            Set.of(
-                "CATEGORY_READ",
-                "PRODUCT_READ",
-                "SUPPLIER_READ",
-                "CART_READ",
-                "CART_ADD",
-                "CART_UPDATE",
-                "CART_DELETE",
-                "ORDER_CREATE",
-                "ORDER_READ",
-                "ORDER_UPDATE",
-                "ORDER_DELETE");
-        Set<Permission> userPermission =
-            userPermissionsName.stream()
-                .map(
-                    p ->
-                        Permission.builder()
-                            .name(p)
-                            .description("Permission for " + ": " + p)
-                            .build())
-                .collect(Collectors.toSet());
-        // create || add roles
-        Role adminRole =
-            roleRepository
-                .findByName(RoleName.ADMIN.name())
-                .orElseGet(
-                    () ->
-                        roleRepository.save(
-                            Role.builder()
-                                .name(RoleName.ADMIN.name())
-                                .description("Admin vo dich thien ha")
-                                .permissions(allSavePermissions)
-                                .build()));
-        roleRepository
-            .findByName(RoleName.USER.name())
-            .orElseGet(
-                () ->
-                    roleRepository.save(
-                        Role.builder()
-                            .name(RoleName.USER.name())
-                            .permissions(userPermission)
-                            .build()));
+            Set.of("CATEGORY_READ", "PRODUCT_READ", "SUPPLIER_READ", "CART_READ", "CART_ADD", "CART_UPDATE", "CART_DELETE", "ORDER_CREATE", "ORDER_READ", "ORDER_UPDATE", "ORDER_DELETE");
+          Set<Permission> userPermission = userPermissionsName.stream()
+                                                              .map(p -> permissionRepository.findByName(p).get()) // lấy từ DB
+                                                              .collect(Collectors.toSet());
+          // create role
+          Role adminRole = Role.builder()
+                               .name(RoleName.ADMIN.name())
+                               .description("Admin vo dich")
+                               .permissions(allPermissions)
+                               .build();
+          roleRepository.save(adminRole);
+
+          Role userRole = Role.builder()
+                              .name(RoleName.USER.name())
+                              .permissions(userPermission)
+                              .build();
+          roleRepository.save(userRole);
+        userRole.setPermissions(new HashSet<>(userPermission));
+        roleRepository.save(userRole);
         if (userRepository.findByUsername(adminUsername).isEmpty()) {
           User admin =
               User.builder()
@@ -141,7 +86,7 @@ public class ApplicationInitConfig {
                   .telPhone("null")
                   .fullName("Sơn Tây Phạm")
                   .roles(Set.of(adminRole))
-                  .permissions(allSavePermissions)
+                  .permissions(allPermissions)
                   .build();
           userRepository.save(admin);
         }
