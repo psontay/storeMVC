@@ -1,52 +1,69 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sign In</title>
+    <title>Authentication</title>
+
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .login-container {
-            max-width: 400px;
-            margin-top: 80px;
-            padding: 30px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/icons/fontawesome.css}">
 </head>
+
 <body>
+<h2>Welcome</h2>
 
-<div class="container d-flex justify-content-center">
-    <div class="login-container">
-        <h3 class="text-center mb-4">Sign In</h3>
+<div class="container" id="container">
 
-        <!-- Hiển thị lỗi login -->
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <!-- REGISTER -->
+    <div class="form-container sign-up-container">
+        <form th:action="@{/auth/register}" method="post">
+            <h1>Create Account</h1>
 
-        <form th:action="@{/auth/login}" method="post">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
-            </div>
+            <span>Use your email for registration</span>
 
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            </div>
+            <input type="text" name="name" placeholder="Name" required />
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
 
-            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+            <button type="submit">Sign Up</button>
         </form>
+    </div>
 
-        <div class="mt-3 text-center">
-            <a th:href="@{/auth/register}">Don't have an account? Sign up</a>
+    <!-- LOGIN -->
+    <div class="form-container sign-in-container">
+        <form th:action="@{/auth/signin}" method="post">
+            <h1>Sign in</h1>
+
+            <span>or use your account</span>
+
+            <input type="text" name="username" placeholder="Email or Username" required />
+            <input type="password" name="password" placeholder="Password" required />
+
+            <a href="#">Forgot your password?</a>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us, please login with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start your journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
         </div>
     </div>
+
 </div>
 
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+
 </body>
 </html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        body {
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            min-width: 220px;
+            max-width: 220px;
+            background-color: #343a40;
+            min-height: 100vh;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column p-3">
+        <h4 class="text-white mb-4">Admin</h4>
+        <a href="/" class="d-block p-2 mb-1">Home</a>
+        <a href="/admin/products" class="d-block p-2 mb-1">Products</a>
+        <a href="/admin/categories" class="d-block p-2 mb-1">Categories</a>
+        <a href="/admin/orders" class="d-block p-2 mb-1">Orders</a>
+        <a href="/logout" class="d-block p-2 mt-auto">Logout</a>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="container-fluid">
+            <h2 class="mb-4">Dashboard</h2>
+
+            <!-- Cards thống kê -->
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Products</h5>
+                            <p class="card-text" th:text="${totalProducts}">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Categories</h5>
+                            <p class="card-text" th:text="${totalCategories}">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Orders</h5>
+                            <p class="card-text" th:text="${totalOrders}">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thêm bảng mới gần đây -->
+            <div class="mt-4">
+                <h4>Recent Orders</h4>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="o : ${recentOrders}">
+                        <td th:text="${o.id}"></td>
+                        <td th:text="${o.user.name}"></td>
+                        <td th:text="${o.total}"></td>
+                        <td th:text="${o.status}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

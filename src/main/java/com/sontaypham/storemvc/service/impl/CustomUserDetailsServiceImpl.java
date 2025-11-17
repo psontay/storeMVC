@@ -23,11 +23,11 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String signinKey) throws UsernameNotFoundException {
     User user =
         userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Username not found " + username));
+            .findByUsernameOrEmail(signinKey , signinKey)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found " + signinKey));
     Set<GrantedAuthority> authorities =
         Stream.concat(
                 user.getRoles().stream()

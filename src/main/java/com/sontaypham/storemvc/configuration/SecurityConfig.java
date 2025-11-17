@@ -20,7 +20,7 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, AuthenticationSuccessHandler authenticationSuccessHandler)
+      HttpSecurity http, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler)
       throws Exception {
     http.csrf(AbstractHttpConfigurer::disable);
     http.authorizeHttpRequests(
@@ -34,7 +34,7 @@ public class SecurityConfig {
         form ->
             form.loginPage("/auth/signin")
                 .loginProcessingUrl("/auth/signin")
-                .successHandler(authenticationSuccessHandler)
+                .successHandler(customAuthenticationSuccessHandler)
                 .failureUrl("/auth/signin?error=true")
                 .permitAll());
 
