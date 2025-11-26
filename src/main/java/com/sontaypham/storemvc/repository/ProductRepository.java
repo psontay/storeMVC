@@ -37,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
   @Query("select p from Product p join Category c where c.name = :categoryName")
   Page<Product> findByCategoryName(String categoryName, Pageable pageable);
 
-  @Query("select p from Product p join Category c where c.id = :categoryId")
+  @Query("select p from Product p join p.categories c where c.id = :categoryId")
   Page<Product> findByCategoryId(@Nonnull UUID categoryId, Pageable pageable);
 
   Page<Product> findAll(Pageable pageable);

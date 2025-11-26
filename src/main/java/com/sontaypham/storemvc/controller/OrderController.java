@@ -53,7 +53,7 @@ public class OrderController {
 
         try {
             OrderResponse order = orderService.createOrder(request);
-            redirectAttributes.addFlashAttribute("success", "Đặt hàng thành công! Mã đơn: " + order.getOrderId());
+            redirectAttributes.addFlashAttribute("success", "Create order success! Order ID: " + order.getOrderId());
             return "redirect:/order/success/" + order.getOrderId();
         } catch (ApiException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

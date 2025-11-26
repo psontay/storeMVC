@@ -1,55 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="currentCategoryId=${currentCategoryId}">
 
-<!-- Sidebar chính (desktop) -->
 <th:block th:fragment="sidebar">
-    <div class="p-4">
-        <h5 class="text-white mb-4">Danh mục sản phẩm</h5>
+    <div class="p-4 bg-success text-white" style="min-height: 100vh;">
+        <h5 class="mb-4 fw-bold">Danh mục</h5>
         <ul class="nav flex-column">
+
             <li class="nav-item mb-2">
-                <a class="nav-link text-white active" href="/">Tất cả cây cảnh</a>
+                <a class="nav-link text-white fw-bold"
+                   th:href="@{/}"
+                   th:classappend="${currentCategoryId == null ? 'bg-white text-success' : ''}">
+                    Tất cả sản phẩm
+                </a>
             </li>
-            <li class="nav-item mb-2">
-                <div class="d-flex justify-content-between align-items-center text-white cursor-pointer"
-                     data-bs-toggle="collapse" data-bs-target="#cayTrongNha">
-                    <span>Cây trong nhà</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="collapse show mt-2" id="cayTrongNha">
-                    <ul class="nav flex-column ms-3">
-                        <li><a class="nav-link text-white-50" href="#">Cây để bàn</a></li>
-                        <li><a class="nav-link text-white-50" href="#">Sen đá - Xương rồng</a></li>
-                        <li><a class="nav-link text-white-50" href="#">Cây dây leo</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item mb-2">
-                <div class="d-flex justify-content-between align-items-center text-white cursor-pointer"
-                     data-bs-toggle="collapse" data-bs-target="#cayNgoaiTroi">
-                    <span>Cây ngoài trời</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="collapse mt-2" id="cayNgoaiTroi">
-                    <ul class="nav flex-column ms-3">
-                        <li><a class="nav-link text-white-50" href="#">Cây bóng mát</a></li>
-                        <li><a class="nav-link text-white-50" href="#">Cây cảnh quan</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Chậu & Phụ kiện</a>
+
+            <li class="nav-item mb-2" th:each="cat : ${allCategories}">
+                <a class="nav-link text-white"
+                   th:href="@{'/category/' + ${cat.id}}"
+                   th:text="${cat.name}"
+                   th:classappend="${currentCategoryId == cat.id ? 'bg-white text-success fw-bold' : ''}">
+                    Cây trong nhà
+                </a>
             </li>
         </ul>
     </div>
 </th:block>
 
-<!-- Nội dung sidebar cho mobile (offcanvas) - có thể dùng chung -->
+<!-- Sidebar Mobile -->
 <th:block th:fragment="sidebarContent">
     <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link text-white" href="/">Tất cả cây cảnh</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="#">Cây trong nhà</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="#">Cây ngoài trời</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="#">Chậu & Phụ kiện</a></li>
+        <li class="nav-item">
+            <a class="nav-link text-white" th:href="@{/}">Tất cả sản phẩm</a>
+        </li>
+        <li class="nav-item" th:each="cat : ${allCategories}">
+            <a class="nav-link text-white"
+               th:href="@{'/category/' + ${cat.id}}"
+               th:text="${cat.name}">
+                Cây trong nhà
+            </a>
+        </li>
     </ul>
 </th:block>
 

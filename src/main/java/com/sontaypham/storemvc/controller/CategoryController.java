@@ -3,7 +3,9 @@ package com.sontaypham.storemvc.controller;
 import com.sontaypham.storemvc.dto.request.category.CategoryCreationRequest;
 import com.sontaypham.storemvc.dto.request.category.CategoryUpdateRequest;
 import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
+import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.service.CategoryService;
+import com.sontaypham.storemvc.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -24,6 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+    private ProductService productService;
 
     @GetMapping({"", "/edit/{id}"})
     public String listOrEdit(
@@ -93,4 +97,5 @@ public class CategoryController {
         }
         return "redirect:/admin/categories";
     }
+
 }
