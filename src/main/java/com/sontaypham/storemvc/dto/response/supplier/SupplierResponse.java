@@ -18,5 +18,4 @@ public class SupplierResponse {
   String fullName;
   String email;
   String telPhone;
-  Set<ProductResponse> products;
 }

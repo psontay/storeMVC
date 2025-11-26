@@ -22,7 +22,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(
       HttpSecurity http, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler)
       throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable);
+//    http.csrf(AbstractHttpConfigurer::disable);
     http.authorizeHttpRequests(
         authorizeRequests ->
             authorizeRequests

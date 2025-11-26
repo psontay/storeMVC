@@ -1,33 +1,34 @@
 package com.sontaypham.storemvc.controller;
 
-import com.sontaypham.storemvc.dto.response.product.ProductResponse;
-import com.sontaypham.storemvc.model.Product;
+import com.sontaypham.storemvc.dto.response.cart.CartResponse;
 import com.sontaypham.storemvc.service.CartService;
-import com.sontaypham.storemvc.service.ProductService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
-@Controller()
-@RequestMapping("/")
+@Controller
 @RequiredArgsConstructor
-public class HomeController {
-    private final ProductService productService;
+public class CartController {
     private final CartService cartService;
-    @GetMapping()
-    public String home(@PageableDefault( size = 16) Pageable pageable, Model model) {
-        Page<ProductResponse> products = productService.findAll(pageable);
-        model.addAttribute("page", products);
-        return "home/home";
+
+    @GetMapping("/cart")
+    public String viewCart(Model model) {
+        try {
+            CartResponse cart = cartService.getCartByUserId(SecurityUtilStatic.getUserId());
+            model.addAttribute("cart", cart);
+            model.addAttribute("cartItemCount", cart.getItems().size());
+        } catch (Exception e) {
+            model.addAttribute("cart", CartResponse.builder().items(List.of()).totalPrice(BigDecimal.ZERO).build());
+            model.addAttribute("cartItemCount", 0);
+        }
+        return "cart/cart";
     }
     @ModelAttribute("cartItemCount")
     public int populateCartItemCount() {

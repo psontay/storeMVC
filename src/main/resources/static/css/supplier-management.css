@@ -1,0 +1,258 @@
+/* ============================================================= */
+/* PRODUCT-MANAGEMENT.CSS – GIỐNG HỆT USER-MANAGEMENT.CSS     */
+/* Chỉ đổi màu chủ đạo thành xanh lá (#27ae60) cho GreenShop   */
+/* ============================================================= */
+
+.actions {
+    margin-bottom: 1.5rem;
+    text-align: right;
+}
+
+.btn.primary {
+    background-color: #27ae60;
+    color: #fff;
+    padding: 0.65rem 1.4rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(39,174,96,0.3);
+}
+
+.btn.primary:hover {
+    background-color: #219653;
+    transform: translateY(-1px);
+}
+
+/* Form card & form chung */
+#createProductCard,
+#editProductCard,
+.form {
+    background-color: #fff;
+    padding: 1.8rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+}
+
+#createProductCard h3,
+#editProductCard h3 {
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid #27ae60;
+    color: #2c3e50;
+    font-size: 1.4rem;
+}
+
+/* Grid 2 cột cho form */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Form group */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: #333;
+}
+
+.form-group label .req {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #27ae60;
+    box-shadow: 0 0 5px rgba(39,174,96,0.3);
+}
+
+.form-group small {
+    color: #7f8c8d;
+    font-size: 0.88rem;
+    margin-top: 0.4rem;
+    display: block;
+}
+
+/* Form actions */
+.form-actions {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.cancelBtn {
+    background-color: #95a5a6;
+    color: #fff;
+    padding: 0.65rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.cancelBtn:hover {
+    background-color: #7f8c8d;
+}
+
+/* Table */
+.table-card h3 {
+    background: #27ae60;
+    color: white;
+    margin: 0;
+    padding: 1.2rem 1.8rem;
+    font-size: 1.3rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+thead {
+    background-color: #f1f8f5;
+}
+
+thead th {
+    padding: 1rem 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background 0.2s;
+}
+
+tbody tr:hover {
+    background-color: #f8fffb;
+}
+
+tbody td {
+    padding: 1rem 0.8rem;
+    vertical-align: middle;
+}
+
+tbody td img {
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Nút nhỏ trong bảng */
+.btn.small {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    margin-right: 0.5rem;
+    text-decoration: none;
+}
+
+.btn.small {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn.small.danger {
+    background-color: #e74c3c;
+}
+
+.btn.small:hover,
+.btn.small.danger:hover {
+    opacity: 0.9;
+}
+
+/* Phân trang */
+.pagination {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.pagination a {
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    color: #27ae60;
+    text-decoration: none;
+    border: 1.5px solid #27ae60;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #27ae60;
+    color: white;
+}
+
+.pagination span {
+    color: #7f8c8d;
+}
+
+/* Alert */
+.alert {
+    padding: 0.9rem 1.4rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .content { padding: 1.5rem; }
+}
+
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .actions { text-align: left; }
+    .table-card h3 { font-size: 1.2rem; padding: 1rem; }
+}

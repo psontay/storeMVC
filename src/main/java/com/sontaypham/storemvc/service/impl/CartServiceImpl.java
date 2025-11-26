@@ -11,8 +11,10 @@ import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.math.BigDecimal;
+import java.util.*;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -136,15 +138,23 @@ public class CartServiceImpl implements CartService {
         .orElseThrow(() -> new ApiException(ErrorCode.UNAUTHENTICATED));
   }
 
-  private Cart getOrCreateCart(User user) {
-    return cartRepository
-        .findByUserId(user.getId())
-        .orElseGet(() -> cartRepository.save(Cart.builder().user(getCurrentUser()).build()));
-  }
+    @Override
+    public Cart getOrCreateCart(User user) {
+        return cartRepository
+                .findByUserId(user.getId())
+                .orElseGet(() -> {
+                    Cart newCart = Cart.builder()
+                                       .user(user)
+                                       .items(new ArrayList<>())
+                                       .totalPrice(BigDecimal.ZERO)
+                                       .build();
+                    return cartRepository.save(newCart);
+                });
+    }
 
-  private Cart getCurrentUserCart() {
-    return cartRepository
-        .findByUserId(SecurityUtilStatic.getUserId())
-        .orElseGet(() -> cartRepository.save(Cart.builder().user(getCurrentUser()).build()));
-  }
+    @Override
+    public Cart getCurrentUserCart() {
+        User user = getCurrentUser();
+        return getOrCreateCart(user);
+    }
 }

@@ -9,7 +9,11 @@ import com.sontaypham.storemvc.mapper.CategoryMapper;
 import com.sontaypham.storemvc.model.Category;
 import com.sontaypham.storemvc.repository.CategoryRepository;
 import com.sontaypham.storemvc.service.CategoryService;
+
+import java.util.List;
 import java.util.UUID;
+
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -77,4 +81,20 @@ public class CategoryServiceImpl implements CategoryService {
         .findByNameContainingIgnoreCase(name, pageable)
         .map(categoryMapper::fromEntityToResponse);
   }
+
+    @Override
+    public List<CategoryResponse> findAll() {
+        return categoryRepository.findAll().stream().map(categoryMapper::fromEntityToResponse).toList();
+    }
+
+    @Override
+    public Page<CategoryResponse> findAll(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::fromEntityToResponse);
+    }
+
+    @Override
+    @Transactional
+    public void detele(UUID id) {
+        categoryRepository.deleteById(id);
+    }
 }

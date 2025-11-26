@@ -25,6 +25,6 @@ public class ProductUpdateRequest {
   BigDecimal discountedPrice;
   int discountPercent;
   ProductStatus status;
-  Set<UUID> category;
+  Set<UUID> categoryId;
   UUID supplierId;
 }

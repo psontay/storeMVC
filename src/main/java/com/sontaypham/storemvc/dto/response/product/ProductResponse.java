@@ -29,6 +29,9 @@ public class ProductResponse {
   LocalDateTime updatedAt;
 
   String status;
-  String supplier;
-  Set<String> categories;
+  UUID supplierId;
+  String supplierName;
+
+  Set<String> categoryNames;
+  Set<UUID> categoryIds;
 }

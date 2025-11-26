@@ -119,7 +119,12 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND)));
   }
 
-  @Override
+    @Override
+    public Page<UserResponse> searchUser(String keyword ,  Pageable pageable) {
+        return userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword , keyword , pageable).map(userMapper::toUserResponse);
+    }
+
+    @Override
   @Transactional
   public void deleteByUsername(String username) {
     userRepository.deleteByUsername(username);

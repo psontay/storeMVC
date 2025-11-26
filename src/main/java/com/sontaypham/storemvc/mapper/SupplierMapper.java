@@ -22,7 +22,6 @@ public interface SupplierMapper {
   void updateFromEntity(
       SupplierUpdateRequest supplierUpdateRequest, @MappingTarget Supplier supplier);
 
-  @Mapping(target = "products", source = "products", qualifiedByName = "toResponseObject")
   SupplierResponse fromEntityToResponse(Supplier supplier);
 
   @Named("toResponseObject")

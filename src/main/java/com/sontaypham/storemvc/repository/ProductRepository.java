@@ -43,4 +43,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
   Page<Product> findAll(Pageable pageable);
 
   boolean existsByName(String name);
+
+  Page<Product> findByNameContaining(@Nonnull String name, Pageable pageable);
+
 }

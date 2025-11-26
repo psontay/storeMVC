@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container text-center py-5">
+    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+    <h1 class="mt-4">Đặt hàng thành công!</h1>
+    <p class="lead">Cảm ơn bạn đã mua sắm tại GreenShop</p>
+    <p>Mã đơn hàng: <strong th:text="${orderId}"></strong></p>
+    <a href="/" class="btn btn-success btn-lg">Tiếp tục mua sắm</a>
+    <a href="/order/history" class="btn btn-outline-success btn-lg ms-3">Xem lịch sử đơn hàng</a>
+</div>
+</body>
+</html>

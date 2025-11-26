@@ -1,6 +1,8 @@
 package com.sontaypham.storemvc.dto.response.user;
 
 import java.util.Set;
+import java.util.UUID;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
+    UUID id;
   String username;
   String password;
   String fullName;

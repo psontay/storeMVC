@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+</head>
+<body>
+<div class="container my-5">
+    <h2>Lịch sử đơn hàng</h2>
+    <div th:each="order : ${orders}" class="card mb-3">
+        <div class="card-header d-flex justify-content-between">
+            <span>Mã đơn: <strong th:text="${order.orderId}"></strong></span>
+            <span class="badge bg-warning" th:text="${order.orderStatus}"></span>
+        </div>
+        <div class="card-body">
+            <p>Ngày đặt: <span th:text="${order.formattedOrderDate}"></span></p>
+            <p>Địa chỉ: <span th:text="${order.shippingAddress}"></span></p>
+            <p>Tổng tiền: <strong class="text-danger" th:text="${order.formattedTotalPrice}"></strong></p>
+            <a href="#" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

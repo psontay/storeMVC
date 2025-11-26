@@ -1,0 +1,41 @@
+<!-- resources/templates/fragments/auth.html -->
+<div th:fragment="authMenu" class="auth-menu">
+    <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+        <!-- ĐÃ ĐĂNG NHẬP -->
+        <div class="dropdown">
+            <a class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+               href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-person-circle fs-4"></i>
+                <span th:text="${#authentication.principal.username}">User</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
+                <li><a class="dropdown-item" th:href="@{/orders}">Đơn hàng của tôi</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="#"
+                       th:onclick="|event.preventDefault(); document.getElementById('logoutForm').submit();|">
+                        Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ICON GIỎ HÀNG + SỐ LƯỢNG -->
+        <a href="/cart" class="btn btn-outline-light position-relative ms-3">
+            <i class="bi bi-cart3 fs-4"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge"
+                  th:text="${cartItemCount}"
+                  th:if="${cartItemCount != null and cartItemCount > 0}"
+                  style="font-size: 0.7rem;">
+        0
+    </span>
+        </a>
+    </th:block>
+
+    <th:block th:if="${!#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/auth/signin}" class="btn btn-outline-light me-2">Đăng nhập</a>
+        <a th:href="@{/auth/register}" class="btn btn-light">Đăng ký</a>
+    </th:block>
+</div>
+

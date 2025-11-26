@@ -14,6 +14,7 @@ import com.sontaypham.storemvc.repository.CategoryRepository;
 import com.sontaypham.storemvc.repository.ProductRepository;
 import com.sontaypham.storemvc.repository.SupplierRepository;
 import com.sontaypham.storemvc.service.ProductService;
+import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Set;
@@ -80,8 +81,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository
             .findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
-    if (!request.getCategory().isEmpty()) {
-      Set<UUID> categoryId = request.getCategory();
+    if (!request.getCategoryId().isEmpty()) {
+      Set<UUID> categoryId = request.getCategoryId();
       Set<Category> categories =
           categoryId.stream()
               .map(
@@ -192,4 +193,17 @@ public class ProductServiceImpl implements ProductService {
   public Page<ProductResponse> findAll(Pageable pageable) {
     return productRepository.findAll(pageable).map(productMapper::fromEntityToResponse);
   }
+
+    @Override
+    public Page<ProductResponse> findByNameContaining(@Nonnull String name, Pageable pageable) {
+        return productRepository.findByNameContaining(name, pageable).map(productMapper::fromEntityToResponse);
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID id) {
+        Product product  = productRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
+        product.getCategories().remove(product);
+        productRepository.delete(product);
+    }
 }

@@ -18,6 +18,8 @@ public interface UserService {
 
   UserResponse findByEmail(String email);
 
+  Page<UserResponse> searchUser( String keyword, Pageable pageable);
+
   UserResponse findByUsername(String username);
 
   void deleteByUsername(String username);

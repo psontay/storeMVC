@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Sidebar chính (desktop) -->
+<th:block th:fragment="sidebar">
+    <div class="p-4">
+        <h5 class="text-white mb-4">Danh mục sản phẩm</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white active" href="/">Tất cả cây cảnh</a>
+            </li>
+            <li class="nav-item mb-2">
+                <div class="d-flex justify-content-between align-items-center text-white cursor-pointer"
+                     data-bs-toggle="collapse" data-bs-target="#cayTrongNha">
+                    <span>Cây trong nhà</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="collapse show mt-2" id="cayTrongNha">
+                    <ul class="nav flex-column ms-3">
+                        <li><a class="nav-link text-white-50" href="#">Cây để bàn</a></li>
+                        <li><a class="nav-link text-white-50" href="#">Sen đá - Xương rồng</a></li>
+                        <li><a class="nav-link text-white-50" href="#">Cây dây leo</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item mb-2">
+                <div class="d-flex justify-content-between align-items-center text-white cursor-pointer"
+                     data-bs-toggle="collapse" data-bs-target="#cayNgoaiTroi">
+                    <span>Cây ngoài trời</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="collapse mt-2" id="cayNgoaiTroi">
+                    <ul class="nav flex-column ms-3">
+                        <li><a class="nav-link text-white-50" href="#">Cây bóng mát</a></li>
+                        <li><a class="nav-link text-white-50" href="#">Cây cảnh quan</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="#">Chậu & Phụ kiện</a>
+            </li>
+        </ul>
+    </div>
+</th:block>
+
+<!-- Nội dung sidebar cho mobile (offcanvas) - có thể dùng chung -->
+<th:block th:fragment="sidebarContent">
+    <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-white" href="/">Tất cả cây cảnh</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="#">Cây trong nhà</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="#">Cây ngoài trời</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="#">Chậu & Phụ kiện</a></li>
+    </ul>
+</th:block>
+
+</html>
