@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.service.impl;
 
+import com.sontaypham.storemvc.dto.response.order.OrderStats;
 import com.sontaypham.storemvc.dto.response.user.ProfileResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.exception.ApiException;
@@ -24,7 +25,19 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileResponse getCurrentProfile() {
         User user = userRepository.findById(SecurityUtilStatic.getUserId()).orElseThrow(() -> new ApiException(
                 ErrorCode.USER_NOT_FOUND));
+        OrderStats orderStats = orderRepository.getOrderStatsByUserId(user.getId());
+        long totalOrders = orderStats.totalOrders();
+        long pendingOrders = orderStats.pendingOrders();
+        long deliveredOrders = orderStats.deliveredOrders();
         return ProfileResponse.builder()
-                .username(user.getUsername()).fullName(user.getFullName()).email(user.getEmail()).telPhone(user.getTelPhone()).address(user.getAddress()).build();
+                              .username(user.getUsername())
+                              .fullName(user.getFullName())
+                              .email(user.getEmail())
+                              .telPhone(user.getTelPhone())
+                              .address(user.getAddress())
+                              .totalOrders(totalOrders)
+                              .pendingOrders(pendingOrders)
+                              .deliveredOrders(deliveredOrders)
+                              .build();
     }
 }

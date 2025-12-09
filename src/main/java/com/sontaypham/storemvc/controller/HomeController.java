@@ -2,22 +2,23 @@ package com.sontaypham.storemvc.controller;
 
 import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
+import com.sontaypham.storemvc.dto.response.user.ProfileResponse;
 import com.sontaypham.storemvc.model.Product;
 import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.service.CategoryService;
 import com.sontaypham.storemvc.service.ProductService;
+import com.sontaypham.storemvc.service.ProfileService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -26,11 +27,13 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
 public class HomeController {
 
-    private final ProductService productService;
-    private final CategoryService categoryService;
-    private final CartService cartService;
+    ProductService productService;
+    CategoryService categoryService;
+    CartService cartService;
+    ProfileService profileService;
 
     @GetMapping
     public String home(@PageableDefault(size = 16) Pageable pageable, Model model) {
@@ -78,4 +81,16 @@ public class HomeController {
         }
         return "/product/details";
     }
+    @GetMapping("profile")
+    public String profile( Model model , RedirectAttributes ra) {
+        try{
+            ProfileResponse profileResponse = profileService.getCurrentProfile();
+            model.addAttribute("profileResponse", profileResponse);
+        }catch (Exception e) {
+            ra.addFlashAttribute("error", "Cannot access this profile because of an error!");
+            return "/home/home";
+        }
+        return "/user/profile";
+    }
+
 }

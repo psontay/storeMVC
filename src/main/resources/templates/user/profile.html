@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/home.css}" rel="stylesheet">
+    <style>
+        .profile-header { background: linear-gradient(135deg, #4caf50, #81c784); color: white; }
+        .avatar-circle {
+            width: 130px; height: 130px; background: white; color: #2e7d32;
+            font-size: 4rem; border: 6px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .stat-card {
+            background: white; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-8px); }
+        .stat-number { font-size: 2.2rem; font-weight: bold; }
+        .info-item i { width: 24px; color: #4caf50; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <!-- Header xanh lá đẹp -->
+            <div class="text-center text-white py-5 rounded-4 profile-header mb-5 position-relative overflow-hidden">
+                <div class="position-relative d-inline-block">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center avatar-circle shadow-lg">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                </div>
+                <h2 class="mt-4 fw-bold" th:text="${profileResponse.fullName}">FullName</h2>
+                <p class="fs-5 opacity-90">Welcome Back!</p>
+            </div>
+
+            <!-- Thông tin cá nhân -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-header bg-white border-bottom-0">
+                    <h5 class="mb-0 text-success"><i class="bi bi-person-lines-fill"></i> Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person me-3"></i>
+                                <div>
+                                    <small class="text-muted">FullName</small>
+                                    <p class="mb-0 fw-bold" th:text="${profileResponse.fullName}">FullName</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope me-3"></i>
+                                <div>
+                                    <small class="text-muted">Email</small>
+                                    <p class="mb-0" th:text="${profileResponse.email}">user@example.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone me-3"></i>
+                                <div>
+                                    <small class="text-muted">Phone Number</small>
+                                    <p class="mb-0" th:text="${profileResponse.telPhone ?: 'Didnt updated'}">99999</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt me-3"></i>
+                                <div>
+                                    <small class="text-muted">Address</small>
+                                    <p class="mb-0" th:text="${profileResponse.address ?: 'Didnt updated'}">Unlocated</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thống kê đơn hàng -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="stat-card text-center p-4 border-0">
+                        <i class="bi bi-receipt fs-1 text-primary mb-3"></i>
+                        <div class="stat-number text-primary" th:text="${profileResponse.totalOrders}">12</div>
+                        <p class="mb-0 fw-bold">Total orders</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center p-4 border-0">
+                        <i class="bi bi-hourglass-split fs-1 text-warning mb-3"></i>
+                        <div class="stat-number text-warning" th:text="${profileResponse.pendingOrders}">3</div>
+                        <p class="mb-0 fw-bold">Please wait</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center p-4 border-0">
+                        <i class="bi bi-check2-circle fs-1 text-success mb-3"></i>
+                        <div class="stat-number text-success" th:text="${profileResponse.deliveredOrders}">9</div>
+                        <p class="mb-0 fw-bold">Delivered</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="text-center mt-5">
+                <a th:href="@{/order/history}" class="btn btn-success btn-lg px-5 shadow-sm">
+                    <i class="bi bi-clock-history me-2"></i> Order history
+                </a>
+                <a th:href="@{/}" class="btn btn-outline-success btn-lg px-5 ms-3 shadow-sm">
+                    <i class="bi bi-shop me-2"></i> Continue shopping
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
