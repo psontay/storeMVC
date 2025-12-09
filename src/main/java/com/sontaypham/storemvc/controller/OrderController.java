@@ -6,10 +6,12 @@ import com.sontaypham.storemvc.dto.response.order.OrderResponse;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.model.Cart;
 import com.sontaypham.storemvc.model.CartItem;
+import com.sontaypham.storemvc.model.CustomUserDetails;
 import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.service.OrderService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +74,22 @@ public class OrderController {
         List<OrderResponse> orders = orderService.getAllOrdersByUserId(SecurityUtilStatic.getUserId());
         model.addAttribute("orders", orders);
         return "order/history";
+    }
+//    @GetMapping("{orderId}")
+//    public String orderDetails(@PathVariable UUID orderId , @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+//        OrderResponse order = orderService.getOrderByOrderIdAndUserId(orderId , customUserDetails.getId());
+//        model.addAttribute("order", order);
+//        return "order/details";
+//    }
+    @GetMapping("/{orderId}")
+    public String viewOrderDetail(
+        @PathVariable UUID orderId,
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        Model model) {
+
+        OrderResponse order = orderService.getOrderDetailsByIdAndUserId(orderId, userDetails.getId());
+        model.addAttribute("order", order);
+
+        return "order/details";
     }
 }

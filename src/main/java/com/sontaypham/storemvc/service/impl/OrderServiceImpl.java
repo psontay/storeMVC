@@ -20,13 +20,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderServiceImpl implements OrderService {
@@ -80,6 +85,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  @Transactional
   public OrderResponse updateOrder(UUID id, OrderUpdateRequest orderUpdateRequest) {
     Order order =
         orderRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
@@ -91,6 +97,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  @Transactional
   public void deleteOrder(UUID id) {
     Order order =
         orderRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
@@ -103,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
   public List<OrderResponse> getAllOrders(Pageable pageable) {
     return orderRepository.findAll(pageable).stream()
         .map(orderMapper::fromEntityToResponse)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Override
@@ -115,4 +122,19 @@ public class OrderServiceImpl implements OrderService {
             .getOrders();
     return orders.stream().map(orderMapper::fromEntityToResponse).toList();
   }
+
+    @Override
+    public OrderResponse getOrderByOrderIdAndUserId(UUID orderId , UUID userId) {
+      Order order = orderRepository.getOrderByIdAndUserId(orderId , userId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+        return orderMapper.fromEntityToResponse(order);
+    }
+
+    @Override
+    public OrderResponse getOrderDetailsByIdAndUserId(UUID orderId, UUID userId) {
+      Order order =
+              orderRepository.findOrderDetailByIdAndUserId ( orderId , userId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+        Hibernate.initialize(order.getOrderItems());
+        log.info(order.getId().toString());
+        return orderMapper.fromEntityToResponseDetails(order);
+    }
 }

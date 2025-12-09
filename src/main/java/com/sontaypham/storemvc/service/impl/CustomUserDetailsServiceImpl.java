@@ -7,6 +7,10 @@ import com.sontaypham.storemvc.repository.UserRepository;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,12 +19,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
   private final UserRepository userRepository;
-
-  public CustomUserDetailsServiceImpl(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   @Override
   public UserDetails loadUserByUsername(String signinKey) throws UsernameNotFoundException {

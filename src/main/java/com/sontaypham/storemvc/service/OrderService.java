@@ -17,4 +17,6 @@ public interface OrderService {
   List<OrderResponse> getAllOrders(Pageable pageable);
 
   List<OrderResponse> getAllOrdersByUserId(UUID id);
+  OrderResponse getOrderByOrderIdAndUserId(UUID orderId , UUID userId);
+  OrderResponse getOrderDetailsByIdAndUserId(UUID orderId , UUID userId );
 }

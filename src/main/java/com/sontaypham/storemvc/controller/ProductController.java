@@ -3,7 +3,6 @@ package com.sontaypham.storemvc.controller;
 import com.sontaypham.storemvc.dto.request.product.ProductCreationRequest;
 import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
-import com.sontaypham.storemvc.enums.ProductStatus;
 import com.sontaypham.storemvc.service.CategoryService;
 import com.sontaypham.storemvc.service.ProductService;
 import com.sontaypham.storemvc.service.SupplierService;
@@ -62,7 +61,7 @@ public class ProductController {
 
             model.addAttribute("currentName", ra.getFlashAttributes().get("currentName"));
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Không tìm thấy sản phẩm!");
+            ra.addFlashAttribute("error", "Product not found!");
             return "redirect:/admin/products";
         }
         return "admin/product-management";
@@ -113,4 +112,5 @@ public class ProductController {
         }
         return "redirect:/admin/products";
     }
+
 }

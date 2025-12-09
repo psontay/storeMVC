@@ -1,0 +1,135 @@
+<th:block th:fragment="header">
+    <header class="header-apple fixed-top">
+        <div class="top-bar bg-white border-bottom">
+            <div class="container d-flex align-items-center justify-content-between py-2">
+
+                <a th:href="@{/}" class="logo text-dark text-decoration-none fw-bold fs-4">
+                    GreenShop
+                </a>
+
+                <form th:action="@{/search}" class="search-form flex-grow-1 mx-4" style="max-width: 420px;">
+                    <div class="position-relative">
+                        <input type="text" name="q" class="form-control search-input"
+                               placeholder="Search beautiful plants…" autocomplete="off">
+                        <button type="submit" class="search-btn">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="d-flex align-items-center gap-4">
+
+                    <a th:href="@{/cart}" class="position-relative text-dark text-decoration-none">
+                        <i class="bi bi-bag fs-4"></i>
+                        <span th:if="${cartItemCount > 0}"
+                              class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                              th:text="${cartItemCount}">0</span>
+                    </a>
+
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-4 me-2"></i>
+                            <span class="fw-medium" th:text="${#authentication?.principal?.user?.fullName ?: 'Account'}">Account</span>
+
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                            <li th:if="${#authentication?.principal != null}">
+                                <a class="dropdown-item" th:href="@{/profile}">
+                                    <i class="bi bi-person me-2"></i> Profile
+                                </a>
+                            </li>
+                            <li th:if="${#authentication?.principal != null}">
+                                <a class="dropdown-item" th:href="@{/order/history}">
+                                    <i class="bi bi-bag-check me-2"></i> Orders
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider" th:if="${#authentication?.principal != null}"></li>
+                            <li th:if="${#authentication?.principal != null}">
+                                <form th:action="@{/logout}" method="post" class="d-inline">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                            <li th:if="${#authentication?.principal == null}">
+                                <a class="dropdown-item" th:href="@{/login}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Apple-style CSS + smooth scroll effect -->
+    <style>
+        .header-apple {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1030;
+        }
+        .header-apple.scrolled {
+            background: rgba(255,255,255,0.92) !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        .logo {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.5px;
+        }
+        .search-input {
+            height: 44px;
+            border: 1.5px solid #e5e5e5;
+            border-radius: 22px;
+            padding: 0 50px 0 20px;
+            background: #f8f9fa;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.08);
+            background: white;
+        }
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #666;
+        }
+        .badge {
+            font-size: 0.65rem;
+            min-width: 18px;
+            height: 18px;
+        }
+        body {
+            padding-top: 76px !important;
+        }
+
+        .sidebar-wrapper {
+            margin-top: -76px;
+            padding-top: 76px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const header = document.querySelector('.header-apple');
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const scroll = window.pageYOffset;
+                if (scroll > 0) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+                lastScroll = scroll;
+            });
+        });
+    </script>
+</th:block>

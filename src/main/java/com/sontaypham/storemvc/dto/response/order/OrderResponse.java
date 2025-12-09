@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.dto.response.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sontaypham.storemvc.enums.OrderStatus;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -25,6 +26,7 @@ public class OrderResponse {
   BigDecimal totalPrice;
   LocalDateTime orderDate;
   Set<OrderItemResponse> orderItems;
+    @JsonProperty("formattedTotalPrice")
     public String getFormattedTotalPrice() {
         return "₫" + NumberFormat.getInstance(new Locale("vi", "VN"))
                                  .format(totalPrice);

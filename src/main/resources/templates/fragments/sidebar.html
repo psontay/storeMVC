@@ -3,44 +3,31 @@
       th:with="currentCategoryId=${currentCategoryId}">
 
 <th:block th:fragment="sidebar">
-    <div class="p-4 bg-success text-white" style="min-height: 100vh;">
-        <h5 class="mb-4 fw-bold">Danh mục</h5>
-        <ul class="nav flex-column">
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h5>Category</h5>
+        </div>
 
-            <li class="nav-item mb-2">
-                <a class="nav-link text-white fw-bold"
-                   th:href="@{/}"
-                   th:classappend="${currentCategoryId == null ? 'bg-white text-success' : ''}">
-                    Tất cả sản phẩm
-                </a>
-            </li>
-
-            <li class="nav-item mb-2" th:each="cat : ${allCategories}">
-                <a class="nav-link text-white"
-                   th:href="@{'/category/' + ${cat.id}}"
-                   th:text="${cat.name}"
-                   th:classappend="${currentCategoryId == cat.id ? 'bg-white text-success fw-bold' : ''}">
-                    Cây trong nhà
-                </a>
-            </li>
-        </ul>
-    </div>
-</th:block>
-
-<!-- Sidebar Mobile -->
-<th:block th:fragment="sidebarContent">
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link text-white" th:href="@{/}">Tất cả sản phẩm</a>
-        </li>
-        <li class="nav-item" th:each="cat : ${allCategories}">
-            <a class="nav-link text-white"
-               th:href="@{'/category/' + ${cat.id}}"
-               th:text="${cat.name}">
-                Cây trong nhà
+        <nav class="sidebar-nav">
+            <a th:href="@{/}"
+               class="sidebar-link d-flex align-items-center"
+               th:classappend="${currentCategoryId == null ? 'active' : ''}">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                <span>All Products</span>
             </a>
-        </li>
-    </ul>
+
+            <!-- Categories -->
+            <th:block th:each="cat : ${allCategories}">
+                <a th:href="@{'/category/' + ${cat.id}}"
+                   th:text="${cat.name}"
+                   class="sidebar-link d-flex align-items-center"
+                   th:classappend="${currentCategoryId == cat.id ? 'active' : ''}">
+                    <i class="bi bi-circle-fill" style="font-size: 0.6rem;"></i>
+                    <span th:text="${cat.name}">Cây trong nhà</span>
+                </a>
+            </th:block>
+        </nav>
+    </aside>
 </th:block>
 
 </html>

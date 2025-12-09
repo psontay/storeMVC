@@ -1,0 +1,48 @@
+<!-- resources/templates/fragments/footer.html -->
+<th:block th:fragment="footer">
+    <footer class="bg-dark text-white Fw-bold py-3">
+        <div class="container text-center">
+            <a href="https://www.facebook.com/sontaypham226"
+               target="_blank"
+               class="text-white text-decoration-none hover-fb-effect d-inline-flex align-items-center gap-2 fs-6">
+                Keep in touch with me
+                <i class="bi bi-facebook"></i>
+            </a>
+        </div>
+    </footer>
+
+    <style>
+        /* Footer mỏng nhất có thể mà vẫn đẹp */
+        footer {
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        .hover-fb-effect {
+            transition: all 0.3s ease;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+        .hover-fb-effect:hover {
+            color: #1877f2 !important;
+            background: rgba(24, 119, 242, 0.15);
+            transform: translateY(-1px);
+        }
+        .hover-fb-effect::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 4px;
+            left: 50%;
+            background: #1877f2;
+            transition: all 0.35s ease;
+            border-radius: 1px;
+        }
+        .hover-fb-effect:hover::after {
+            width: 100%;
+            left: 0;
+        }
+    </style>
+</th:block>

@@ -1,0 +1,71 @@
+/* ==== SIDEBAR MỚI - ĐẸP, GỌN, KHÔNG CHE GÌ ==== */
+.admin-sidebar {
+    width: 270px;
+    background: linear-gradient(180deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1020;
+    overflow-y: auto;
+    padding-top: 80px; /* Đẩy xuống dưới header (giả sử header cao ~70-80px) */
+}
+
+.admin-sidebar .sidebar-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.admin-sidebar .sidebar-header h5 {
+    margin: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.9rem 1.5rem;
+    color: rgba(255,255,255,0.9);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-link:hover {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border-left-color: white;
+    padding-left: 1.8rem;
+}
+
+.sidebar-link.active {
+    background: white;
+    color: #28a745 !important;
+    font-weight: 700;
+    border-left-color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.sidebar-link i {
+    width: 24px;
+    font-size: 0.9rem;
+    margin-right: 12px;
+    text-align: center;
+}
+
+/* Cuộn mượt */
+.admin-sidebar::-webkit-scrollbar { width: 6px; }
+.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+
+/* Responsive: Ẩn sidebar trên mobile */
+@media (max-width: 991.98px) {
+    .admin-sidebar { display: none; }
+}

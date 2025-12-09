@@ -1,8 +1,10 @@
 package com.sontaypham.storemvc.mapper;
 
 import com.sontaypham.storemvc.dto.request.order.OrderCreationRequest;
+import com.sontaypham.storemvc.dto.response.order.OrderItemResponse;
 import com.sontaypham.storemvc.dto.response.order.OrderResponse;
 import com.sontaypham.storemvc.model.Order;
+import com.sontaypham.storemvc.model.OrderItem;
 import com.sontaypham.storemvc.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +14,7 @@ import org.mapstruct.Named;
 import java.util.List;
 import java.util.UUID;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring" , uses = { OrderItemMapper.class})
 public interface OrderMapper {
 
     @Mapping(target = "user", source = "userId", qualifiedByName = "userFromId")
@@ -28,7 +30,10 @@ public interface OrderMapper {
 
     @Mapping(target = "orderId", source = "id")
     @Mapping(target = "userEmail", source = "user.email")
+    @Mapping( target = "orderItems" ,ignore = true)
     OrderResponse fromEntityToResponse(Order order);
 
-    List<OrderResponse> toResponseList(List<Order> orders);
+    @Mapping(target = "orderId", source = "id")
+    @Mapping(target = "userEmail", source = "user.email")
+    OrderResponse fromEntityToResponseDetails(Order order);
 }

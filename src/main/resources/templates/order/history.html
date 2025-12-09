@@ -1,25 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Order History</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order History - GreenShop</title>
+
+    <!-- BẮT BUỘC PHẢI CÓ ĐỂ HEADER + FOOTER ĐẸP NHƯ TRANG CHỦ -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/home.css}" rel="stylesheet">
 </head>
 <body>
+
+<!-- HEADER ĐẸP NHƯ APPLE -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- NỘI DUNG CHÍNH -->
 <div class="container my-5">
-    <h2>Lịch sử đơn hàng</h2>
-    <div th:each="order : ${orders}" class="card mb-3">
-        <div class="card-header d-flex justify-content-between">
-            <span>Mã đơn: <strong th:text="${order.orderId}"></strong></span>
-            <span class="badge bg-warning" th:text="${order.orderStatus}"></span>
+    <h2 class="text-success fw-bold mb-4">Your Order History</h2>
+
+    <div th:if="${orders == null or #lists.isEmpty(orders)}" class="text-center py-5">
+        <i class="bi bi-bag-x display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">You haven't placed any orders yet</h4>
+        <a th:href="@{/}" class="btn btn-success mt-3">Start Shopping</a>
+    </div>
+
+    <div th:each="order : ${orders}" class="card mb-4 shadow-sm border-0"
+         th:classappend="${order.orderStatus == 'PENDING' ? 'border-warning' :
+                              order.orderStatus == 'COMPLETED' ? 'border-success' :
+                              order.orderStatus == 'CANCELLED' ? 'border-danger' : ''}">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <div>
+                <span class="text-muted small">Order ID:</span>
+                <strong class="ms-2" th:text="${order.orderId}">ORD-12345</strong>
+            </div>
+            <span class="badge fs-6"
+                  th:class="${order.orderStatus == 'COMPLETED' ? 'bg-success' :
+                                 order.orderStatus == 'PENDING' ? 'bg-warning text-dark' :
+                                 order.orderStatus == 'CANCELLED' ? 'bg-danger' : 'bg-secondary'}"
+                  th:text="${order.orderStatus}">PENDING</span>
         </div>
         <div class="card-body">
-            <p>Ngày đặt: <span th:text="${order.formattedOrderDate}"></span></p>
-            <p>Địa chỉ: <span th:text="${order.shippingAddress}"></span></p>
-            <p>Tổng tiền: <strong class="text-danger" th:text="${order.formattedTotalPrice}"></strong></p>
-            <a href="#" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-2"><strong>Order Date:</strong> <span th:text="${order.formattedOrderDate}">01/01/2025</span></p>
+                    <p class="mb-2"><strong>Delivery Address:</strong> <span th:text="${order.shippingAddress}">Placeholder</span></p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-3"><strong class="text-danger fs-4" th:text="${order.formattedTotalPrice}">₫1,250,000</strong></p>
+                    <a th:href="@{'/order/' + ${order.orderId}}" class="btn btn-outline-success btn-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

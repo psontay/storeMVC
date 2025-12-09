@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.UUID;
@@ -65,5 +66,16 @@ public class HomeController {
     @ModelAttribute("currentCategoryId")
     public UUID currentCategoryId(@PathVariable(required = false) UUID categoryId) {
         return categoryId;
+    }
+    @GetMapping("product/{id}")
+    public String details( @PathVariable UUID id , Model model , RedirectAttributes ra) {
+        try {
+            ProductResponse product = productService.findById(id);
+            model.addAttribute("product", product);
+        }catch (Exception e) {
+            ra.addFlashAttribute("error", "Cannot find product because of an error!");
+            return "/home/home";
+        }
+        return "/product/details";
     }
 }

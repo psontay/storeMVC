@@ -24,6 +24,7 @@ spring:
     suffix: .html
     mode: HTML
     encoding: UTF-8
+    cache: false
 logging:
   level:
     org:
