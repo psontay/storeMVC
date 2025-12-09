@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.repository;
 
+import com.sontaypham.storemvc.dto.response.order.OrderStats;
 import com.sontaypham.storemvc.enums.OrderStatus;
 import com.sontaypham.storemvc.model.Order;
 
@@ -42,10 +43,12 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Optional<Order> findOrderDetailByIdAndUserId(
         @Param("orderId") UUID orderId,
         @Param("userId") UUID userId);
-    @Query("select count(*) from Order o where o.user.id = :userId")
-    long totalOrdersByUserId ( UUID userId);
-    @Query("select count(*) from Order o where o.user.id = :userId and o.orderStatus = 'PENDING'")
-    long pendingOrdersByUserId ( UUID userId);
-    @Query("select count(*) from Order o where o.user.id = :userId and o.orderStatus = 'DELIVERED'")
-    long deliveredOrdersByUserId ( UUID userId);
+    @Query("""
+        select new com.sontaypham.storemvc.dto.response.order.OrderStats( count(o) , sum(case when o.orderStatus = 'PENDING' then 1 else 0 end), sum(case when o.orderStatus = 'DELIVERED' then 1 else 0 end) 
+        ) 
+        from Order o 
+        where o.user.id = :userId
+        group by o.user.id
+        """)
+    OrderStats getOrderStatsByUserId(UUID userId);
 }
