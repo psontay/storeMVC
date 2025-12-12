@@ -1,9 +1,8 @@
 package com.sontaypham.storemvc.dto.response.category;
 
+import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryResponse {
-    UUID id;
+  UUID id;
   String name;
   String description;
 }

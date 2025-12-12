@@ -16,9 +16,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Permission {
-    @Id
-    @EqualsAndHashCode.Include
-    String name;
-    String description;
+  @Id @EqualsAndHashCode.Include String name;
+  String description;
 }
-

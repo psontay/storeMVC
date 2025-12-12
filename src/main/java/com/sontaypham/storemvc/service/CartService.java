@@ -3,7 +3,6 @@ package com.sontaypham.storemvc.service;
 import com.sontaypham.storemvc.dto.response.cart.CartResponse;
 import com.sontaypham.storemvc.model.Cart;
 import com.sontaypham.storemvc.model.User;
-
 import java.util.UUID;
 
 public interface CartService {
@@ -18,6 +17,8 @@ public interface CartService {
   void removeFromCart(UUID productId);
 
   void clearCart(UUID userId);
-    Cart getOrCreateCart(User user);
-    Cart getCurrentUserCart();
+
+  Cart getOrCreateCart(User user);
+
+  Cart getCurrentUserCart();
 }

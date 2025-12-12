@@ -14,30 +14,32 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProfileServiceImpl implements ProfileService {
-    OrderRepository orderRepository;
-    UserRepository userRepository;
-    @Override
-    public ProfileResponse getCurrentProfile() {
-        User user = userRepository.findById(SecurityUtilStatic.getUserId()).orElseThrow(() -> new ApiException(
-                ErrorCode.USER_NOT_FOUND));
-        OrderStats orderStats = orderRepository.getOrderStatsByUserId(user.getId());
-        long totalOrders = orderStats.totalOrders();
-        long pendingOrders = orderStats.pendingOrders();
-        long deliveredOrders = orderStats.deliveredOrders();
-        return ProfileResponse.builder()
-                              .username(user.getUsername())
-                              .fullName(user.getFullName())
-                              .email(user.getEmail())
-                              .telPhone(user.getTelPhone())
-                              .address(user.getAddress())
-                              .totalOrders(totalOrders)
-                              .pendingOrders(pendingOrders)
-                              .deliveredOrders(deliveredOrders)
-                              .build();
-    }
+  OrderRepository orderRepository;
+  UserRepository userRepository;
+
+  @Override
+  public ProfileResponse getCurrentProfile() {
+    User user =
+        userRepository
+            .findById(SecurityUtilStatic.getUserId())
+            .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+    OrderStats orderStats = orderRepository.getOrderStatsByUserId(user.getId());
+    long totalOrders = orderStats.totalOrders();
+    long pendingOrders = orderStats.pendingOrders();
+    long deliveredOrders = orderStats.deliveredOrders();
+    return ProfileResponse.builder()
+        .username(user.getUsername())
+        .fullName(user.getFullName())
+        .email(user.getEmail())
+        .telPhone(user.getTelPhone())
+        .address(user.getAddress())
+        .totalOrders(totalOrders)
+        .pendingOrders(pendingOrders)
+        .deliveredOrders(deliveredOrders)
+        .build();
+  }
 }

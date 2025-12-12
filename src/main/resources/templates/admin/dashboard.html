@@ -1,142 +1,115 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>StoreMVC - Admin Dashboard</title>
+    <title>StoreMVC - Admin Home</title>
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-
-    <!-- Chart.js (defer) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-
-    <!-- Page JS (defer) -->
-    <!-- CSS -->
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    <link rel="stylesheet" th:href="@{/css/user-management.css}">
-
-    <!-- JS -->
-    <script th:src="@{/js/user-management.js}" defer></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: #f6f7f9;
+            color: #333;
+        }
+        header {
+            background: #fff;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .container {
+            padding: 25px;
+            max-width: 900px;
+            margin: auto;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .desc {
+            opacity: 0.8;
+        }
+        ul.info-list {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .profile img {
+            width: 40px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
+
 <body>
-<div class="layout" id="app">
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <div class="logo">SM</div>
-            <div class="brand-text">StoreMVC</div>
+
+<header>
+    <h2>Admin Dashboard</h2>
+    <div class="profile">
+        <img src="https://ui-avatars.com/api/?name=Admin&background=4CAF50&color=fff" alt="avatar">
+        <div>
+            <div><b>Admin</b></div>
+            <small>Administrator</small>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- Welcome section -->
+    <div class="card">
+        <div class="title">👋 Welcome, Admin!</div>
+        <div class="desc">
+            This is the simplified administration panel for StoreMVC.
+        </div>
+    </div>
+
+    <!-- About the system -->
+    <div class="card">
+        <div class="title">ℹ️ About This Website</div>
+        <div class="desc">
+            StoreMVC is built using the Spring MVC architecture with Thymeleaf for server-side rendering.
+            This page provides a quick overview of the system.
         </div>
 
-        <nav class="nav">
-            <div class="nav-section">Quản lý</div>
-            <a class="nav-item" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-            <a class="nav-item" th:href="@{/admin/users}"><i class="bi bi-people-fill"></i><span>Người dùng</span></a>
-            <a class="nav-item" th:href="@{/admin/products}"><i class="bi bi-box-seam"></i><span>Sản phẩm</span></a>
-            <a class="nav-item" th:href="@{/admin/categories}"><i class="bi bi-tags-fill"></i><span>Danh mục</span></a>
-            <a class="nav-item active" th:href="@{/admin/orders}"><i class="bi bi-receipt"></i><span>Đơn hàng</span></a>
-        </nav>
+        <ul class="info-list">
+            <li>Main modules: User, Product, Order, Category</li>
+            <li>Database: SQL Server</li>
+            <li>Template Engine: Thymeleaf</li>
+            <li>Framework: Spring Boot</li>
+        </ul>
+    </div>
 
-        <div class="sidebar-footer">
-            <button id="collapseBtn" class="btn small">Thu nhỏ</button>
-            <label class="switch">
-                <input id="themeToggle" type="checkbox">
-                <span class="slider"></span>
-            </label>
-        </div>
-    </aside>
+    <div class="card">
+        <div class="title">🔗 Quick Navigation</div>
+        <ul class="info-list">
+            <li><a th:href="@{/admin/users}">User Management</a></li>
+            <li><a th:href="@{/admin/products}">Product Management</a></li>
+            <li><a th:href="@{/admin/orders}">Order Management</a></li>
+            <li><a th:href="@{/admin/categories}">Category Management</a></li>
+            <li><a th:href="@{/admin/suppliers}">Supplier Management</a></li>
+        </ul>
+    </div>
 
-    <!-- MAIN -->
-    <main class="main">
-        <header class="topbar">
-            <div class="left">
-                <button id="toggleSidebar" class="icon-btn">☰</button>
-                <input id="searchInput" class="search" placeholder="Tìm kiếm..." />
-            </div>
-
-            <div class="right">
-                <div class="profile">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=4CAF50&color=fff" alt="avatar"/>
-                    <div class="profile-info">
-                        <div class="name">Admin</div>
-                        <div class="role">Administrator</div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <section class="content">
-            <!-- KPI placeholders -->
-            <div class="kpis">
-                <div class="card kpi">
-                    <div class="kpi-title">Doanh thu hôm nay</div>
-                    <div class="kpi-value" id="kpi-revenue">₫ 0</div>
-                    <div class="kpi-sub"></div>
-                </div>
-
-                <div class="card kpi">
-                    <div class="kpi-title">Đơn hàng</div>
-                    <div class="kpi-value" id="kpi-orders">0</div>
-                    <div class="kpi-sub"></div>
-                </div>
-
-                <div class="card kpi">
-                    <div class="kpi-title">Sản phẩm</div>
-                    <div class="kpi-value" id="kpi-products">0</div>
-                    <div class="kpi-sub"></div>
-                </div>
-
-                <div class="card kpi">
-                    <div class="kpi-title">Người dùng</div>
-                    <div class="kpi-value" id="kpi-users">0</div>
-                    <div class="kpi-sub"></div>
-                </div>
-            </div>
-
-            <!-- Revenue chart -->
-            <div class="card chart-card">
-                <div class="card-header">
-                    <h3>Doanh thu 12 tháng</h3>
-                    <select id="revenueRange" aria-label="Chọn khoảng thời gian">
-                        <option value="12">12 tháng</option>
-                        <option value="6">6 tháng</option>
-                        <option value="3">3 tháng</option>
-                    </select>
-                </div>
-                <div class="chart-wrap">
-                    <canvas id="revenueChart" role="img" aria-label="Biểu đồ doanh thu"></canvas>
-                </div>
-            </div>
-
-            <!-- Overview / stats -->
-            <div class="card small-card">
-                <h3>Tổng quan</h3>
-                <ul class="small-stats">
-                    <li><strong id="stat-users">0</strong><span>Người dùng</span></li>
-                    <li><strong id="stat-suppliers">0</strong><span>Nhà cung cấp</span></li>
-                    <li><strong id="stat-products">0</strong><span>Sản phẩm</span></li>
-                    <li><strong id="stat-orders">0</strong><span>Đơn hàng</span></li>
-                </ul>
-            </div>
-
-            <!-- Recent orders table -->
-            <div class="card table-card">
-                <h3>Đơn hàng mới</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                        <tr><th>#</th><th>Khách hàng</th><th>Tổng</th><th>Trạng thái</th><th>Ngày</th></tr>
-                        </thead>
-                        <tbody id="recentOrders"></tbody>
-                    </table>
-                </div>
-            </div>
-
-        </section>
-    </main>
 </div>
-<script th:src="@{/js/theme.js}" defer></script>
 
 </body>
 </html>

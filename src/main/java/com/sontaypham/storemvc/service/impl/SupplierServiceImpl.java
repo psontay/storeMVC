@@ -12,7 +12,6 @@ import com.sontaypham.storemvc.model.Product;
 import com.sontaypham.storemvc.model.Supplier;
 import com.sontaypham.storemvc.repository.SupplierRepository;
 import com.sontaypham.storemvc.service.SupplierService;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -123,18 +122,20 @@ public class SupplierServiceImpl implements SupplierService {
     return products.stream().map(productMapper::fromEntityToResponse).collect(Collectors.toSet());
   }
 
-    @Override
-    public List<SupplierResponse> findAll() {
-        return supplierRepository.findAll().stream().map(supplierMapper::fromEntityToResponse).toList();
-    }
+  @Override
+  public List<SupplierResponse> findAll() {
+    return supplierRepository.findAll().stream().map(supplierMapper::fromEntityToResponse).toList();
+  }
 
-    @Override
-    public Page<SupplierResponse> findAll(Pageable pageable) {
-        return supplierRepository.findAll(pageable).map(supplierMapper::fromEntityToResponse);
-    }
+  @Override
+  public Page<SupplierResponse> findAll(Pageable pageable) {
+    return supplierRepository.findAll(pageable).map(supplierMapper::fromEntityToResponse);
+  }
 
-    @Override
-    public Page<SupplierResponse> findByNameContaining(String name, Pageable pageable) {
-        return supplierRepository.findByNameContainingIgnoreCase(name, pageable).map(supplierMapper::fromEntityToResponse);
-    }
+  @Override
+  public Page<SupplierResponse> findByNameContaining(String name, Pageable pageable) {
+    return supplierRepository
+        .findByNameContainingIgnoreCase(name, pageable)
+        .map(supplierMapper::fromEntityToResponse);
+  }
 }

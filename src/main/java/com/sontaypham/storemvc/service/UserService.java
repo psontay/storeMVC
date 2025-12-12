@@ -18,7 +18,6 @@ public interface UserService {
 
   UserResponse findByEmail(String email);
 
-  Page<UserResponse> searchUser( String keyword, Pageable pageable);
 
   UserResponse findByUsername(String username);
 
@@ -31,4 +30,5 @@ public interface UserService {
   void changePassword(UUID id, String oldPassword, String newPassword);
 
   Page<UserResponse> findAll(Pageable pageable);
+    Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase( String keyword , Pageable pageable);
 }

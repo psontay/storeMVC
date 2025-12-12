@@ -26,9 +26,15 @@ public interface ProductMapper {
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   void updateEntityFromRequest(ProductUpdateRequest request, @MappingTarget Product product);
 
-    @Mapping(target = "supplierName", source = "supplier.name")
-    @Mapping(target = "supplierId", source = "supplier.id")  // ← THÊM DÒNG NÀY
-    @Mapping(target = "categoryNames", expression = "java(product.getCategories().stream().map(cat -> cat.getName()).collect(java.util.stream.Collectors.toSet()))")
-    @Mapping(target = "categoryIds", expression = "java(product.getCategories().stream().map(cat -> cat.getId()).collect(java.util.stream.Collectors.toSet()))") // ← THÊM DÒNG NÀY
-    ProductResponse fromEntityToResponse(Product product);
+  @Mapping(target = "supplierName", source = "supplier.name")
+  @Mapping(target = "supplierId", source = "supplier.id")
+  @Mapping(
+      target = "categoryNames",
+      expression =
+          "java(product.getCategories().stream().map(cat -> cat.getName()).collect(java.util.stream.Collectors.toSet()))")
+  @Mapping(
+      target = "categoryIds",
+      expression =
+          "java(product.getCategories().stream().map(cat -> cat.getId()).collect(java.util.stream.Collectors.toSet()))")
+  ProductResponse fromEntityToResponse(Product product);
 }

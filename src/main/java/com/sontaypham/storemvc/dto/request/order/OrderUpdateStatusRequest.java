@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderUpdateStatusRequest {
-    @NotNull( message = "order must not be null")
-    OrderStatus orderStatus;
+  @NotNull(message = "order must not be null")
+  OrderStatus orderStatus;
 }

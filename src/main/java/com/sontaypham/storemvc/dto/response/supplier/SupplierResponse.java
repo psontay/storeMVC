@@ -1,7 +1,5 @@
 package com.sontaypham.storemvc.dto.response.supplier;
 
-import com.sontaypham.storemvc.dto.response.product.ProductResponse;
-import java.util.Set;
 import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

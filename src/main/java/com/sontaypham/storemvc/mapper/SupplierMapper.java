@@ -9,7 +9,6 @@ import com.sontaypham.storemvc.model.Product;
 import com.sontaypham.storemvc.model.Supplier;
 import java.util.Set;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 

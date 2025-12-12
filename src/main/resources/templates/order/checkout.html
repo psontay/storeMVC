@@ -27,7 +27,7 @@
                             <img th:src="${item.productImageUrl}" width="50" class="me-3 rounded">
                             <div>
                                 <strong th:text="${item.productName}"></strong><br>
-                                <small>Số lượng: <span th:text="${item.quantity}"></span> ×
+                                <small>Quantity: <span th:text="${item.quantity}"></span> ×
                                     ₫<span th:text="${#numbers.formatDecimal(item.unitPrice,0,2,'COMMA')}"></span>
                                 </small>
                             </div>

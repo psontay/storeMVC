@@ -7,7 +7,6 @@ import com.sontaypham.storemvc.repository.UserRepository;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
   private final UserRepository userRepository;
 
@@ -28,7 +27,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
   public UserDetails loadUserByUsername(String signinKey) throws UsernameNotFoundException {
     User user =
         userRepository
-            .findByUsernameOrEmail(signinKey , signinKey)
+            .findByUsernameOrEmail(signinKey, signinKey)
             .orElseThrow(() -> new UsernameNotFoundException("User not found " + signinKey));
     Set<GrantedAuthority> authorities =
         Stream.concat(
@@ -47,5 +46,4 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
             .collect(Collectors.toSet());
     return new CustomUserDetails(user, authorities);
   }
-
 }

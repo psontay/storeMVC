@@ -46,4 +46,11 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
   Page<Product> findByNameContaining(@Nonnull String name, Pageable pageable);
 
+  Page<Product> findByNameContainingIgnoreCase(@Nonnull String name, Pageable pageable);
+
+
+  @Query("""
+    select p from Product p where lower(p.name) like lower(concat('%', :productName , '%') ) or  lower(p.supplier.name) like lower(concat('%', :supplierName , '%'))
+""")
+  Page<Product> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String productName, @Nonnull String supplierName, Pageable pageable);
 }

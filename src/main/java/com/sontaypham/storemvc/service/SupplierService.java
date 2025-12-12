@@ -4,12 +4,11 @@ import com.sontaypham.storemvc.dto.request.supplier.SupplierCreationRequest;
 import com.sontaypham.storemvc.dto.request.supplier.SupplierUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.dto.response.supplier.SupplierResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface SupplierService {
   SupplierResponse createSupplier(SupplierCreationRequest supplierCreationRequest);
@@ -27,8 +26,10 @@ public interface SupplierService {
   Set<ProductResponse> getProductBySupplierId(UUID id);
 
   Set<ProductResponse> getProductBySupplierName(String name);
-  List<SupplierResponse> findAll();
-    Page<SupplierResponse> findAll(Pageable pageable);
 
-    Page<SupplierResponse> findByNameContaining(String name, Pageable pageable);
+  List<SupplierResponse> findAll();
+
+  Page<SupplierResponse> findAll(Pageable pageable);
+
+  Page<SupplierResponse> findByNameContaining(String name, Pageable pageable);
 }

@@ -14,14 +14,13 @@ import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.service.OrderService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -123,18 +122,23 @@ public class OrderServiceImpl implements OrderService {
     return orders.stream().map(orderMapper::fromEntityToResponse).toList();
   }
 
-    @Override
-    public OrderResponse getOrderByOrderIdAndUserId(UUID orderId , UUID userId) {
-      Order order = orderRepository.getOrderByIdAndUserId(orderId , userId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-        return orderMapper.fromEntityToResponse(order);
-    }
+  @Override
+  public OrderResponse getOrderByOrderIdAndUserId(UUID orderId, UUID userId) {
+    Order order =
+        orderRepository
+            .getOrderByIdAndUserId(orderId, userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+    return orderMapper.fromEntityToResponse(order);
+  }
 
-    @Override
-    public OrderResponse getOrderDetailsByIdAndUserId(UUID orderId, UUID userId) {
-      Order order =
-              orderRepository.findOrderDetailByIdAndUserId ( orderId , userId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-        Hibernate.initialize(order.getOrderItems());
-        log.info(order.getId().toString());
-        return orderMapper.fromEntityToResponseDetails(order);
-    }
+  @Override
+  public OrderResponse getOrderDetailsByIdAndUserId(UUID orderId, UUID userId) {
+    Order order =
+        orderRepository
+            .findOrderDetailByIdAndUserId(orderId, userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+    Hibernate.initialize(order.getOrderItems());
+    log.info(order.getId().toString());
+    return orderMapper.fromEntityToResponseDetails(order);
+  }
 }

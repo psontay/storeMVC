@@ -15,7 +15,6 @@
                 <i class="bi bi-grid-3x3-gap-fill"></i>
                 <span>All Products</span>
             </a>
-
             <!-- Categories -->
             <th:block th:each="cat : ${allCategories}">
                 <a th:href="@{'/category/' + ${cat.id}}"

@@ -55,7 +55,8 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public UserRegisterResponse registerUser(@Valid UserRegisterRequest request) {
-    if (userRepository.existsByUsername(request.getUsername()) || userRepository.existsByEmail(request.getEmail()))
+    if (userRepository.existsByUsername(request.getUsername())
+        || userRepository.existsByEmail(request.getEmail()))
       throw new ApiException(ErrorCode.USER_ALREADY_EXISTS);
     if (!request.getPassword().equals(request.getConfirmPassword()))
       throw new ApiException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCHES);
@@ -119,12 +120,8 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND)));
   }
 
-    @Override
-    public Page<UserResponse> searchUser(String keyword ,  Pageable pageable) {
-        return userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword , keyword , pageable).map(userMapper::toUserResponse);
-    }
 
-    @Override
+  @Override
   @Transactional
   public void deleteByUsername(String username) {
     userRepository.deleteByUsername(username);
@@ -197,4 +194,9 @@ public class UserServiceImpl implements UserService {
   public Page<UserResponse> findAll(Pageable pageable) {
     return userRepository.findAll(pageable).map(userMapper::toUserResponse);
   }
+
+    @Override
+    public Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase(String keyword, Pageable pageable) {
+        return userRepository.findByUsernameOrEmailContainingIgnoreCase(keyword,keyword, pageable).map(userMapper::toUserResponse);
+    }
 }

@@ -1,157 +1,161 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>StoreMVC - Quản lý Danh mục</title>
+    <title>StoreMVC - Category Management</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    <link rel="stylesheet" th:href="@{/css/category-management.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
 </head>
 <body>
+
 <div class="layout" id="app">
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <div class="logo">SM</div>
-            <div class="brand-text">StoreMVC</div>
-        </div>
         <nav class="nav">
-            <div class="nav-section">Quản lý</div>
+            <div class="nav-section">Management</div>
             <a class="nav-item" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
-            <a class="nav-item" th:href="@{/admin/users}"><i class="bi bi-people-fill"></i><span>Người dùng</span></a>
-            <a class="nav-item" th:href="@{/admin/products}"><i class="bi bi-box-seam"></i><span>Sản phẩm</span></a>
-            <a class="nav-item" th:href="@{/admin/categories}"><i class="bi bi-tags-fill"></i><span>Danh mục</span></a>
-            <a class="nav-item active" th:href="@{/admin/orders}"><i class="bi bi-receipt"></i><span>Đơn hàng</span></a>
+            <a class="nav-item" th:href="@{/admin/users}"><i class="bi bi-people-fill"></i><span>User</span></a>
+            <a class="nav-item" th:href="@{/admin/products}"><i class="bi bi-box-seam"></i><span>Product</span></a>
+            <a class="nav-item active" th:href="@{/admin/categories}"><i class="bi bi-tags-fill"></i><span>Category</span></a>
+            <a class="nav-item" th:href="@{/admin/suppliers}"><i class="bi bi-truck"></i><span>Supplier</span></a>
+            <a class="nav-item" th:href="@{/admin/orders}"><i class="bi bi-receipt"></i><span>Order</span></a>
         </nav>
-        <div class="sidebar-footer">
-            <button id="collapseBtn" class="btn small">Thu nhỏ</button>
-            <label class="switch">
-                <input id="themeToggle" type="checkbox">
-                <span class="slider"></span>
-            </label>
-        </div>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <div class="left">
-                <button id="toggleSidebar" class="icon-btn">Menu</button>
-                <form th:action="@{/admin/categories}" method="get" style="display:inline;">
-                    <input class="search" name="name" placeholder="Tìm danh mục..." th:value="${param.name}"/>
+                <form class="search-box" th:action="@{/admin/categories}" method="get">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="name" placeholder="Search category name..." th:value="${param.name}">
                 </form>
             </div>
             <div class="right">
-                <span th:text="${#authentication.name}">Admin</span>
+                <button class="btn primary" id="createBtn">
+                    <i class="bi bi-plus-lg"></i> Add New Category
+                </button>
             </div>
         </header>
 
         <section class="content">
+            <div th:if="${success}" class="alert success" th:text="${success}"></div>
+            <div th:if="${error}"   class="alert danger"  th:text="${error}"></div>
 
-            <!-- Thông báo -->
-            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Category List (<span th:text="${page?.totalElements} ?: 0">0</span>)</h3>
+                </div>
 
-            <div class="actions">
-                <button type="button" class="btn primary" id="createCategoryBtn">
-                    <i class="bi bi-plus-lg"></i> Thêm danh mục mới
-                </button>
-            </div>
-
-            <!-- FORM TẠO MỚI -->
-            <div id="createCategoryCard" class="card" style="display:none;">
-                <form th:action="@{/admin/categories/create}" method="post" class="form">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <h3>Thêm danh mục mới</h3>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Tên danh mục <span class="req">*</span></label>
-                            <input name="name" type="text" required placeholder="VD: Điện thoại, Laptop...">
-                        </div>
-                        <div class="form-group">
-                            <label>Mô tả</label>
-                            <textarea name="description" rows="3" placeholder="Mô tả ngắn về danh mục"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary">Lưu danh mục</button>
-                        <button type="button" class="btn cancelBtn">Hủy</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- FORM SỬA -->
-            <div id="editCategoryCard" th:if="${editCategory != null}" class="card">
-                <form th:action="@{'/admin/categories/edit/' + ${editCategory.id}}" method="post" class="form">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <h3>Chỉnh sửa danh mục</h3>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Tên danh mục</label>
-                            <input name="name" type="text" th:value="${editCategory.name}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Mô tả</label>
-                            <textarea name="description" rows="3" th:text="${editCategory.description}"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary">Cập nhật</button>
-                        <button type="button" class="btn" onclick="window.location.href='/admin/categories'">Hủy</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- BẢNG DANH SÁCH -->
-            <div class="card table-card">
-                <h3>Danh sách danh mục (<span th:text="${page?.totalElements} ?: 0">0</span>)</h3>
-                <div class="table-wrap">
-                    <table>
+                <div class="table-responsive">
+                    <table class="table">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Tên danh mục</th>
-                            <th>Mô tả</th>
-                            <th>Hành động</th>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="c, iter : ${page.content}">
                             <td th:text="${iter.index + 1 + (page.number * page.size)}"></td>
-                            <td th:text="${c.name}"></td>
-                            <td th:text="${c.description} ?: '—'"></td>
-                            <td>
-                                <a th:href="@{'/admin/categories/edit/' + ${c.id}}" class="btn small">Sửa</a>
+                            <td style="font-weight: 500;" th:text="${c.name}"></td>
+                            <td style="color: #666;" th:text="${c.description} ?: '—'"></td>
+                            <td class="actions">
+                                <a th:href="@{'/admin/categories/edit/' + ${c.id}}" class="btn small">Edit</a>
+
                                 <form th:action="@{'/admin/categories/delete/' + ${c.id}}" method="post"
-                                      style="display:inline" onsubmit="return confirm('Xóa danh mục này?')">
+                                      style="display:inline;" onsubmit="return confirm('Delete this category? Products might be affected.')">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                    <button type="submit" class="btn small danger">Xóa</button>
+                                    <button type="submit" class="btn small danger">Delete</button>
                                 </form>
                             </td>
                         </tr>
+                        <tr th:if="${page.content.empty}">
+                            <td colspan="4" style="text-align: center; color: #888;">No categories found.</td>
+                        </tr>
                         </tbody>
                     </table>
+                </div>
 
-                    <!-- Phân trang -->
-                    <div class="pagination">
-                        <a th:if="${!page.first}"
-                           th:href="@{/admin/categories(page=${page.number - 1}, size=${page.size}, name=${param.name})}">Trước</a>
-                        <span>Trang <strong th:text="${page.number + 1}"></strong> / <span th:text="${page.totalPages}"></span></span>
-                        <a th:if="${!page.last}"
-                           th:href="@{/admin/categories(page=${page.number + 1}, size=${page.size}, name=${param.name})}">Sau</a>
-                    </div>
+                <div class="pagination" th:if="${page.totalPages > 1}">
+                    <a th:if="${!page.first}"
+                       th:href="@{/admin/categories(page=${page.number - 1}, size=${page.size}, name=${param.name})}">Previous</a>
+
+                    <span>Page <strong th:text="${page.number + 1}"></strong> of <strong th:text="${page.totalPages}"></strong></span>
+
+                    <a th:if="${!page.last}"
+                       th:href="@{/admin/categories(page=${page.number + 1}, size=${page.size}, name=${param.name})}">Next</a>
                 </div>
             </div>
         </section>
     </main>
 </div>
 
-<script th:src="@{/js/category-management.js}" defer></script>
-<script th:src="@{/js/theme.js}" defer></script>
+<div class="modal" id="createModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New Category</h3>
+            <span class="close">×</span>
+        </div>
+        <form th:action="@{/admin/categories/create}" method="post" class="modal-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="form-group">
+                <label>Category Name <span class="req">*</span></label>
+                <input name="name" type="text" required placeholder="Ex: Laptop, Smartphone...">
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="4"
+                          style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;"
+                          placeholder="Short description..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn primary">Save Category</button>
+                <button type="button" class="btn secondary close">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="editModal" th:if="${editCategory != null}">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Category</h3>
+            <span class="close">×</span>
+        </div>
+        <form th:action="@{'/admin/categories/edit/' + ${editCategory.id}}" method="post" class="modal-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="form-group">
+                <label>Category Name <span class="req">*</span></label>
+                <input name="name" type="text" th:value="${editCategory.name}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="4"
+                          style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;"
+                          th:text="${editCategory.description}"></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn primary">Update Changes</button>
+                <button type="button" class="btn secondary close"
+                        th:onclick="'window.location.href=\'/admin/categories\''">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<script th:src="@{/js/management.js}" defer></script>
 </body>
 </html>

@@ -18,12 +18,10 @@ public class Role {
   @Id @EqualsAndHashCode.Exclude String name;
   String description;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "roles_permissions",
-            joinColumns = @JoinColumn(name = "role_name"),
-            inverseJoinColumns = @JoinColumn(name = "permission_name")
-    )
-    Set<Permission> permissions;
-
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinTable(
+      name = "roles_permissions",
+      joinColumns = @JoinColumn(name = "role_name"),
+      inverseJoinColumns = @JoinColumn(name = "permission_name"))
+  Set<Permission> permissions;
 }

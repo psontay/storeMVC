@@ -10,6 +10,7 @@ import com.sontaypham.storemvc.repository.OrderRepository;
 import com.sontaypham.storemvc.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,8 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.UUID;
-
 @Controller
 @RequestMapping("/admin/orders")
 @RequiredArgsConstructor
@@ -30,77 +29,84 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminOrderController {
 
-    OrderService orderService;
-    OrderMapper orderMapper;
-    OrderRepository orderRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
+  OrderService orderService;
+  OrderMapper orderMapper;
+  OrderRepository orderRepository;
+  @PersistenceContext private EntityManager entityManager;
 
-    @GetMapping
-    @Transactional(readOnly = true)
-    public String showOrderManagement(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "orderDate,desc") String sort,
-            Model model) {
+  @GetMapping
+  @Transactional(readOnly = true)
+  public String showOrderManagement(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "orderDate,desc") String sort,
+      Model model) {
 
-        Pageable pageable = PageRequest.of(page, size, parseSort(sort));
-        entityManager.clear();
-        Page<Order> orderPage = orderRepository.findAll(pageable);
-        Page<OrderResponse> responsePage = orderPage.map(order -> {
-            entityManager.detach(order);
-            return orderMapper.fromEntityToResponse(order);
-        });
-        model.addAttribute("page", responsePage);
-        model.addAttribute("sort", sort);
+    Pageable pageable = PageRequest.of(page, size, parseSort(sort));
+    entityManager.clear();
+    Page<Order> orderPage = orderRepository.findAll(pageable);
+    Page<OrderResponse> responsePage =
+        orderPage.map(
+            order -> {
+              entityManager.detach(order);
+              return orderMapper.fromEntityToResponse(order);
+            });
+    model.addAttribute("page", responsePage);
+    model.addAttribute("sort", sort);
 
-        return "admin/order-management";
+    return "admin/order-management";
+  }
+
+  @PostMapping("/{orderId}/status")
+  public String updateOrderStatus(
+      @PathVariable UUID orderId,
+      @ModelAttribute OrderUpdateStatusRequest request,
+      RedirectAttributes redirectAttributes) {
+    System.out.println("Order id : " + orderId);
+    System.out.println("Order status: " + request.getOrderStatus());
+
+    try {
+      Order order =
+          orderRepository
+              .findById(orderId)
+              .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+
+      order.setOrderStatus(request.getOrderStatus());
+      orderRepository.save(order);
+
+      redirectAttributes.addFlashAttribute("success", "Update order has been saved successfully");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("error", "Update order failed: " + e.getMessage());
     }
 
-    @PostMapping("/{orderId}/status")
-    public String updateOrderStatus(
-            @PathVariable UUID orderId,
-            @ModelAttribute OrderUpdateStatusRequest request,
-            RedirectAttributes redirectAttributes) {
-        System.out.println("Order id : " + orderId);
-        System.out.println("Order status: " + request.getOrderStatus());
+    return "redirect:/admin/orders";
+  }
 
-        try {
-            Order order = orderRepository.findById(orderId)
-                                         .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-
-            order.setOrderStatus(request.getOrderStatus());
-            orderRepository.save(order);
-
-            redirectAttributes.addFlashAttribute("success", "Update order has been saved successfully");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Update order failed: " + e.getMessage());
-        }
-
-        return "redirect:/admin/orders";
+  @PostMapping("/{orderId}/delete")
+  public String deleteOrder(@PathVariable UUID orderId, RedirectAttributes redirectAttributes) {
+    try {
+      Order order =
+          orderRepository
+              .findById(orderId)
+              .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+      orderRepository.delete(order);
+      redirectAttributes.addFlashAttribute("success", "Delete order successfully");
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("error", "Delete order failed: " + e.getMessage());
     }
+    return "redirect:/admin/orders";
+  }
 
-    @PostMapping("/{orderId}/delete")
-    public String deleteOrder(@PathVariable UUID orderId, RedirectAttributes redirectAttributes) {
-        try {
-            Order order = orderRepository.findById(orderId)
-                                         .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-            orderRepository.delete(order);
-            redirectAttributes.addFlashAttribute("success", "Delete order successfully");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Delete order failed: " + e.getMessage());
-        }
-        return "redirect:/admin/orders";
+  private Sort parseSort(String sort) {
+    if (sort == null || sort.isBlank()) {
+      return Sort.by(Sort.Direction.DESC, "orderDate");
     }
-
-    private Sort parseSort(String sort) {
-        if (sort == null || sort.isBlank()) {
-            return Sort.by(Sort.Direction.DESC, "orderDate");
-        }
-        String[] parts = sort.split(",");
-        String property = parts[0].trim();
-        Sort.Direction direction = parts.length > 1 && "asc".equalsIgnoreCase(parts[1].trim())
-                ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return Sort.by(direction, property);
-    }
+    String[] parts = sort.split(",");
+    String property = parts[0].trim();
+    Sort.Direction direction =
+        parts.length > 1 && "asc".equalsIgnoreCase(parts[1].trim())
+            ? Sort.Direction.ASC
+            : Sort.Direction.DESC;
+    return Sort.by(direction, property);
+  }
 }

@@ -19,7 +19,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
       throws IOException, ServletException {
     var authorities = authentication.getAuthorities();
     log.info("login success user : " + authentication.getName());
-    log.info("with role : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+    log.info(
+        "with role : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     String redirectUrl = "/";
     if (authorities.stream().anyMatch(a -> a.getAuthority().contains("ADMIN"))) {
       redirectUrl = "/admin/dashboard";

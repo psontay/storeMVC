@@ -12,32 +12,33 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final UserService userService;
-    @GetMapping("/signin")
-    public String signinPage(
-            @RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "logout", required = false) String logout,
-            Model model) {
+  private final UserService userService;
 
-        if (error != null) {
-            model.addAttribute("loginError", "Wrong username or password!");
-        }
-        if (logout != null) {
-            model.addAttribute("msg", "Logout success!");
-        }
+  @GetMapping("/signin")
+  public String signinPage(
+      @RequestParam(value = "error", required = false) String error,
+      @RequestParam(value = "logout", required = false) String logout,
+      Model model) {
 
-        return "auth/auth";
+    if (error != null) {
+      model.addAttribute("loginError", "Wrong username or password!");
+    }
+    if (logout != null) {
+      model.addAttribute("msg", "Logout success!");
     }
 
-    @PostMapping("/register")
-    public String register(@ModelAttribute UserRegisterRequest request, Model model) {
-        try {
-            userService.registerUser(request);
-            model.addAttribute("success", "Register successfully! Please sign in.");
-            return "auth/auth";
-        } catch (ApiException ex) {
-            model.addAttribute("registerError", ex.getMessage());
-            return "auth/auth";
-        }
+    return "auth/auth";
+  }
+
+  @PostMapping("/register")
+  public String register(@ModelAttribute UserRegisterRequest request, Model model) {
+    try {
+      userService.registerUser(request);
+      model.addAttribute("success", "Register successfully! Please sign in.");
+      return "auth/auth";
+    } catch (ApiException ex) {
+      model.addAttribute("registerError", ex.getMessage());
+      return "auth/auth";
     }
+  }
 }

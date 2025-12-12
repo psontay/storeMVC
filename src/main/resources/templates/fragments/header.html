@@ -31,7 +31,6 @@
                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle fs-4 me-2"></i>
                             <span class="fw-medium" th:text="${#authentication?.principal?.user?.fullName ?: 'Account'}">Account</span>
-
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                             <li th:if="${#authentication?.principal != null}">

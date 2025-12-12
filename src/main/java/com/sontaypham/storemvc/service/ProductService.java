@@ -3,11 +3,9 @@ package com.sontaypham.storemvc.service;
 import com.sontaypham.storemvc.dto.request.product.ProductCreationRequest;
 import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
+import jakarta.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.UUID;
-
-import com.sontaypham.storemvc.model.Product;
-import jakarta.annotation.Nonnull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -38,6 +36,11 @@ public interface ProductService {
 
   Page<ProductResponse> findAll(Pageable pageable);
 
-    Page<ProductResponse> findByNameContaining(@Nonnull String name, Pageable pageable);
-    void delete(UUID id);
+  Page<ProductResponse> findByNameContaining(@Nonnull String name, Pageable pageable);
+
+  Page<ProductResponse> findByNameContainingIgnoreCase(@Nonnull String name, Pageable pageable);
+
+  Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String name, @Nonnull String supplierName, Pageable pageable);
+
+  void delete(UUID id);
 }

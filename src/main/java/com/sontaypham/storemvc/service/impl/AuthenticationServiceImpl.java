@@ -30,13 +30,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
-      String signinKey = request.getUsername();
+    String signinKey = request.getUsername();
     User user =
         userRepository
-            .findByUsernameOrEmail(signinKey , signinKey)
+            .findByUsernameOrEmail(signinKey, signinKey)
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
-    if (!(passwordEncoder.matches(request.getPassword(), user.getPassword())))  throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
+    if (!(passwordEncoder.matches(request.getPassword(), user.getPassword())))
+      throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
     List<String> roles = user.getRoles().stream().map(Role::getName).toList();
     List<String> permissions =
         user.getRoles().stream()

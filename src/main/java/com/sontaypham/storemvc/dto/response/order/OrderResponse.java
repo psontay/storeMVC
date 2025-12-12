@@ -26,13 +26,13 @@ public class OrderResponse {
   BigDecimal totalPrice;
   LocalDateTime orderDate;
   Set<OrderItemResponse> orderItems;
-    @JsonProperty("formattedTotalPrice")
-    public String getFormattedTotalPrice() {
-        return "₫" + NumberFormat.getInstance(new Locale("vi", "VN"))
-                                 .format(totalPrice);
-    }
 
-    public String getFormattedOrderDate() {
-        return orderDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-    }
+  @JsonProperty("formattedTotalPrice")
+  public String getFormattedTotalPrice() {
+    return "₫" + NumberFormat.getInstance(new Locale("vi", "VN")).format(totalPrice);
+  }
+
+  public String getFormattedOrderDate() {
+    return orderDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+  }
 }

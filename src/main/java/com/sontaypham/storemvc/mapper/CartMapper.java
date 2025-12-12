@@ -16,7 +16,7 @@ public interface CartMapper {
   @Mapping(source = "product.id", target = "productId")
   @Mapping(source = "product.name", target = "productName")
   @Mapping(source = "product.imageUrl", target = "productImageUrl")
-  @Mapping(source = "id" , target = "id")
+  @Mapping(source = "id", target = "id")
   @Mapping(
       target = "subtotal",
       expression =

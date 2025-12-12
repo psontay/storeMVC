@@ -10,6 +10,8 @@ import com.sontaypham.storemvc.model.CustomUserDetails;
 import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.service.OrderService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,79 +19,70 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.UUID;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
-    private final OrderService orderService;
-    private final CartService cartService;
+  private final OrderService orderService;
+  private final CartService cartService;
 
-    @GetMapping("/checkout")
-    public String checkout(Model model) {
-        UUID userId = SecurityUtilStatic.getUserId();
-        CartResponse cart = cartService.getCartByUserId(userId);
+  @GetMapping("/checkout")
+  public String checkout(Model model) {
+    UUID userId = SecurityUtilStatic.getUserId();
+    CartResponse cart = cartService.getCartByUserId(userId);
 
-        if (cart.getItems().isEmpty()) {
-            return "redirect:/cart";
-        }
-
-        model.addAttribute("cart", cart);
-        model.addAttribute("request", new OrderCreationRequest());
-        return "order/checkout";
+    if (cart.getItems().isEmpty()) {
+      return "redirect:/cart";
     }
 
-    @PostMapping("/create")
-    public String createOrder(@ModelAttribute OrderCreationRequest request,
-                              RedirectAttributes redirectAttributes) {
-        request.setUserId(SecurityUtilStatic.getUserId());
+    model.addAttribute("cart", cart);
+    model.addAttribute("request", new OrderCreationRequest());
+    return "order/checkout";
+  }
 
-        if (request.getSelectedCartItemIds() == null || request.getSelectedCartItemIds().isEmpty()) {
-            Cart cart = cartService.getCartEntityByUserId(request.getUserId());
-            request.setSelectedCartItemIds(
-                    cart.getItems().stream().map(CartItem::getId).toList()
-                                          );
-        }
+  @PostMapping("/create")
+  public String createOrder(
+      @ModelAttribute OrderCreationRequest request, RedirectAttributes redirectAttributes) {
+    request.setUserId(SecurityUtilStatic.getUserId());
 
-        try {
-            OrderResponse order = orderService.createOrder(request);
-            redirectAttributes.addFlashAttribute("success", "Create order success! Order ID: " + order.getOrderId());
-            return "redirect:/order/success/" + order.getOrderId();
-        } catch (ApiException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/order/checkout";
-        }
+    if (request.getSelectedCartItemIds() == null || request.getSelectedCartItemIds().isEmpty()) {
+      Cart cart = cartService.getCartEntityByUserId(request.getUserId());
+      request.setSelectedCartItemIds(cart.getItems().stream().map(CartItem::getId).toList());
     }
 
-    @GetMapping("/success/{orderId}")
-    public String orderSuccess(@PathVariable UUID orderId, Model model) {
-        model.addAttribute("orderId", orderId);
-        return "order/success";
+    try {
+      OrderResponse order = orderService.createOrder(request);
+      redirectAttributes.addFlashAttribute(
+          "success", "Create order success! Order ID: " + order.getOrderId());
+      return "redirect:/order/success/" + order.getOrderId();
+    } catch (ApiException e) {
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+      return "redirect:/order/checkout";
     }
+  }
 
-    @GetMapping("/history")
-    public String orderHistory(Model model) {
-        List<OrderResponse> orders = orderService.getAllOrdersByUserId(SecurityUtilStatic.getUserId());
-        model.addAttribute("orders", orders);
-        return "order/history";
-    }
-//    @GetMapping("{orderId}")
-//    public String orderDetails(@PathVariable UUID orderId , @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
-//        OrderResponse order = orderService.getOrderByOrderIdAndUserId(orderId , customUserDetails.getId());
-//        model.addAttribute("order", order);
-//        return "order/details";
-//    }
-    @GetMapping("/{orderId}")
-    public String viewOrderDetail(
-        @PathVariable UUID orderId,
-        @AuthenticationPrincipal CustomUserDetails userDetails,
-        Model model) {
+  @GetMapping("/success/{orderId}")
+  public String orderSuccess(@PathVariable UUID orderId, Model model) {
+    model.addAttribute("orderId", orderId);
+    return "order/success";
+  }
 
-        OrderResponse order = orderService.getOrderDetailsByIdAndUserId(orderId, userDetails.getId());
-        model.addAttribute("order", order);
+  @GetMapping("/history")
+  public String orderHistory(Model model) {
+    List<OrderResponse> orders = orderService.getAllOrdersByUserId(SecurityUtilStatic.getUserId());
+    model.addAttribute("orders", orders);
+    return "order/history";
+  }
 
-        return "order/details";
-    }
+  @GetMapping("/{orderId}")
+  public String viewOrderDetail(
+      @PathVariable UUID orderId,
+      @AuthenticationPrincipal CustomUserDetails userDetails,
+      Model model) {
+
+    OrderResponse order = orderService.getOrderDetailsByIdAndUserId(orderId, userDetails.getId());
+    model.addAttribute("order", order);
+
+    return "order/details";
+  }
 }

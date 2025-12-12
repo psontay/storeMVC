@@ -33,19 +33,20 @@
                         <i class="bi bi-list"></i> Category
                     </button>
                 </div>
-
                 <div class="text-center mb-5">
                     <h2 class="text-success fw-bold">
+                        <span th:if="${searchQuery != null}">Search result for "<span th:text="${searchQuery}"></span>"</span>
+                        <span th:if="${searchQuery == null && currentCategoryId != null}">
                         <th:block th:each="cat : ${allCategories}">
-            <span th:if="${currentCategoryId != null && cat.id == currentCategoryId}"
-                  th:text="${cat.name}"
-                  th:remove="tag" />
+                        <span th:if="${cat.id == currentCategoryId}" th:text="${cat.name}" th:remove="tag"></span>
                         </th:block>
-
-                        <span th:if="${currentCategoryId == null}">
-            All Products
-        </span>
+                        </span>
+                        <span th:if="${searchQuery == null && currentCategoryId == null}">All Products</span>
                     </h2>
+
+<!--                    <p class="text-muted fs-5" th:if="${page != null}">-->
+<!--                        Tìm thấy <strong th:text="${page.totalElements}">0</strong> sản phẩm-->
+<!--                    </p>-->
 
                     <p class="text-muted fs-5" th:if="${page != null}">
                         There are <strong th:text="${page.totalElements}"></strong> products

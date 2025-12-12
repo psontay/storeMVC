@@ -10,12 +10,12 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProfileResponse {
-    String username;
-    String fullName;
-    String email;
-    String telPhone;
-    String address;
-    long totalOrders;
-    long pendingOrders;
-    long deliveredOrders;
+  String username;
+  String fullName;
+  String email;
+  String telPhone;
+  String address;
+  long totalOrders;
+  long pendingOrders;
+  long deliveredOrders;
 }

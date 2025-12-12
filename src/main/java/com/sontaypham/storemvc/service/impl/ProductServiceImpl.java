@@ -194,16 +194,36 @@ public class ProductServiceImpl implements ProductService {
     return productRepository.findAll(pageable).map(productMapper::fromEntityToResponse);
   }
 
+  @Override
+  public Page<ProductResponse> findByNameContaining(@Nonnull String name, Pageable pageable) {
+    return productRepository
+        .findByNameContaining(name, pageable)
+        .map(productMapper::fromEntityToResponse);
+  }
+
+  @Override
+  public Page<ProductResponse> findByNameContainingIgnoreCase(
+      @Nonnull String name, Pageable pageable) {
+    return productRepository
+        .findByNameContainingIgnoreCase(name, pageable)
+        .map(productMapper::fromEntityToResponse);
+  }
+
     @Override
-    public Page<ProductResponse> findByNameContaining(@Nonnull String name, Pageable pageable) {
-        return productRepository.findByNameContaining(name, pageable).map(productMapper::fromEntityToResponse);
+    public Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String name,
+                                                                                                  @Nonnull String supplierName,
+                                                                                                  Pageable pageable) {
+        return productRepository.findByProductNameOrSupplierNameContainingIgnoreCase(name, supplierName, pageable).map(productMapper::fromEntityToResponse);
     }
 
     @Override
-    @Transactional
-    public void delete(UUID id) {
-        Product product  = productRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
-        product.getCategories().remove(product);
-        productRepository.delete(product);
-    }
+  @Transactional
+  public void delete(UUID id) {
+    Product product =
+        productRepository
+            .findById(id)
+            .orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
+    product.getCategories().remove(product);
+    productRepository.delete(product);
+  }
 }

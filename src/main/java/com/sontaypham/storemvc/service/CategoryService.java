@@ -3,7 +3,6 @@ package com.sontaypham.storemvc.service;
 import com.sontaypham.storemvc.dto.request.category.CategoryCreationRequest;
 import com.sontaypham.storemvc.dto.request.category.CategoryUpdateRequest;
 import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
-
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,8 @@ public interface CategoryService {
   Page<CategoryResponse> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
   List<CategoryResponse> findAll();
-    Page<CategoryResponse> findAll(Pageable pageable);
-    void detele(UUID id);
+
+  Page<CategoryResponse> findAll(Pageable pageable);
+
+  void detele(UUID id);
 }
