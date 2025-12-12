@@ -14,6 +14,7 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @PreAuthorize("hasRole('ADMIN')")
+@Slf4j
 public class AdminOrderController {
 
   OrderService orderService;
@@ -62,18 +64,15 @@ public class AdminOrderController {
       @PathVariable UUID orderId,
       @ModelAttribute OrderUpdateStatusRequest request,
       RedirectAttributes redirectAttributes) {
-    System.out.println("Order id : " + orderId);
-    System.out.println("Order status: " + request.getOrderStatus());
+    log.info("Order id : " + orderId);
+    log.info("Order status: " + request.getOrderStatus());
 
     try {
       Order order =
           orderRepository
               .findById(orderId)
               .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-
-      order.setOrderStatus(request.getOrderStatus());
-      orderRepository.save(order);
-
+    orderService.updateOrderStatus(order.getId() , request);
       redirectAttributes.addFlashAttribute("success", "Update order has been saved successfully");
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("error", "Update order failed: " + e.getMessage());

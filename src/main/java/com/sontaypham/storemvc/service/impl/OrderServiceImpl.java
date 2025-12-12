@@ -2,6 +2,7 @@ package com.sontaypham.storemvc.service.impl;
 
 import com.sontaypham.storemvc.dto.request.order.OrderCreationRequest;
 import com.sontaypham.storemvc.dto.request.order.OrderUpdateRequest;
+import com.sontaypham.storemvc.dto.request.order.OrderUpdateStatusRequest;
 import com.sontaypham.storemvc.dto.response.order.OrderResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.enums.OrderStatus;
@@ -16,10 +17,7 @@ import com.sontaypham.storemvc.service.OrderService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -141,4 +139,15 @@ public class OrderServiceImpl implements OrderService {
     log.info(order.getId().toString());
     return orderMapper.fromEntityToResponseDetails(order);
   }
+
+    @Override
+    public void updateOrderStatus(UUID orderId, OrderUpdateStatusRequest orderUpdateStatusRequest) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+        if (orderUpdateStatusRequest.getOrderStatus().toString().equals("CONFIRMED") ) {
+            Set<OrderItem> orderItems = order.getOrderItems();
+            orderItems.forEach( oi -> oi.getProduct().setStockQuantity(oi.getProduct().getStockQuantity() - oi.getQuantity()));
+        }
+        order.setOrderStatus(orderUpdateStatusRequest.getOrderStatus());
+        orderRepository.save(order);
+    }
 }
