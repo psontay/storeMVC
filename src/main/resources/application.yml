@@ -19,6 +19,17 @@ spring:
         connection.useUnicode: true
         connection.characterEncoding: UTF-8
         jdbc.time_zone: Asia/Ho_Chi_Minh
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SPRING_ADMIN_EMAIL_SERVICE}
+    password: ${SPRING_ADMIN_EMAIL_PASSWORD_SERVICE}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
