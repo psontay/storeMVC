@@ -24,4 +24,5 @@ public interface OrderService {
   OrderResponse getOrderByOrderIdAndUserId(UUID orderId, UUID userId);
   OrderResponse getOrderDetailsByIdAndUserId(UUID orderId, UUID userId);
   void updateOrderStatus(UUID orderId, OrderUpdateStatusRequest orderUpdateStatusRequest);
+  String getDefaultShippingAddress(UUID userId);
 }

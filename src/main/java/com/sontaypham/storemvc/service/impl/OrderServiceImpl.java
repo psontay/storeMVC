@@ -150,4 +150,10 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(orderUpdateStatusRequest.getOrderStatus());
         orderRepository.save(order);
     }
+
+    @Override
+    public String getDefaultShippingAddress(UUID userId) {
+
+        return "";
+    }
 }

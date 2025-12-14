@@ -7,6 +7,8 @@ import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
+
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +20,7 @@ public interface UserService {
 
   UserResponse findByEmail(String email);
 
-
+  Optional<UserResponse> findById(UUID id);
   UserResponse findByUsername(String username);
 
   void deleteByUsername(String username);

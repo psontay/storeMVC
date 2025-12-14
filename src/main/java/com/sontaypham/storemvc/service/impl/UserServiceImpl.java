@@ -25,6 +25,7 @@ import com.sontaypham.storemvc.service.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -198,5 +199,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase(String keyword, Pageable pageable) {
         return userRepository.findByUsernameOrEmailContainingIgnoreCase(keyword,keyword, pageable).map(userMapper::toUserResponse);
+    }
+
+    @Override
+    public Optional<UserResponse> findById(UUID id) {
+        return userRepository.findById(id).map(userMapper::toUserResponse);
     }
 }

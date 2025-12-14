@@ -20,7 +20,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderResponse {
   UUID orderId;
+  String username;
   String userEmail;
+  String telPhone;
   OrderStatus orderStatus;
   String shippingAddress;
   BigDecimal totalPrice;

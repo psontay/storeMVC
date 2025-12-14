@@ -124,7 +124,7 @@
 <!-- Offcanvas Sidebar Mobile -->
 <div class="offcanvas offcanvas-start bg-success text-white" tabindex="-1" id="offcanvasSidebar">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Danh mục</h5>
+        <h5 class="offcanvas-title">Category</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
@@ -137,13 +137,13 @@
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title">Thêm vào giỏ hàng</h5>
+                <h5 class="modal-title">Add to cart</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
                 <img id="modalProductImage" src="" width="80" height="80" class="rounded mb-3">
                 <h6 id="modalProductName" class="mb-3"></h6>
-                <p class="text-muted mb-3">Chọn số lượng:</p>
+                <p class="text-muted mb-3">Select quantity:</p>
                 <div class="input-group w-75 mx-auto">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(-1)">-</button>
                     <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1" max="99">
@@ -151,9 +151,9 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-center gap-3">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-success px-4" onclick="confirmAddToCart()">
-                    <i class="bi bi-check2"></i> Thêm vào giỏ
+                    <i class="bi bi-check2"></i> ADD
                 </button>
             </div>
         </div>
