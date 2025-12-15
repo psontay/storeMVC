@@ -1,9 +1,6 @@
 package com.sontaypham.storemvc.service.impl;
 
-import com.sontaypham.storemvc.dto.request.user.UserCreationRequest;
-import com.sontaypham.storemvc.dto.request.user.UserRegisterRequest;
-import com.sontaypham.storemvc.dto.request.user.UserUpdateProfileRequest;
-import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
+import com.sontaypham.storemvc.dto.request.user.*;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
@@ -22,6 +19,7 @@ import com.sontaypham.storemvc.repository.PermissionRepository;
 import com.sontaypham.storemvc.repository.RoleRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.UserService;
+import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.util.HashSet;
@@ -183,12 +181,16 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public void changePassword(UUID id, String oldPassword, String newPassword) {
-    User user =
-        userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-    if (!passwordEncoder.matches(oldPassword, user.getPassword()))
-      throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
-    user.setPassword(passwordEncoder.encode(newPassword));
+  public void changePassword(UUID id, ChangePasswordRequest request) {
+      if ( !id.equals(SecurityUtilStatic.getUserId())) {
+          throw new ApiException(ErrorCode.FORBIDDEN);
+      }else{
+          User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+          if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+              throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
+          user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+          userRepository.save(user);
+      }
   }
 
   @Override

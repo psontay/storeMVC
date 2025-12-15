@@ -9,7 +9,6 @@ public class EmailValidator implements ConstraintValidator<EmailConstraint, Stri
     if (email == null || email.isBlank()) return true;
     return email.endsWith("@gmail.com");
   }
-
   @Override
   public void initialize(EmailConstraint emailConstraint) {
     ConstraintValidator.super.initialize(emailConstraint);

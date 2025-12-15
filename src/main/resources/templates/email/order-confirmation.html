@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed</title>
+    <style th:utext="${cssContent}"></style>
+</head>
+<body>
+
+<div class="top-decoration"></div>
+
+<div class="email-wrapper">
+    <div class="email-content">
+        <div class="card">
+            <h1>Order Confirmed!</h1>
+
+            <p class="username" th:text="'Hi ' + ${order.username} + ','">Hi Player,</p>
+
+            <p class="message">
+                Thank you for shopping with GreenShop. Your order has been confirmed and is being prepared.
+            </p>
+
+            <div class="order-summary">
+                <div class="order-row">
+                    <span>Order ID:</span>
+                    <strong th:text="'#' + ${#strings.substring(order.orderId, 0, 8)}">#GS-123456</strong>
+                </div>
+                <div class="order-row">
+                    <span>Date:</span>
+                    <span th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}">14-12-2025</span>
+                </div>
+                <div class="order-row">
+                    <span>Shipping Address:</span>
+                    <span th:text="${order.shippingAddress}" style="max-width: 200px; text-align: right;">Hanoi</span>
+                </div>
+                <div class="order-row total">
+                    <span>Total:</span>
+                    <span th:text="'₫' + ${#numbers.formatDecimal(order.totalPrice, 0, 2, 'COMMA')}">₫500,000</span>
+                </div>
+            </div>
+
+            <a th:href="@{'http://localhost:8080/order/' + ${order.orderId}}" class="btn-verify">
+                View Order Details
+            </a>
+        </div>
+
+        <div class="footer">
+            <p class="footer-links">
+                <a href="#">SUPPORT</a> • <a href="#">PRIVACY POLICY</a> • <a href="#">TERMS</a>
+            </p>
+
+            <div class="social-icons">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+                <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="Youtube">
+            </div>
+
+            <p>
+                This is an automated notification. Please do not reply.<br>
+                © 2024 GreenShop, Inc. All rights reserved.<br>
+                Ho Chi Minh, Vietnam.
+            </p>
+
+            <div style="margin-top: 20px; font-weight: bold; font-size: 18px; color: #ccc;">
+                GREENSHOP
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

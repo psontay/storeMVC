@@ -13,6 +13,7 @@ import com.sontaypham.storemvc.repository.CartRepository;
 import com.sontaypham.storemvc.repository.OrderRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.CartService;
+import com.sontaypham.storemvc.service.EmailService;
 import com.sontaypham.storemvc.service.OrderService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
   OrderRepository orderRepository;
   CartRepository cartRepository;
   CartService cartService;
+  EmailService emailService;
 
   @Override
   public OrderResponse createOrder(OrderCreationRequest orderCreationRequest) {
@@ -141,14 +143,32 @@ public class OrderServiceImpl implements OrderService {
   }
 
     @Override
+    @Transactional
     public void updateOrderStatus(UUID orderId, OrderUpdateStatusRequest orderUpdateStatusRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-        if (orderUpdateStatusRequest.getOrderStatus().toString().equals("CONFIRMED") ) {
+        if (orderUpdateStatusRequest.getOrderStatus().equals(OrderStatus.CONFIRMED) ) {
             Set<OrderItem> orderItems = order.getOrderItems();
             orderItems.forEach( oi -> oi.getProduct().setStockQuantity(oi.getProduct().getStockQuantity() - oi.getQuantity()));
         }
         order.setOrderStatus(orderUpdateStatusRequest.getOrderStatus());
-        orderRepository.save(order);
+        Order saved = orderRepository.save(order);
+        OrderResponse orderResponse = orderMapper.fromEntityToResponse(saved);
+        if ( orderResponse.getOrderStatus().equals(OrderStatus.CONFIRMED) ) {
+            try{
+                Map<String, Object> variables = new HashMap<>();
+                variables.put("order", orderResponse);
+
+                EmailDetails emailDetails = new EmailDetails();
+                emailDetails.setTo(orderResponse.getUserEmail());
+                emailDetails.setSubject("GreenShop - Order Confirmation #" + saved.getId());
+                emailDetails.setTemplateName("email/order-confirmation");
+                emailDetails.setVariables(variables);
+
+                emailService.sendTemplateEmail(emailDetails);
+            }catch(Exception e){
+                log.info("Error while sending confirmation message : "+e.getMessage());
+            }
+        }
     }
 
     @Override

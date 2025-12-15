@@ -1,9 +1,6 @@
 package com.sontaypham.storemvc.service;
 
-import com.sontaypham.storemvc.dto.request.user.UserCreationRequest;
-import com.sontaypham.storemvc.dto.request.user.UserRegisterRequest;
-import com.sontaypham.storemvc.dto.request.user.UserUpdateProfileRequest;
-import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
+import com.sontaypham.storemvc.dto.request.user.*;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
@@ -29,8 +26,10 @@ public interface UserService {
 
   UserResponse updateUser(UserUpdateRequest request);
 
-  void changePassword(UUID id, String oldPassword, String newPassword);
+  void changePassword(UUID id, ChangePasswordRequest changePasswordRequest);
+
 
   Page<UserResponse> findAll(Pageable pageable);
-    Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase( String keyword , Pageable pageable);
+  Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase( String keyword , Pageable pageable);
+
 }

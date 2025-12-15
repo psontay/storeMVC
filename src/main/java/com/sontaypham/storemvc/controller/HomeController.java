@@ -1,9 +1,11 @@
 package com.sontaypham.storemvc.controller;
 
+import com.sontaypham.storemvc.dto.request.user.ChangePasswordRequest;
 import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.dto.response.supplier.SupplierResponse;
 import com.sontaypham.storemvc.dto.response.user.ProfileResponse;
+import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.service.*;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import java.util.List;
@@ -31,6 +33,7 @@ public class HomeController {
   CartService cartService;
   ProfileService profileService;
   SupplierService supplierService;
+  UserService userService;
 
   @GetMapping
   public String home(@PageableDefault(size = 16) Pageable pageable, Model model) {
@@ -97,6 +100,20 @@ public class HomeController {
     }
     return "/user/profile";
   }
+
+    @PostMapping("/change-password")
+    public String changePassword(@ModelAttribute ChangePasswordRequest request, RedirectAttributes ra) {
+        try {
+            UUID userId = SecurityUtilStatic.getUserId();
+            userService.changePassword(userId, request);
+            ra.addFlashAttribute("success", "Change password successfully!");
+        } catch (ApiException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "An error occurred while changing password.");
+        }
+        return "redirect:/profile";
+    }
 
   @GetMapping("/search")
   public String searchProducts(

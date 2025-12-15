@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductMapperHelper {
-  ProductRepository productRepository;
   ProductMapper productMapper;
 
   @Named("toResponseObject")
