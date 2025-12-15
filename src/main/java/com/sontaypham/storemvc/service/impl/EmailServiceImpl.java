@@ -1,6 +1,5 @@
 package com.sontaypham.storemvc.service.impl;
 
-import com.sontaypham.storemvc.dto.response.email.EmailResponse;
 import com.sontaypham.storemvc.model.EmailDetails;
 import com.sontaypham.storemvc.service.EmailService;
 import jakarta.mail.internet.MimeMessage;
@@ -13,6 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -30,7 +30,8 @@ public class EmailServiceImpl implements EmailService {
     final TemplateEngine templateEngine;
 
     @Override
-    public EmailResponse sendTextEmail(EmailDetails emailDetails) {
+    @Async("emailExecutor")
+    public void sendTextEmail(EmailDetails emailDetails) {
         try{
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(host);
@@ -38,18 +39,14 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject(emailDetails.getSubject());
             message.setText(emailDetails.getMessageBody());
             javaMailSender.send(message);
-            return EmailResponse.builder()
-                                .success(true)
-                                .message("Email sent successfully to " + emailDetails.getTo())
-                                .build();
         }catch (Exception e){
             log.error(e.getMessage());
-            return EmailResponse.builder().message("Failed to sending email").success(false).build();
         }
     }
 
     @Override
-    public EmailResponse sendTemplateEmail(EmailDetails emailDetails) {
+    @Async("emailExecutor")
+    public void sendTemplateEmail(EmailDetails emailDetails) {
         try{
             ClassPathResource resource = new ClassPathResource("/static/css/email.css");
             String cssContent = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
@@ -76,17 +73,9 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(htmlContent, true);
 
             javaMailSender.send(message);
-
-            return EmailResponse.builder()
-                                .success(true)
-                                .message("Template email sent successfully to " + emailDetails.getTo())
-                                .build();
+            log.info("Email has been sent successfully to :" + emailDetails.getTo());
         }catch (Exception e){
             log.error("Failed to send template email", e);
-            return EmailResponse.builder()
-                                .success(false)
-                                .message("Failed to send template email: " + e.getMessage())
-                                .build();
         }
     }
 }

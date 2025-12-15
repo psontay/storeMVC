@@ -1,71 +1,84 @@
-/* ==== SIDEBAR MỚI - ĐẸP, GỌN, KHÔNG CHE GÌ ==== */
-.admin-sidebar {
-    width: 270px;
-    background: linear-gradient(180deg, #28a745 0%, #1e7e34 100%);
-    color: white;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1020;
-    overflow-y: auto;
-    padding-top: 80px; /* Đẩy xuống dưới header (giả sử header cao ~70-80px) */
+/* --- MODERN SIDEBAR CSS --- */
+
+/* 1. Tiêu đề */
+.ls-2 {
+    letter-spacing: 2px; /* Giãn chữ tạo cảm giác sang trọng */
+    font-size: 0.75rem;
 }
 
-.admin-sidebar .sidebar-header {
-    padding: 1.5rem 1.5rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+/* 2. Item trong menu */
+.sidebar-item {
+    display: flex;
+    padding: 14px 20px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #555; /* Màu chữ xám đen nhẹ */
+    border-radius: 12px; /* Bo tròn góc */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Hiệu ứng mượt */
+    font-weight: 500;
+    border: 1px solid transparent; /* Giữ chỗ cho border tránh giật layout */
 }
 
-.admin-sidebar .sidebar-header h5 {
-    margin: 0;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 1.1rem;
-}
-
-.sidebar-nav {
-    padding: 1rem 0;
-}
-
-.sidebar-link {
+/* 3. Icon Box (Cái bao quanh icon) */
+.icon-box {
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
-    padding: 0.9rem 1.5rem;
-    color: rgba(255,255,255,0.9);
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    color: #999;
     transition: all 0.3s ease;
-    border-left: 4px solid transparent;
 }
 
-.sidebar-link:hover {
-    background: rgba(255,255,255,0.15);
+.arrow-icon {
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+/* --- HOVER STATE (Khi di chuột vào) --- */
+.sidebar-item:hover {
+    background-color: #fff;
+    color: #198754; /* Màu xanh lá chủ đạo */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ */
+    transform: translateX(5px); /* Dịch nhẹ sang phải */
+}
+
+.sidebar-item:hover .icon-box {
+    background-color: #e8f5e9; /* Nền xanh siêu nhạt */
+    color: #198754;
+}
+
+.sidebar-item:hover .arrow-icon {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- ACTIVE STATE (Đang chọn) --- */
+.sidebar-item.active {
+    background: linear-gradient(45deg, #198754, #2ecc71); /* Gradient xanh sang trọng */
     color: white;
-    border-left-color: white;
-    padding-left: 1.8rem;
+    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3); /* Bóng đổ màu xanh */
 }
 
-.sidebar-link.active {
-    background: white;
-    color: #28a745 !important;
-    font-weight: 700;
-    border-left-color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+.sidebar-item.active .icon-box {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
-.sidebar-link i {
-    width: 24px;
-    font-size: 0.9rem;
-    margin-right: 12px;
-    text-align: center;
+.sidebar-item.active .arrow-icon {
+    opacity: 1;
+    transform: translateX(0);
+    color: white;
 }
 
-/* Cuộn mượt */
-.admin-sidebar::-webkit-scrollbar { width: 6px; }
-.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
-.admin-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
-
-/* Responsive: Ẩn sidebar trên mobile */
+/* --- RESPONSIVE --- */
+/* Ẩn sidebar trên mobile, thay bằng nút filter (xử lý sau nếu cần) */
 @media (max-width: 991.98px) {
-    .admin-sidebar { display: none; }
+    .modern-sidebar {
+        display: none;
+    }
 }

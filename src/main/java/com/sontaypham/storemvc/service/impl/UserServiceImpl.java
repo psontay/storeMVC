@@ -218,6 +218,7 @@ public ForgotPasswordStatus forgotPassword(String email) {
         emailService.sendTemplateEmail(emailDetails);
         return ForgotPasswordStatus.SUCCESS;
     }catch(Exception e) {
+        log.error("send email failed w msg: "+ e.getMessage());
         return ForgotPasswordStatus.SEND_EMAIL_FAILED;
     }
 }
