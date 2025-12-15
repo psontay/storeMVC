@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.service.impl;
 
+import com.sontaypham.storemvc.dto.request.auth.UpdatePasswordRequest;
 import com.sontaypham.storemvc.dto.request.user.*;
 import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
@@ -24,6 +25,9 @@ import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -195,26 +199,50 @@ public class UserServiceImpl implements UserService {
       }
   }
 
+@Override
+@Transactional
+public ForgotPasswordStatus forgotPassword(String email) {
+    User user = userRepository.findByEmail(email).orElse(null);
+    if ( user == null) return ForgotPasswordStatus.EMAIL_NOT_FOUND;
+    String rawToken = UUID.randomUUID().toString();
+    String hashedToken = hashToken(rawToken);
+    PasswordResetToken passwordResetToken =
+            PasswordResetToken.builder().user(user).tokenHash(hashedToken).expirationAt(LocalDateTime.now().plusMinutes(5)).used(false).build();
+    tokenPasswordRepository.save(passwordResetToken);
+    try{
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("token", rawToken);
+        EmailDetails emailDetails =
+                EmailDetails.builder().to(email).subject("Reset Password Request").templateName("email/reset" +
+                                                                                                "-password").variables(variables).build();
+        emailService.sendTemplateEmail(emailDetails);
+        return ForgotPasswordStatus.SUCCESS;
+    }catch(Exception e) {
+        return ForgotPasswordStatus.SEND_EMAIL_FAILED;
+    }
+}
+
     @Override
     @Transactional
-    public ForgotPasswordStatus forgotPassword(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-        if ( user == null) return ForgotPasswordStatus.EMAIL_NOT_FOUND;
-        String token = UUID.randomUUID().toString();
-        PasswordResetToken passwordResetToken = PasswordResetToken.builder().user(user).tokenHash(
-                passwordEncoder.encode(token)).expirationAt(LocalDateTime.now().plusMinutes(5)).used(false).build();
-        tokenPasswordRepository.save(passwordResetToken);
-        try{
-            Map<String, Object> variables = new HashMap<>();
-            variables.put("token", token);
-            EmailDetails emailDetails =
-                    EmailDetails.builder().to(email).subject("Reset Password Request").templateName("email/reset" +
-                                                                                                    "-password").variables(variables).build();
-            emailService.sendTemplateEmail(emailDetails);
-            return ForgotPasswordStatus.SUCCESS;
-        }catch(Exception e) {
-            return ForgotPasswordStatus.SEND_EMAIL_FAILED;
+    public void resetPassword(UpdatePasswordRequest updatePasswordRequest) {
+        String hasedToken = hashToken(updatePasswordRequest.getToken());
+        PasswordResetToken passwordResetToken =
+                tokenPasswordRepository.findByTokenHash(hasedToken).orElseThrow(() -> new ApiException(ErrorCode.INVALID_TOKEN));
+        if ( passwordResetToken.isUsed() ) {
+            throw new ApiException(ErrorCode.TOKEN_USED);
         }
+        if ( passwordResetToken.getExpirationAt().isBefore(LocalDateTime.now())) {
+            throw new ApiException(ErrorCode.TOKEN_EXPIRED);
+        }
+        User user = passwordResetToken.getUser();
+        user.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+        passwordResetToken.setUsed(true);
+        tokenPasswordRepository.save(passwordResetToken);
+    }
+    public boolean isValidatePasswordResetToken(String rawToken) {
+      String hashedToken = hashToken(rawToken);
+      return tokenPasswordRepository.findByTokenHash(hashedToken).map( t -> !t.isUsed() && t.getExpirationAt().isAfter(LocalDateTime.now())).orElse(false);
     }
 
     @Override
@@ -230,5 +258,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserResponse> findById(UUID id) {
         return userRepository.findById(id).map(userMapper::toUserResponse);
+    }
+    private String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(encodedhash); // Java 17+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing token", e);
+        }
     }
 }

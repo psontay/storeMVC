@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
   private final String[] publicEndpoints = {
-    "/", "/auth/signin", "/auth/register", "/auth/logout", "/css/**", "/js/**", "/images/**"
+    "/", "/auth/signin", "/auth/register", "/auth/logout", "/css/**", "/js/**", "/images/**", "auth/forgot-password", "auth/reset-password"
   };
 
   @Bean

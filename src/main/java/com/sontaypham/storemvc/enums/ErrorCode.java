@@ -61,6 +61,9 @@ public enum ErrorCode {
   ROLE_DELETE_FORBIDDEN(6007, "Cannot delete this role", HttpStatus.FORBIDDEN),
   PERMISSION_DELETE_FORBIDDEN(6008, "Cannot delete this permission", HttpStatus.FORBIDDEN),
   ACCESS_DENIED(6009, "Access denied", HttpStatus.FORBIDDEN),
+    INVALID_TOKEN(6010, "Invalid token", HttpStatus.BAD_REQUEST),
+    TOKEN_EXPIRED(6011, "Token has expired", HttpStatus.BAD_REQUEST),
+    TOKEN_USED(6012, "Token has been used", HttpStatus.BAD_REQUEST),
   // UNCATEGORIZED
   UNCATEGORIZED(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR);
   int code;
