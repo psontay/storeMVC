@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class EmailServiceImpl implements EmailService {
-    @Value("${SPRING_ADMIN_EMAIL_SERVICE}")
+    @Value("${STORE_WORK_EMAIL}")
     String host;
     final JavaMailSender javaMailSender;
     final TemplateEngine templateEngine;
