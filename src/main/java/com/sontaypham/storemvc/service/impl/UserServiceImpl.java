@@ -16,6 +16,7 @@ import com.sontaypham.storemvc.mapper.UserRegisterMapper;
 import com.sontaypham.storemvc.model.*;
 import com.sontaypham.storemvc.repository.PermissionRepository;
 import com.sontaypham.storemvc.repository.RoleRepository;
+import com.sontaypham.storemvc.repository.TokenPasswordRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.EmailService;
 import com.sontaypham.storemvc.service.UserService;
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
   PermissionMapperHelper permissionMapperHelper;
   UserMapper userMapper;
   EmailService emailService;
+  TokenPasswordRepository tokenPasswordRepository;
 
   @Override
   @Transactional
@@ -194,13 +196,25 @@ public class UserServiceImpl implements UserService {
   }
 
     @Override
+    @Transactional
     public ForgotPasswordStatus forgotPassword(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         if ( user == null) return ForgotPasswordStatus.EMAIL_NOT_FOUND;
         String token = UUID.randomUUID().toString();
         PasswordResetToken passwordResetToken = PasswordResetToken.builder().user(user).tokenHash(
                 passwordEncoder.encode(token)).expirationAt(LocalDateTime.now().plusMinutes(5)).used(false).build();
-        return null;
+        tokenPasswordRepository.save(passwordResetToken);
+        try{
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("token", token);
+            EmailDetails emailDetails =
+                    EmailDetails.builder().to(email).subject("Reset Password Request").templateName("email/reset" +
+                                                                                                    "-password").variables(variables).build();
+            emailService.sendTemplateEmail(emailDetails);
+            return ForgotPasswordStatus.SUCCESS;
+        }catch(Exception e) {
+            return ForgotPasswordStatus.SEND_EMAIL_FAILED;
+        }
     }
 
     @Override
