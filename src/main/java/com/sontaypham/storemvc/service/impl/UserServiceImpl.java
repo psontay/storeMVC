@@ -5,6 +5,7 @@ import com.sontaypham.storemvc.dto.response.user.UserCreationResponse;
 import com.sontaypham.storemvc.dto.response.user.UserRegisterResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
 import com.sontaypham.storemvc.enums.ErrorCode;
+import com.sontaypham.storemvc.enums.ForgotPasswordStatus;
 import com.sontaypham.storemvc.enums.RoleName;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.helper.PermissionMapperHelper;
@@ -12,20 +13,18 @@ import com.sontaypham.storemvc.helper.RoleMapperHelper;
 import com.sontaypham.storemvc.mapper.UserCreationMapper;
 import com.sontaypham.storemvc.mapper.UserMapper;
 import com.sontaypham.storemvc.mapper.UserRegisterMapper;
-import com.sontaypham.storemvc.model.Permission;
-import com.sontaypham.storemvc.model.Role;
-import com.sontaypham.storemvc.model.User;
+import com.sontaypham.storemvc.model.*;
 import com.sontaypham.storemvc.repository.PermissionRepository;
 import com.sontaypham.storemvc.repository.RoleRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
+import com.sontaypham.storemvc.service.EmailService;
 import com.sontaypham.storemvc.service.UserService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +49,7 @@ public class UserServiceImpl implements UserService {
   RoleMapperHelper roleMapperHelper;
   PermissionMapperHelper permissionMapperHelper;
   UserMapper userMapper;
+  EmailService emailService;
 
   @Override
   @Transactional
@@ -193,7 +193,17 @@ public class UserServiceImpl implements UserService {
       }
   }
 
-  @Override
+    @Override
+    public ForgotPasswordStatus forgotPassword(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        if ( user == null) return ForgotPasswordStatus.EMAIL_NOT_FOUND;
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken passwordResetToken = PasswordResetToken.builder().user(user).tokenHash(
+                passwordEncoder.encode(token)).expirationAt(LocalDateTime.now().plusMinutes(5)).used(false).build();
+        return null;
+    }
+
+    @Override
   public Page<UserResponse> findAll(Pageable pageable) {
     return userRepository.findAll(pageable).map(userMapper::toUserResponse);
   }

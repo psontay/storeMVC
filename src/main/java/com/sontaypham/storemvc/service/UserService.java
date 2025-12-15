@@ -7,6 +7,8 @@ import com.sontaypham.storemvc.dto.response.user.UserResponse;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import com.sontaypham.storemvc.enums.ForgotPasswordStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,6 +29,7 @@ public interface UserService {
   UserResponse updateUser(UserUpdateRequest request);
 
   void changePassword(UUID id, ChangePasswordRequest changePasswordRequest);
+  ForgotPasswordStatus forgotPassword( String email);
 
 
   Page<UserResponse> findAll(Pageable pageable);
