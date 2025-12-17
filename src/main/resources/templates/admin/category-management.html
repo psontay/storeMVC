@@ -9,6 +9,12 @@
 
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/management.css}">
+    <style>
+        .search-box { display: flex; align-items: center; gap: 8px; }
+        .search-wrapper { position: relative; }
+        .search-wrapper i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888; }
+        .search-wrapper input { padding-left: 35px; border: 1px solid #ddd; border-radius: 6px; height: 40px; }
+    </style>
 </head>
 <body>
 
@@ -28,14 +34,21 @@
     <main class="main">
         <header class="topbar">
             <div class="left">
-                <form class="search-box" th:action="@{/admin/categories}" method="get">
-                    <i class="bi bi-search"></i>
-                    <input type="text" name="name" placeholder="Search category name..." th:value="${param.name}">
+                <form class="search-box" th:action="@{/admin/categories/search}" method="get">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="keyword" placeholder="Search category..." th:value="${currentName}">
+                    </div>
+                    <button type="submit" class="btn primary small">Search</button>
+
+                    <a th:if="${currentName != null && !currentName.isEmpty()}"
+                       th:href="@{/admin/categories}"
+                       class="btn secondary small">Clear</a>
                 </form>
             </div>
             <div class="right">
                 <button class="btn primary" id="createBtn">
-                    <i class="bi bi-plus-lg"></i> Add New Category
+                    <i class="bi bi-plus-lg"></i> Add Category
                 </button>
             </div>
         </header>

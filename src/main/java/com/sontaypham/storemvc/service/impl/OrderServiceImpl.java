@@ -173,7 +173,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String getDefaultShippingAddress(UUID userId) {
-
         return "";
     }
 }

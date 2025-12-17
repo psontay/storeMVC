@@ -6,10 +6,14 @@ import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
 import com.sontaypham.storemvc.service.CategoryService;
 import com.sontaypham.storemvc.service.ProductService;
 import jakarta.validation.Valid;
+
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -92,11 +96,36 @@ public class CategoryController {
   @PostMapping("/delete/{id}")
   public String delete(@PathVariable UUID id, RedirectAttributes ra) {
     try {
-      categoryService.detele(id); // hoặc service có method delete
+      categoryService.detele(id);
       ra.addFlashAttribute("success", "Xóa thành công!");
     } catch (Exception e) {
       ra.addFlashAttribute("error", "Không thể xóa: " + e.getMessage());
     }
     return "redirect:/admin/categories";
   }
+    @GetMapping("/search")
+    public String search(
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model) {
+
+        Page<CategoryResponse> page;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            page = categoryService.findAll(pageable);
+        } else {
+            try {
+                CategoryResponse category = categoryService.findByName(keyword);
+
+                page = new PageImpl<>(List.of(category), pageable, 1);
+            } catch (Exception e) {
+                page = Page.empty(pageable);
+            }
+        }
+
+        model.addAttribute("page", page);
+        model.addAttribute("currentName", keyword);
+
+        return "admin/category-management";
+    }
 }
