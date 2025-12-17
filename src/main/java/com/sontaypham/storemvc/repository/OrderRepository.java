@@ -33,11 +33,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
       @Param("orderId") UUID orderId, @Param("userId") UUID userId);
 
   Page<Order> findByOrderStatus(OrderStatus status, Pageable pageable);
-
-  //    @Query("SELECT o FROM Order o WHERE o.id = :orderId AND o.user.id = :userId")
-  //    Optional<Order> findByIdAndUserIdDetails(
-  //            @Param("orderId") UUID orderId,
-  //            @Param("userId") UUID userId);
+  
   @Query(
       """
         SELECT o FROM Order o
@@ -58,4 +54,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
         group by o.user.id
         """)
   OrderStats getOrderStatsByUserId(UUID userId);
+
+    Optional<Order> findById(UUID id);
 }
