@@ -20,10 +20,10 @@ spring:
         connection.characterEncoding: UTF-8
         jdbc.time_zone: Asia/Ho_Chi_Minh
   mail:
-    host: smtp.gmail.com
+    host: smtp-relay.brevo.com
     port: 587
-    username: ${STORE_WORK_EMAIL}
-    password: ${STORE_WORK_EMAIL_PASSWORD}
+    username: ${BREVO_USERNAME}
+    password: ${BREVO_PASSWORD}
     properties:
       mail:
         smtp:
@@ -50,3 +50,5 @@ initAdmin:
     username: ${SPRING_INIT_ADMIN_USERNAME}
     password: ${SPRING_INIT_ADMIN_PASSWORD}
     email: ${SPRING_INIT_ADMIN_EMAIL}
+mail:
+  sender: ${STORE_WORK_EMAIL}

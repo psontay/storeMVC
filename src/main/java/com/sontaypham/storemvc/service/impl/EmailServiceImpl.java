@@ -24,8 +24,8 @@ import java.nio.charset.StandardCharsets;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class EmailServiceImpl implements EmailService {
-    @Value("${STORE_WORK_EMAIL}")
-    String host;
+    @Value("${mail.sender}")
+    String senderMail;
     final JavaMailSender javaMailSender;
     final TemplateEngine templateEngine;
 
@@ -34,13 +34,13 @@ public class EmailServiceImpl implements EmailService {
     public void sendTextEmail(EmailDetails emailDetails) {
         try{
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(host);
+            message.setFrom(senderMail);
             message.setTo(emailDetails.getTo());
             message.setSubject(emailDetails.getSubject());
             message.setText(emailDetails.getMessageBody());
             javaMailSender.send(message);
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("Failed to send email: " +e.getMessage());
         }
     }
 
@@ -67,7 +67,7 @@ public class EmailServiceImpl implements EmailService {
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
-            helper.setFrom(host);
+            helper.setFrom(senderMail);
             helper.setTo(emailDetails.getTo());
             helper.setSubject(emailDetails.getSubject());
             helper.setText(htmlContent, true);
