@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,6 +20,11 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
   @Nonnull
   Optional<Product> findByName(@Nonnull String name);
+
+  @Query("""
+    select p from Product p where (:keyword is null or :keyword = '' or lower(p.name) like lower(concat('%' , p.name , '%') ) ) and (:minPrice is null or p.price >= :minPrice) and (:maxPrice is null or p.price <= :maxPrice)
+""")
+  Page<Product> searchProducts(@Param("keyword") String keyword, @Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
 
   Page<Product> findByOrigin(String origin, Pageable pageable);
 

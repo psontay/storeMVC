@@ -10,12 +10,15 @@ import com.sontaypham.storemvc.repository.OrderRepository;
 import com.sontaypham.storemvc.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,4 +111,34 @@ public class AdminOrderController {
             : Sort.Direction.DESC;
     return Sort.by(direction, property);
   }
+    @GetMapping("/search")
+    public String search(
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model) {
+
+        Page<OrderResponse> page;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            page = Page.empty();
+        } else {
+            try {
+                UUID orderId = UUID.fromString(keyword);
+
+                OrderResponse order = orderService.findById(orderId);
+
+                page = new PageImpl<>(List.of(order), pageable, 1);
+
+            } catch (IllegalArgumentException e) {
+                page = Page.empty(pageable);
+            } catch (Exception e) {
+                page = Page.empty(pageable);
+            }
+        }
+
+        model.addAttribute("page", page);
+        model.addAttribute("currentKeyword", keyword);
+
+        return "admin/order-management";
+    }
 }

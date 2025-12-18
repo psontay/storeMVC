@@ -20,6 +20,8 @@ public interface ProductService {
 
   ProductResponse findByName(String name);
 
+  Page<ProductResponse> searchProducts(String keyword, BigDecimal minPrice , BigDecimal maxPrice, Pageable pageable );
+
   Page<ProductResponse> findByOrigin(String origin, Pageable pageable);
 
   Page<ProductResponse> findByPrice(BigDecimal price, Pageable pageable);

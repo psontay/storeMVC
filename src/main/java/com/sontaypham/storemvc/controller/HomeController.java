@@ -8,6 +8,8 @@ import com.sontaypham.storemvc.dto.response.user.ProfileResponse;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.service.*;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -35,11 +37,26 @@ public class HomeController {
   SupplierService supplierService;
   UserService userService;
 
-  @GetMapping
-  public String home(@PageableDefault(size = 16) Pageable pageable, Model model) {
-    model.addAttribute("page", productService.findAll(pageable));
-    return "home/home";
-  }
+    @GetMapping
+    public String home(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model) {
+
+        Page<ProductResponse> page = productService.searchProducts(q, minPrice, maxPrice, pageable);
+
+        model.addAttribute("page", page);
+
+        model.addAttribute("searchQuery", q);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+
+        model.addAttribute("currentCategoryId", null);
+
+        return "home/home";
+    }
 
   @GetMapping("/category/{categoryId}")
   public String viewCategory(

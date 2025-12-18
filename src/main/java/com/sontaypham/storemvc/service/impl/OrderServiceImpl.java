@@ -175,4 +175,9 @@ public class OrderServiceImpl implements OrderService {
     public String getDefaultShippingAddress(UUID userId) {
         return "";
     }
+
+    @Override
+    public OrderResponse findById(UUID id) {
+        return orderRepository.findById(id).map(orderMapper::fromEntityToResponse).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+    }
 }

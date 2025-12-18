@@ -226,4 +226,10 @@ public class ProductServiceImpl implements ProductService {
     product.getCategories().remove(product);
     productRepository.delete(product);
   }
+
+    @Override
+    public Page<ProductResponse> searchProducts(String keyword, BigDecimal minPrice, BigDecimal maxPrice,
+                                                Pageable pageable) {
+        return productRepository.searchProducts(keyword, minPrice, maxPrice, pageable).map(productMapper::fromEntityToResponse);
+    }
 }
