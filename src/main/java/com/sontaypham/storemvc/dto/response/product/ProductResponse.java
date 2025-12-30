@@ -24,8 +24,10 @@ public class ProductResponse {
   BigDecimal price;
   BigDecimal originalPrice;
   BigDecimal discountedPrice;
+  int discountPercent;
 
-  LocalDateTime createdAt;
+
+    LocalDateTime createdAt;
   LocalDateTime updatedAt;
 
   String status;

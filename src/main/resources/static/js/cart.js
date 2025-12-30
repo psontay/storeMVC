@@ -123,3 +123,37 @@ function showToast(message, type = 'success') {
     new bootstrap.Toast(toast, { delay: 3000 }).show();
     setTimeout(() => toast.remove(), 4000);
 }
+function updateTotalDisplay() {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    let total = 0;
+    let count = 0;
+    let allChecked = true;
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            total += parseFloat(cb.getAttribute('data-subtotal'));
+            count++;
+        } else {
+            allChecked = false;
+        }
+    });
+
+    const selectAllCb = document.getElementById('selectAll');
+    if(checkboxes.length > 0) selectAllCb.checked = allChecked;
+
+    // Hiển thị
+    document.getElementById('displayTotal').innerText = formatter.format(total);
+    document.getElementById('selectedCount').innerText = count;
+
+    // --- CẬP NHẬT TRẠNG THÁI NÚT (SỬA ĐOẠN NÀY) ---
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const deleteBtn = document.getElementById('deleteSelectedBtn'); // Lấy nút xóa
+
+    if (count === 0) {
+        checkoutBtn.disabled = true;
+        if(deleteBtn) deleteBtn.disabled = true; // Khóa nút xóa
+    } else {
+        checkoutBtn.disabled = false;
+        if(deleteBtn) deleteBtn.disabled = false; // Mở nút xóa
+    }
+}

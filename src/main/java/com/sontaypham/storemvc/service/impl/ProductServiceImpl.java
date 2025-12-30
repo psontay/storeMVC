@@ -54,6 +54,18 @@ public class ProductServiceImpl implements ProductService {
                         .findById(c)
                         .orElseThrow(() -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND)))
             .collect(Collectors.toSet());
+
+
+    BigDecimal originalPrice = request.getOriginalPrice();
+    int discountPercent = request.getDiscountPercent();
+    BigDecimal discountedPrice = BigDecimal.ZERO;
+    BigDecimal finalPrice = originalPrice;
+
+    if ( originalPrice != null && discountPercent > 0 ) {
+        discountedPrice = originalPrice.multiply(BigDecimal.valueOf(discountPercent)).divide(BigDecimal.valueOf(100),0, java.math.RoundingMode.HALF_UP);
+        finalPrice = originalPrice.subtract(discountedPrice);
+    }
+
     Product product =
         Product.builder()
             .name(request.getName())
@@ -62,10 +74,10 @@ public class ProductServiceImpl implements ProductService {
             .origin(request.getOrigin())
             .imageUrl(request.getImageUrl())
             .stockQuantity(request.getStockQuantity())
-            .price(request.getPrice())
-            .discountedPrice(request.getDiscountedPrice())
-            .originalPrice(request.getOriginalPrice())
-            .discountPercent(request.getDiscountPercent())
+            .price(finalPrice)
+            .discountedPrice(discountedPrice)
+            .originalPrice(originalPrice)
+            .discountPercent(discountPercent)
             .status(request.getStatus())
             .supplier(supplier)
             .categories(categories)

@@ -121,7 +121,17 @@ public class CartServiceImpl implements CartService {
     cartRepository.save(cart);
   }
 
-  @Override
+    @Override
+    public void removeCartItems(List<UUID> cartItemIds) {
+        Cart cart = getCurrentUserCart();
+        boolean removed = cart.getItems().removeIf( i -> cartItemIds.contains(i.getId()));
+        if (removed) {
+            cart.recalcTotal();
+            cartRepository.save(cart);
+        }
+    }
+
+    @Override
   @Transactional
   public void clearCart(UUID userId) {
     Cart cart = getCartEntityByUserId(userId);

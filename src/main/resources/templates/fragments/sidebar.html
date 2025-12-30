@@ -1,34 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:with="currentCategoryId=${currentCategoryId}">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="sidebar">
-    <aside class="modern-sidebar sticky-top" style="top: 90px; z-index: 10;">
+    <aside class="sidebar-wrapper sticky-top">
 
-        <nav class="sidebar-menu">
-            <a th:href="@{/}"
-               class="sidebar-item d-flex align-items-center justify-content-between"
-               th:classappend="${currentCategoryId == null ? 'active' : ''}">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="icon-box"><i class="bi bi-grid"></i></span>
-                    <span class="menu-text">All Products</span>
-                </div>
-                <i class="bi bi-chevron-right arrow-icon"></i>
-            </a>
+        <div class="sidebar-card mb-3">
+            <h6 class="sidebar-heading">
+                <i class="bi bi-funnel"></i> Filter by Price
+            </h6>
 
-            <div class="my-2 border-top border-light"></div> <th:block th:each="cat : ${allCategories}">
-            <a th:href="@{'/category/' + ${cat.id}}"
-               class="sidebar-item d-flex align-items-center justify-content-between"
-               th:classappend="${currentCategoryId == cat.id ? 'active' : ''}">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="icon-box"><i class="bi bi-flower1"></i></span>
-                    <span class="menu-text" th:text="${cat.name}">Category Name</span>
+            <form th:action="@{/}" method="get">
+                <input type="hidden" name="q" th:value="${searchQuery}">
+
+                <div class="mb-2">
+                    <label class="small text-muted fw-bold mb-1">Min (₫)</label>
+                    <input type="number" name="minPrice" th:value="${minPrice}"
+                           class="form-control form-control-sm border-light bg-light" placeholder="0">
                 </div>
-                <i class="bi bi-chevron-right arrow-icon"></i>
-            </a>
-        </th:block>
-        </nav>
+
+                <div class="mb-3">
+                    <label class="small text-muted fw-bold mb-1">Max (₫)</label>
+                    <input type="number" name="maxPrice" th:value="${maxPrice}"
+                           class="form-control form-control-sm border-light bg-light" placeholder="Max">
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-success btn-sm fw-bold">
+                        APPLY
+                    </button>
+
+                    <a th:if="${minPrice != null || maxPrice != null}"
+                       th:href="@{/(q=${searchQuery})}"
+                       class="btn btn-outline-secondary btn-sm" style="font-size: 0.8rem;">
+                        Xóa lọc
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="sidebar-card">
+            <h6 class="sidebar-heading">Category</h6>
+
+            <nav class="sidebar-menu" id="categoryMenu">
+                <a th:href="@{/}"
+                   class="sidebar-item"
+                   th:classappend="${currentCategoryId == null ? 'active' : ''}">
+                    <div class="item-content">
+                        <span class="icon-box"><i class="bi bi-grid-fill"></i></span>
+                        <span class="menu-text">All products</span>
+                    </div>
+                </a>
+
+                <div class="divider"></div>
+
+                <th:block th:each="cat : ${allCategories}">
+                    <a th:href="@{'/category/' + ${cat.id}}"
+                       class="sidebar-item"
+                       th:classappend="${currentCategoryId == cat.id ? 'active' : ''}">
+                        <div class="item-content">
+                            <span class="icon-box"><i class="bi bi-flower1"></i></span>
+                            <span class="menu-text" th:text="${cat.name}">Category Name</span>
+                        </div>
+                        <i class="bi bi-chevron-right arrow-icon"></i>
+                    </a>
+                </th:block>
+            </nav>
+        </div>
+
     </aside>
 </th:block>
-
 </html>

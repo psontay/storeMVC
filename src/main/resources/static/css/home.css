@@ -1,8 +1,10 @@
+/* --- GLOBAL STYLES --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f8f9fa;
 }
 
+/* --- SIDEBAR (Giữ nguyên của bạn) --- */
 .sidebar-wrapper {
     background: #2c3e50;
     min-height: calc(100vh - 56px);
@@ -11,27 +13,6 @@ body {
     top: 0;
 }
 
-.product-card {
-    transition: all 0.3s ease;
-}
-
-.product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.12) !important;
-}
-
-.product-img {
-    height: 220px;
-    object-fit: cover;
-}
-
-.price {
-    color: #27ae60;
-    font-weight: bold;
-    font-size: 1.15rem;
-}
-
-/* Sidebar menu */
 .sidebar-wrapper .nav-link {
     color: #bdc3c7;
     padding: 0.75rem 1.5rem;
@@ -57,3 +38,122 @@ body {
 .category-title:hover {
     background: #34495e;
 }
+
+/* --- PRODUCT CARD (TRANG CHỦ) --- */
+.product-card {
+    position: relative; /* Quan trọng để badge căn theo card */
+    overflow: hidden;
+    transition: transform 0.2s;
+    background: #fff;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12) !important;
+}
+
+.product-img {
+    height: 220px;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Badge giảm giá ở trang chủ */
+.badge-discount {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- GIÁ Ở TRANG CHỦ --- */
+.price-original {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+
+.price-final.discounted {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.price-final.normal {
+    color: #198754;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+
+/* =========================================
+   NEW: CSS CHO TRANG CHI TIẾT (DETAILS)
+   ========================================= */
+
+/* Ảnh sản phẩm lớn */
+.product-image-detail {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    width: 100%;
+    object-fit: cover;
+}
+.product-image-detail:hover { transform: scale(1.02); }
+
+/* Khối bao quanh giá */
+.price-wrapper {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #198754; /* Viền xanh bên trái */
+}
+
+/* Giá bán to (Detail) */
+.price-final-lg {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* Dòng giá gốc (Detail) */
+.price-original-wrapper {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+/* Tag % giảm giá (Detail) */
+.discount-tag {
+    background-color: #ffebee;
+    color: #d32f2f;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    border: 1px solid #ffcdd2;
+}
+
+/* Hộp hiển thị số tiền tiết kiệm */
+.saving-box {
+    display: inline-flex;
+    align-items: center;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 10px;
+}
+
+/* Các nhãn thông tin khác */
+.badge-status { font-size: 0.9rem; padding: 6px 12px; }
+.info-label { font-weight: 600; color: #555; }
+.category-tag { background: #e8f5e8; color: #2e7d32; padding: 6px 12px; border-radius: 50px; font-size: 0.9rem; }

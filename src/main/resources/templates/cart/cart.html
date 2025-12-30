@@ -14,13 +14,14 @@
         .empty-cart { text-align: center; padding: 60px 20px; color: #666; }
     </style>
 </head>
-<body>
+<body class="bg-light d-flex flex-column min-vh-100">
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container my-5">
 
     <form th:action="@{/order/checkout}" method="GET" id="cartForm">
 
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Your cart</h2>
             <div class="form-check" th:if="${cart != null and !cart.items.isEmpty()}">
@@ -85,9 +86,21 @@
             <div class="text-end mt-4">
                 <h4>Total: <span id="displayTotal" class="text-danger">₫0</span></h4>
 
-                <button type="submit" id="checkoutBtn" class="btn btn-success btn-lg mt-3" disabled>
-                    CHECKOUT (<span id="selectedCount">0</span>)
-                </button>
+                <div class="mt-3">
+                    <button type="submit"
+                            id="deleteSelectedBtn"
+                            class="btn btn-outline-danger btn-lg me-2"
+                            th:formaction="@{/cart/remove-multi}"
+                            formmethod="post"
+                            onclick="return confirm('Are you sure to delete all product selected?')"
+                            disabled>
+                        <i class="bi bi-trash"></i> Delete Selected
+                    </button>
+
+                    <button type="submit" id="checkoutBtn" class="btn btn-success btn-lg" disabled>
+                        CHECKOUT (<span id="selectedCount">0</span>)
+                    </button>
+                </div>
             </div>
         </div>
 

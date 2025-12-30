@@ -20,10 +20,12 @@ public class ProductCreationRequest {
   String origin;
   String imageUrl;
   int stockQuantity;
+
   BigDecimal price;
   BigDecimal originalPrice;
   BigDecimal discountedPrice;
   int discountPercent;
+
   ProductStatus status;
   Set<UUID> categoryId;
   UUID supplierId;

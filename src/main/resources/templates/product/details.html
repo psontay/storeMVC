@@ -4,158 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title th:text="${product.name}">Product Details</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <link th:href="@{/css/home.css}" rel="stylesheet">
-    <style>
-        .product-image {
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        .product-image:hover { transform: scale(1.02); }
-        .price-original { text-decoration: line-through; color: #999; }
-        .price-discounted { font-size: 2rem; color: #d32f2f; font-weight: bold; }
-        .price-saving { background: #d32f2f; color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.9rem; }
-        .badge-status { font-size: 0.9rem; padding: 6px 12px; }
-        .info-label { font-weight: 600; color: #555; }
-        .category-tag { background: #e8f5e8; color: #2e7d32; padding: 6px 12px; border-radius: 50px; font-size: 0.9rem; }
-    </style>
+    <link th:href="@{/css/product-details.css}" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container my-5">
-    <nav aria-label="breadcrumb">
+
+    <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/}" class="text-success">Home</a></li>
-            <li class="breadcrumb-item active" th:text="${product.name}">Product</li>
+            <li class="breadcrumb-item"><a th:href="@{/}" class="text-success text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Product Name</li>
         </ol>
     </nav>
 
     <div class="row g-5">
         <div class="col-lg-5">
             <img th:src="${product.imageUrl} ?: 'https://via.placeholder.com/600x600.png?text=No+Image'"
-                 class="img-fluid product-image" alt="Product image">
+                 class="img-fluid product-image-detail border" alt="Product image">
         </div>
 
-        <!-- Thông tin sản phẩm -->
         <div class="col-lg-7">
-            <h1 class="fw-bold mb-3" th:text="${product.name}">Product name</h1>
+            <h1 class="fw-bold mb-3" th:text="${product.name}">Product Name</h1>
 
-            <!-- Giá & giảm giá -->
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <div th:if="${product.discountedPrice != null}">
-                    <span class="price-discounted" th:text="'₫' + ${#numbers.formatDecimal(product.discountedPrice, 0, 0, 'COMMA')}">₫999,000</span>
-                    <span class="price-original ms-3" th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 0, 'COMMA')}">₫1,200,000</span>
-                    <span class="price-saving ms-3">
-                        Saved <span th:text="${product.originalPrice.subtract(product.discountedPrice)}">201,000</span>₫
-                    </span>
-                </div>
-                <div th:if="${product.discountedPrice == null}">
-                    <span class="price-discounted" th:text="'₫' + ${#numbers.formatDecimal(product.price, 0, 0, 'COMMA')}">₫999,000</span>
-                </div>
-            </div>
+            <div class="price-wrapper">
+                <div th:if="${product.discountPercent > 0}">
+                    <div class="d-flex align-items-center gap-2 mb-1 price-original-wrapper">
+                        <span class="text-decoration-line-through">
+                            Original Price: <span th:text="'₫' + ${#numbers.formatDecimal(product.originalPrice, 0, 0, 'COMMA')}"></span>
+                        </span>
+                        <span class="discount-tag">
+                            Discount -<span th:text="${product.discountPercent}"></span>%
+                        </span>
+                    </div>
 
-            <!-- Trạng thái & tồn kho -->
-            <div class="d-flex align-items-center gap-4 mb-4">
-    <span class="badge badge-status"
-          th:class="${product.stockQuantity > 0 ? 'bg-success' : 'bg-danger'}"
-          th:text="${product.stockQuantity > 0 ? 'Available' : 'Sold out'}">
-    </span>
+                    <div class="price-final-lg text-danger"
+                         th:text="'₫' + ${#numbers.formatDecimal(product.price, 0, 0, 'COMMA')}">
+                        1.700.000
+                    </div>
 
-                <span class="text-muted" th:if="${product.stockQuantity > 0}">
-        <strong th:text="${product.stockQuantity}"></strong> left
-    </span>
-            </div>
-
-            <!-- Thông tin bổ sung -->
-            <div class="row g-4 mb-4">
-                <div class="col-sm-6">
-                    <span class="info-label">Category:</span>
-                    <div class="mt-2">
-                        <span th:each="cat, iter : ${product.categoryNames}" class="category-tag me-2" th:text="${cat}">Cây trong nhà</span>
+                    <div class="saving-box">
+                        <i class="bi bi-piggy-bank me-2 fs-5"></i>
+                        Saved:&nbsp;
+                        <span th:text="'₫' + ${#numbers.formatDecimal(product.discountedPrice, 0, 0, 'COMMA')}">300.000</span>
                     </div>
                 </div>
-                <div class="col-sm-6">
+
+                <div th:unless="${product.discountPercent > 0}">
+                    <div class="price-final-lg text-success"
+                         th:text="'₫' + ${#numbers.formatDecimal(product.price, 0, 0, 'COMMA')}">
+                        1.700.000
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="badge badge-status"
+                      th:classappend="${product.stockQuantity > 0 ? 'bg-success' : 'bg-danger'}"
+                      th:text="${product.stockQuantity > 0 ? 'Available' : 'Sold out'}">
+                </span>
+                <span class="text-muted" th:if="${product.stockQuantity > 0}">
+                    (<strong th:text="${product.stockQuantity}"></strong> left)
+                </span>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <span class="info-label">Category:</span>
+                    <div class="mt-1">
+                         <span th:each="cat : ${product.categoryNames}"
+                               class="category-tag me-1" th:text="${cat}"></span>
+                    </div>
+                </div>
+                <div class="col-6">
                     <span class="info-label">Supplier:</span>
-                    <strong class="ms-2" th:text="${product.supplierName}">GreenFarm</strong>
+                    <span class="fw-medium" th:text="${product.supplierName}">GreenFarm</span>
                 </div>
-            </div>
-
-            <div class="row g-4 mb-4">
-                <div class="col-sm-6">
+                <div class="col-6">
                     <span class="info-label">Origin:</span>
-                    <span th:text="${product.origin}">Việt Nam</span>
+                    <span th:text="${product.origin}">Vn</span>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-6">
                     <span class="info-label">Age:</span>
-                    <span th:text="${product.age + ' month'}">12 tháng</span>
+                    <span th:text="${product.age + ' months'}">12 months</span>
                 </div>
             </div>
 
-            <!-- Mô tả -->
-            <div class="mt-5">
-                <h5 class="fw-bold mb-3">Description</h5>
-                <div class="bg-light p-4 rounded" th:text="${product.description ?: 'Chưa có mô tả'}">
-                    Cây rất đẹp, xanh tươi, dễ chăm sóc...
-                </div>
-            </div>
-
-            <!-- Nút hành động -->
-            <div class="mt-5 d-flex gap-3 align-items-center">
-                <div class="me-auto">
-                    <button class="btn btn-success btn-lg px-5 add-to-cart-btn"
-                            th:data-product-id="${product.id}"
-                            th:data-product-name="${product.name}"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addToCartModal">
-                        <i class="bi bi-cart-plus"></i> Add to cart
-                    </button>
-                </div>
-                <a th:href="@{/}" class="btn btn-outline-secondary btn-lg px-5">
-                    <i class="bi bi-arrow-left"></i> Continue shopping
+            <div class="d-flex gap-3 mt-4">
+                <button class="btn btn-success btn-lg px-4 flex-grow-1"
+                        th:data-product-id="${product.id}"
+                        th:data-product-name="${product.name}"
+                        th:data-product-image="${product.imageUrl}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addToCartModal"
+                        th:disabled="${product.stockQuantity <= 0}">
+                    <i class="bi bi-cart-plus me-2"></i> Add to cart
+                </button>
+                <a th:href="@{/}" class="btn btn-outline-secondary btn-lg px-4">
+                    Continue Shopping
                 </a>
             </div>
+
+            <div class="mt-5">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Description</h5>
+                <div class="description-box" th:text="${product.description ?: 'Updating...'}">
+                    Description body
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
-<!-- DÙNG CHUNG MODAL THÊM GIỎ HÀNG (copy từ trang chủ) -->
+
 <div class="modal fade" id="addToCartModal" tabindex="-1">
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title">Adding this to cart</h5>
+                <h5 class="modal-title">Add to cart</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
-<!--                <img id="modalProductImage" src="" width="80" height="80" class="rounded mb-3">-->
-                <h6 id="modalProductName" class="mb-3"></h6>
-                <p class="text-muted mb-3">Quantity:</p>
+                <img id="modalProductImage" src="" width="80" height="80" class="rounded mb-3 border" style="object-fit: cover">
+                <h6 id="modalProductName" class="mb-3 fw-bold"></h6>
                 <div class="input-group w-75 mx-auto">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(-1)">-</button>
-                    <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1" max="99">
+                    <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1">
                     <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(1)">+</button>
                 </div>
             </div>
-            <div class="modal-footer justify-content-center gap-3">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success px-4" onclick="confirmAddToCart()">
-                    <i class="bi bi-check2"></i> Add
-                </button>
+                <button type="button" class="btn btn-success" onclick="confirmAddToCart()">Confirm</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- JS dùng chung (copy từ cart.js) -->
-<script th:src="@{/js/cart.js}"></script>
-
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/cart.js}"></script>
+
+<script>
+    // Script xử lý Modal động
+    const addToCartModal = document.getElementById('addToCartModal');
+    if (addToCartModal) {
+        addToCartModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const productName = button.getAttribute('data-product-name');
+            const productImage = button.getAttribute('data-product-image');
+
+            document.getElementById('modalProductName').textContent = productName;
+            const img = document.getElementById('modalProductImage');
+            if(productImage) img.src = productImage;
+            else img.src = 'https://via.placeholder.com/80';
+
+            // Reset số lượng
+            document.getElementById('quantityInput').value = 1;
+        });
+    }
+
+    function changeQuantity(amount) {
+        const input = document.getElementById('quantityInput');
+        let val = parseInt(input.value);
+        val += amount;
+        if (val < 1) val = 1;
+        input.value = val;
+    }
+</script>
+
 </body>
 </html>

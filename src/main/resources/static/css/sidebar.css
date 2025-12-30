@@ -1,84 +1,142 @@
-/* --- MODERN SIDEBAR CSS --- */
-
-/* 1. Tiêu đề */
-.ls-2 {
-    letter-spacing: 2px; /* Giãn chữ tạo cảm giác sang trọng */
-    font-size: 0.75rem;
+/* Sidebar Wrapper */
+.sidebar-wrapper {
+    top: 90px;
+    z-index: 10;
+    padding-right: 10px;
+    /* QUAN TRỌNG: Ghi đè màu xanh cũ thành trong suốt */
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
-/* 2. Item trong menu */
-.sidebar-item {
-    display: flex;
-    padding: 14px 20px;
-    margin-bottom: 8px;
-    text-decoration: none;
-    color: #555; /* Màu chữ xám đen nhẹ */
-    border-radius: 12px; /* Bo tròn góc */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Hiệu ứng mượt */
-    font-weight: 500;
-    border: 1px solid transparent; /* Giữ chỗ cho border tránh giật layout */
+/* --- CARD MÀU BE SANG TRỌNG --- */
+.sidebar-card {
+    /* Màu Be nhạt hiện đại (Warm Beige) */
+    background: #faf5ef !important;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    /* Shadow màu nâu nhạt để tiệp màu */
+    box-shadow: 0 4px 20px rgba(139, 119, 101, 0.15) !important;
+    border: 1px solid rgba(0, 0, 0, 0.01);
 }
 
-/* 3. Icon Box (Cái bao quanh icon) */
-.icon-box {
-    width: 32px;
-    height: 32px;
+/* Tiêu đề nhỏ */
+.sidebar-heading {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #4a4a4a;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #efe8e0; /* Kẻ gạch chân màu be đậm */
+    text-transform: uppercase;
     display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    color: #999;
-    transition: all 0.3s ease;
+    gap: 8px;
 }
 
-.arrow-icon {
-    font-size: 0.8rem;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: all 0.3s ease;
-}
-
-/* --- HOVER STATE (Khi di chuột vào) --- */
-.sidebar-item:hover {
-    background-color: #fff;
-    color: #198754; /* Màu xanh lá chủ đạo */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ */
-    transform: translateX(5px); /* Dịch nhẹ sang phải */
-}
-
-.sidebar-item:hover .icon-box {
-    background-color: #e8f5e9; /* Nền xanh siêu nhạt */
+.sidebar-heading i {
     color: #198754;
 }
 
-.sidebar-item:hover .arrow-icon {
-    opacity: 1;
-    transform: translateX(0);
+/* Các item trong menu */
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
 }
 
-/* --- ACTIVE STATE (Đang chọn) --- */
+/* Icon */
+.icon-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    margin-right: 10px;
+    color: #b0b0b0;
+    transition: color 0.3s;
+}
+
+/* Mũi tên bên phải */
+.arrow-icon {
+    font-size: 0.75rem;
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+/* --- HIỆU ỨNG HOVER --- */
+.sidebar-item:hover {
+    /* Hover chuyển thành màu trắng để nổi bật trên nền Be */
+    background-color: #ffffff;
+    color: #198754;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.sidebar-item:hover .icon-box {
+    color: #198754;
+}
+
+/* --- TRẠNG THÁI ACTIVE --- */
 .sidebar-item.active {
-    background: linear-gradient(45deg, #198754, #2ecc71); /* Gradient xanh sang trọng */
-    color: white;
-    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3); /* Bóng đổ màu xanh */
+    background-color: #ffffff;
+    color: #157347;
+    font-weight: 600;
+    border: 1px solid #198754;
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.1);
 }
 
 .sidebar-item.active .icon-box {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
+    color: #198754;
 }
 
 .sidebar-item.active .arrow-icon {
-    opacity: 1;
-    transform: translateX(0);
-    color: white;
+    color: #198754;
+    transform: rotate(90deg);
 }
 
-/* --- RESPONSIVE --- */
-/* Ẩn sidebar trên mobile, thay bằng nút filter (xử lý sau nếu cần) */
-@media (max-width: 991.98px) {
-    .modern-sidebar {
-        display: none;
-    }
+/* --- FORM LỌC GIÁ (Input nổi bật trên nền Be) --- */
+.form-control-sm {
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border: 1px solid #e6dfd5;
+    background-color: #ffffff;
+}
+
+.form-control-sm:focus {
+    background-color: #fff;
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+}
+
+/* Nút Apply */
+.btn-success {
+    background-color: #198754;
+    border: none;
+    padding: 8px;
+    transition: all 0.3s;
+}
+
+.btn-success:hover {
+    background-color: #146c43;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Đường kẻ phân cách */
+.divider {
+    height: 1px;
+    background-color: #efe8e0;
+    margin: 10px 0;
 }
