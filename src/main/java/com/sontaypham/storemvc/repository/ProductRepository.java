@@ -6,9 +6,12 @@ import jakarta.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
+
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -59,4 +62,18 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     select p from Product p where lower(p.name) like lower(concat('%', :productName , '%') ) or  lower(p.supplier.name) like lower(concat('%', :supplierName , '%'))
 """)
   Page<Product> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String productName, @Nonnull String supplierName, Pageable pageable);
+
+  // delete feat
+    @Query(value = "select * from products where deleted_at is not  null  ", countQuery = "select count(*) from products where deleted_at is not null", nativeQuery = true)
+  Page<Product> findAllDeleted( Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE products SET deleted_at = NULL WHERE id = :id", nativeQuery = true)
+    void restoreProduct(@Param("id") UUID id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM products WHERE id = :id", nativeQuery = true)
+    void hardDeleteProduct(@Param("id") UUID id);
 }
