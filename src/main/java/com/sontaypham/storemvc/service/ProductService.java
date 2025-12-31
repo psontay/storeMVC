@@ -45,4 +45,7 @@ public interface ProductService {
   Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String name, @Nonnull String supplierName, Pageable pageable);
 
   void delete(UUID id);
+  void hardDelete(UUID id);
+  Page<ProductResponse> getTrash(Pageable pageable);
+  void restore(UUID id);
 }

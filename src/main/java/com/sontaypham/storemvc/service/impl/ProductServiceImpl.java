@@ -239,6 +239,20 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
+    @Override
+    public void hardDelete(UUID id) {
+        productRepository.hardDeleteProduct(id);
+    }
+
+    @Override
+    public Page<ProductResponse> getTrash(Pageable pageable) {
+        return productRepository.findAllDeleted(pageable).map(productMapper::fromEntityToResponse);
+    }
+
+    @Override
+    public void restore(UUID id) {
+        productRepository.restoreProduct(id);
+    }
 
     @Override
     public Page<ProductResponse> searchProducts(String keyword, BigDecimal minPrice, BigDecimal maxPrice,
