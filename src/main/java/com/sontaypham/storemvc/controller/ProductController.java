@@ -146,5 +146,36 @@ public class ProductController {
         model.addAttribute("suppliers", supplierService.findAll());
         return "admin/product-management";
     }
+    @GetMapping("/trash")
+    public String trash(
+            @PageableDefault(size = 12, sort = "deleted_at", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model) {
+
+        Page<ProductResponse> page = productService.getTrash(pageable);
+        model.addAttribute("page", page);
+        return "admin/product-trash";
+    }
+
+    @PostMapping("/restore/{id}")
+    public String restore(@PathVariable UUID id, RedirectAttributes ra) {
+        try {
+            productService.restore(id);
+            ra.addFlashAttribute("success", "Product restored successfully!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error restoring product.");
+        }
+        return "redirect:/admin/products/trash";
+    }
+
+    @PostMapping("/hard-delete/{id}")
+    public String hardDelete(@PathVariable UUID id, RedirectAttributes ra) {
+        try {
+            productService.hardDelete(id);
+            ra.addFlashAttribute("success", "Product deleted forever!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error deleting product.");
+        }
+        return "redirect:/admin/products/trash";
+    }
 
 }
