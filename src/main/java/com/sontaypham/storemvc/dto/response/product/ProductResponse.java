@@ -27,8 +27,9 @@ public class ProductResponse {
   int discountPercent;
 
 
-    LocalDateTime createdAt;
+  LocalDateTime createdAt;
   LocalDateTime updatedAt;
+  LocalDateTime deletedAt;
 
   String status;
   UUID supplierId;
