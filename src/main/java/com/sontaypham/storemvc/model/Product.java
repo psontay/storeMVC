@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 @Table(name = "products")
 @Entity
@@ -18,6 +21,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "update products set deleted_at = SYSDATETIME() where id = ?")
+@SQLRestriction("deleted_at is null")
 public class Product {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,6 +48,9 @@ public class Product {
   @Column(updatable = false)
   @org.hibernate.annotations.CreationTimestamp
   LocalDateTime createdAt;
+
+  @Column(name = "deleted_at")
+  LocalDateTime deletedAt;
 
   @org.hibernate.annotations.UpdateTimestamp LocalDateTime updatedAt;
 
