@@ -17,6 +17,7 @@ import com.sontaypham.storemvc.service.ProductService;
 import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -235,9 +236,9 @@ public class ProductServiceImpl implements ProductService {
         productRepository
             .findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.PRODUCT_NOT_FOUND));
-    product.getCategories().remove(product);
     productRepository.delete(product);
   }
+
 
     @Override
     public Page<ProductResponse> searchProducts(String keyword, BigDecimal minPrice, BigDecimal maxPrice,
