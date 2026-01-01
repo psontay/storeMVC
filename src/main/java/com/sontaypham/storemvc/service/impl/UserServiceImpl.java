@@ -125,14 +125,31 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND)));
   }
 
+    // delete feat
 
   @Override
   @Transactional
   public void deleteByUsername(String username) {
-    userRepository.deleteByUsername(username);
+      User user =  userRepository.findByUsername(username).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+    userRepository.delete(user);
   }
 
-  @Override
+    @Override
+    public Page<UserResponse> findAllDeleted(Pageable pageable) {
+        return userRepository.findAllDeleted(pageable).map(userMapper::toUserResponse);
+    }
+
+    @Override
+    public void restore(UUID id) {
+        userRepository.restore(id);
+    }
+
+    @Override
+    public void hardDelete(UUID id) {
+        userRepository.hardDelete(id);
+    }
+
+    @Override
   @Transactional
   public UserResponse updateUser(UserUpdateRequest request) {
     User user =

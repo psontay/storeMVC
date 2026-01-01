@@ -38,4 +38,7 @@ public interface UserService {
   Page<UserResponse> findAll(Pageable pageable);
   Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase( String keyword , Pageable pageable);
 
+  Page<UserResponse> findAllDeleted(Pageable pageable);
+  void restore(UUID id);
+  void hardDelete(UUID id);
 }
