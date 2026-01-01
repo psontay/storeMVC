@@ -76,4 +76,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Transactional
     @Query(value = "DELETE FROM products WHERE id = :id", nativeQuery = true)
     void hardDeleteProduct(@Param("id") UUID id);
+
+    // dashboard
+    long countByStockQuantityLessThan(int stockQuantity);
 }

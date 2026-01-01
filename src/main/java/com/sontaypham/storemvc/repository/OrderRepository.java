@@ -4,6 +4,8 @@ import com.sontaypham.storemvc.dto.response.order.OrderStats;
 import com.sontaypham.storemvc.enums.OrderStatus;
 import com.sontaypham.storemvc.model.Order;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -56,4 +58,17 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
   OrderStats getOrderStatsByUserId(UUID userId);
 
     Optional<Order> findById(UUID id);
+    // dashboard
+    long countByOrderStatus(OrderStatus status);
+    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = 'COMPLETED'")
+    BigDecimal sumTotalRevenue();
+
+    List<Order> findTop5ByOrderByOrderDateDesc();
+
+    @Query("SELECT cast(o.orderDate as date), SUM(o.totalPrice) " +
+           "FROM Order o " +
+           "WHERE o.orderStatus = 'COMPLETED' AND o.orderDate >= :startDate " +
+           "GROUP BY cast(o.orderDate as date) " +
+           "ORDER BY cast(o.orderDate as date) ASC")
+    List<Object[]> getRevenueByDate(@Param("startDate") LocalDateTime startDate);
 }
