@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.dto.response.user;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import lombok.*;
@@ -19,6 +20,7 @@ public class UserResponse {
   String email;
   String telPhone;
   String address;
+  LocalDateTime deletedAt;
   Set<String> roles;
   Set<String> permissions;
 }

@@ -18,7 +18,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete( sql = "update users set deleted_at = SYSDATETIME() where id  = ?")
+@SQLDelete( sql = "update users set deleted_at = DATEADD(hour, 7, SYSUTCDATETIME()) where id  = ?")
 @SQLRestriction("deleted_at is null")
 public class User {
   @Id

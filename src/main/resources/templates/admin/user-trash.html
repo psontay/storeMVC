@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deleted Users</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/management.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/confirm-deleted.css}">
+
+    <style>
+        .btn.success { background-color: #198754; color: white; border: none; }
+        .btn.success:hover { background-color: #157347; }
+    </style>
+</head>
+<body>
+
+<div class="layout" id="app">
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav">
+            <div class="nav-section">Manage</div>
+            <a class="nav-item" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+            <a class="nav-item active" th:href="@{/admin/users}"><i class="bi bi-people-fill"></i><span>User</span></a>
+            <a class="nav-item" th:href="@{/admin/products}"><i class="bi bi-box-seam"></i><span>Product</span></a>
+            <a class="nav-item" th:href="@{/admin/categories}"><i class="bi bi-tags-fill"></i><span>Category</span></a>
+            <a class="nav-item" th:href="@{/admin/suppliers}"><i class="bi bi-truck"></i><span>Supplier</span></a>
+            <a class="nav-item" th:href="@{/admin/orders}"><i class="bi bi-receipt"></i><span>Order</span></a>
+            <a class="nav-item" th:href="@{/}"><i class="bi bi-house-door-fill"></i><span>Home</span></a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="left">
+                <h3>Deleted Users</h3>
+            </div>
+            <div class="right">
+                <a th:href="@{/admin/users}" class="btn secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </header>
+
+        <section class="content">
+            <div th:if="${success}" class="alert success" th:text="${success}"></div>
+            <div th:if="${error}"   class="alert danger"  th:text="${error}"></div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Trash Can (<span th:text="${userPage.totalElements}">0</span>)</h3>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Deleted At</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user, iter : ${userPage.content}">
+                            <td th:text="${iter.index + 1 + userPage.number * userPage.size}"></td>
+                            <td th:text="${user.username}" style="font-weight: 500;"></td>
+                            <td th:text="${user.email}"></td>
+
+                            <td th:text="${#temporals.format(user.deletedAt, 'dd-MM-yyyy HH:mm')} ?: 'Unknown'"></td>
+
+                            <td class="actions">
+                                <form th:action="@{'/admin/users/restore/' + ${user.id}}" method="post" style="display:inline;">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <button type="submit" class="btn small success" title="Restore User">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                    </button>
+                                </form>
+
+                                <button type="button"
+                                        class="btn small danger"
+                                        title="Delete Forever"
+                                        th:data-id="${user.id}"
+                                        onclick="openDeleteModal(this.getAttribute('data-id'))">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" th:if="${userPage.totalPages > 1}">
+                    <a th:if="${!userPage.first}"
+                       th:href="@{/admin/users/trash(page=${userPage.number - 1}, size=${userPage.size})}">Previous</a>
+                    <span>Page <strong th:text="${userPage.number + 1}"></strong> of <strong th:text="${userPage.totalPages}"></strong></span>
+                    <a th:if="${!userPage.last}"
+                       th:href="@{/admin/users/trash(page=${userPage.number + 1}, size=${userPage.size})}">Next</a>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill"></i> Confirm Hard Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="hardDeleteForm" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="modal-body">
+                    <p class="fw-bold">This action cannot be undone!</p>
+                    <p>Please enter your password to confirm:</p>
+                    <div class="mb-3">
+                        <input type="password" name="confirmPassword" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete Forever</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function openDeleteModal(userId) {
+        const form = document.getElementById('hardDeleteForm');
+        // Set action URL cho form
+        form.action = '/admin/users/hard-delete/' + userId;
+
+        // Mở modal
+        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        modal.show();
+    }
+</script>
+</body>
+</html>

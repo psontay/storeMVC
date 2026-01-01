@@ -7,14 +7,20 @@ import com.sontaypham.storemvc.dto.response.user.UserResponse;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.mapper.PermissionMapper;
 import com.sontaypham.storemvc.model.Permission;
+import com.sontaypham.storemvc.model.User;
 import com.sontaypham.storemvc.repository.PermissionRepository;
 import com.sontaypham.storemvc.repository.RoleRepository;
+import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.UserService;
 import java.util.List;
+import java.util.UUID;
+
+import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +35,8 @@ public class UserController {
   private final PermissionRepository permissionRepository;
   private final PermissionMapper permissionMapper;
   private final RoleRepository roleRepository;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   // list user
   @GetMapping
@@ -139,5 +147,46 @@ public class UserController {
         List<String> permissions = permissionRepository.findAll().stream().map(Permission::getName).toList();
         model.addAttribute("permissions", permissions);
     }
+    @GetMapping("/trash")
+    public String trash(
+            @PageableDefault(size = 10, sort = "deleted_at", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model) {
+        Page<UserResponse> page = userService.findAllDeleted(pageable);
+        model.addAttribute("userPage", page);
+        return "admin/user-trash";
+    }
 
+    @PostMapping("/restore/{id}")
+    public String restore(@PathVariable UUID id, RedirectAttributes ra) {
+        try {
+            userService.restore(id);
+            ra.addFlashAttribute("success", "User restored successfully!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error restoring user: " + e.getMessage());
+        }
+        return "redirect:/admin/users/trash";
+    }
+
+    @PostMapping("/hard-delete/{id}")
+    public String hardDelete(
+            @PathVariable UUID id,
+            @RequestParam("confirmPassword") String password,
+            RedirectAttributes ra) {
+        try {
+            UUID currentUserId = SecurityUtilStatic.getUserId();
+            User currentUser = userRepository.findById(currentUserId)
+                                             .orElseThrow(() -> new Exception("Current user not found"));
+
+            if (!passwordEncoder.matches(password, currentUser.getPassword())) {
+                ra.addFlashAttribute("error", "Incorrect password! Deletion cancelled.");
+                return "redirect:/admin/users/trash";
+            }
+
+            userService.hardDelete(id);
+            ra.addFlashAttribute("success", "User deleted forever!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+        return "redirect:/admin/users/trash";
+    }
 }

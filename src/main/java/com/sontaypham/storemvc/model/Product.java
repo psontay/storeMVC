@@ -20,7 +20,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete(sql = "update products set deleted_at = SYSDATETIME() where id = ?")
+@SQLDelete(sql = "update products set deleted_at = DATEADD(hour, 7, SYSUTCDATETIME()) where id = ?")
 @SQLRestriction("deleted_at is null")
 public class Product {
   @Id
