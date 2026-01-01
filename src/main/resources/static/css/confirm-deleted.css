@@ -1,0 +1,108 @@
+/* --- Modal Container --- */
+#deleteConfirmModal .modal-content {
+    border: none;
+    border-radius: 16px; /* Bo góc to hơn cho hiện đại */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+/* --- Header màu đỏ cảnh báo --- */
+#deleteConfirmModal .modal-header {
+    background: linear-gradient(135deg, #dc3545, #c82333); /* Gradient đỏ sang trọng */
+    color: white;
+    border-bottom: none;
+    padding: 20px 24px;
+}
+
+#deleteConfirmModal .modal-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#deleteConfirmModal .btn-close-white {
+    opacity: 0.8;
+}
+#deleteConfirmModal .btn-close-white:hover {
+    opacity: 1;
+}
+
+/* --- Phần thân Modal --- */
+#deleteConfirmModal .modal-body {
+    padding: 30px 24px;
+    text-align: center; /* Căn giữa nội dung cho tập trung */
+    background-color: #fff;
+}
+
+#deleteConfirmModal .modal-body p.fw-bold {
+    color: #dc3545;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+#deleteConfirmModal .modal-body p {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+/* --- Input Mật khẩu --- */
+#deleteConfirmModal input[type="password"] {
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    text-align: center; /* Nhập mật khẩu ở giữa */
+    letter-spacing: 2px; /* Dãn cách ký tự mật khẩu */
+}
+
+#deleteConfirmModal input[type="password"]:focus {
+    background-color: #fff;
+    border-color: #dc3545; /* Viền đỏ khi focus */
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+    outline: none;
+}
+
+/* --- Footer --- */
+#deleteConfirmModal .modal-footer {
+    border-top: none;
+    background-color: #f8f9fa;
+    padding: 15px 24px;
+    justify-content: center; /* Căn giữa nút bấm */
+    gap: 12px;
+}
+
+/* --- Nút bấm --- */
+#deleteConfirmModal .btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+
+#deleteConfirmModal .btn:active {
+    transform: scale(0.96); /* Hiệu ứng nhấn xuống */
+}
+
+#deleteConfirmModal .btn-secondary {
+    background-color: #e9ecef;
+    color: #495057;
+    border: none;
+}
+#deleteConfirmModal .btn-secondary:hover {
+    background-color: #dee2e6;
+}
+
+#deleteConfirmModal .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+#deleteConfirmModal .btn-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0 6px 15px rgba(220, 53, 69, 0.4);
+    transform: translateY(-2px);
+}

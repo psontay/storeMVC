@@ -3,9 +3,14 @@ package com.sontaypham.storemvc.controller;
 import com.sontaypham.storemvc.dto.request.product.ProductCreationRequest;
 import com.sontaypham.storemvc.dto.request.product.ProductUpdateRequest;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
+import com.sontaypham.storemvc.enums.ErrorCode;
+import com.sontaypham.storemvc.exception.ApiException;
+import com.sontaypham.storemvc.model.User;
+import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.CategoryService;
 import com.sontaypham.storemvc.service.ProductService;
 import com.sontaypham.storemvc.service.SupplierService;
+import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +35,8 @@ public class ProductController {
   private final ProductService productService;
   private final CategoryService categoryService;
   private final SupplierService supplierService;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @GetMapping
   public String management(
@@ -168,12 +176,18 @@ public class ProductController {
     }
 
     @PostMapping("/hard-delete/{id}")
-    public String hardDelete(@PathVariable UUID id, RedirectAttributes ra) {
+    public String hardDelete(@PathVariable UUID id , @RequestParam("confirmPassword") String password, RedirectAttributes ra) {
         try {
+            UUID currentUserId = SecurityUtilStatic.getUserId();
+            User user = userRepository.findById(currentUserId).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+            if ( !passwordEncoder.matches(password, user.getPassword())) {
+                ra.addFlashAttribute("error", "Incorrect password! Deletion cancelled.");
+                return "redirect:/admin/products/trash";
+            }
             productService.hardDelete(id);
             ra.addFlashAttribute("success", "Product deleted forever!");
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error deleting product.");
+            ra.addFlashAttribute("error", "Error deleting product: " + e.getMessage());
         }
         return "redirect:/admin/products/trash";
     }
