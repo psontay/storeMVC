@@ -59,15 +59,16 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     Optional<Order> findById(UUID id);
     // dashboard
+    @Query("select count (o.id) from Order o where o.orderStatus = :status")
     long countByOrderStatus(OrderStatus status);
-    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.status = 'COMPLETED'")
+    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.orderStatus = 'SHIPPED'")
     BigDecimal sumTotalRevenue();
 
     List<Order> findTop5ByOrderByOrderDateDesc();
 
     @Query("SELECT cast(o.orderDate as date), SUM(o.totalPrice) " +
            "FROM Order o " +
-           "WHERE o.orderStatus = 'COMPLETED' AND o.orderDate >= :startDate " +
+           "WHERE o.orderStatus = 'SHIPPED' AND o.orderDate >= :startDate " +
            "GROUP BY cast(o.orderDate as date) " +
            "ORDER BY cast(o.orderDate as date) ASC")
     List<Object[]> getRevenueByDate(@Param("startDate") LocalDateTime startDate);
