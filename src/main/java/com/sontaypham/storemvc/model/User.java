@@ -1,10 +1,14 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Table(name = "users")
 @Entity
@@ -14,6 +18,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete( sql = "update users set deleted_at = SYSDATETIME() where id  = ?")
+@SQLRestriction("deleted_at is null")
 public class User {
   @Id
   @Column(columnDefinition = "uniqueidentifier")
@@ -23,6 +29,9 @@ public class User {
 
   String username;
   String password;
+
+  @Column( name = "deleted_at")
+  LocalDateTime deletedAt;
 
   @Column(columnDefinition = "NVARCHAR(255)")
   String fullName;
