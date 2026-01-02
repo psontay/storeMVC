@@ -1,5 +1,6 @@
 package com.sontaypham.storemvc.configuration;
 
+import com.sontaypham.storemvc.service.impl.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,9 +20,9 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler)
+          HttpSecurity http, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+          CustomOAuth2UserService customOAuth2UserService)
       throws Exception {
-    //    http.csrf(AbstractHttpConfigurer::disable);
     http.authorizeHttpRequests(
         authorizeRequests ->
             authorizeRequests
@@ -44,6 +45,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/auth/signin?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"));
+    http.oauth2Login( oauth2 -> oauth2.loginPage("/auth/signin").userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)).successHandler(customAuthenticationSuccessHandler).failureUrl("/auth/signin?error=true"));
 
     return http.build();
   }

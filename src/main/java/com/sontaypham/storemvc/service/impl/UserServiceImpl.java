@@ -209,8 +209,10 @@ public class UserServiceImpl implements UserService {
           throw new ApiException(ErrorCode.FORBIDDEN);
       }else{
           User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-          if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
-              throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
+          boolean hasPassword = user.getPassword() != null && !user.getPassword().isEmpty();
+          if ( hasPassword) {
+              if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
+          }
           user.setPassword(passwordEncoder.encode(request.getNewPassword()));
           userRepository.save(user);
       }

@@ -15,6 +15,7 @@ public class ProfileResponse {
   String email;
   String telPhone;
   String address;
+  boolean hasPassword;
   long totalOrders;
   long pendingOrders;
   long deliveredOrders;

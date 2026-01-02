@@ -112,8 +112,9 @@ public class HomeController {
       ProfileResponse profileResponse = profileService.getCurrentProfile();
       model.addAttribute("profileResponse", profileResponse);
     } catch (Exception e) {
-      ra.addFlashAttribute("error", "Cannot access this profile because of an error!");
-      return "/home/home";
+        e.printStackTrace();
+      ra.addFlashAttribute("error", "Cannot access this profile because of an error!" + e.getMessage());
+      return "redirect:/";
     }
     return "/user/profile";
   }

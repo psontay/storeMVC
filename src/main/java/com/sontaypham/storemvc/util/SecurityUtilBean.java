@@ -2,6 +2,7 @@ package com.sontaypham.storemvc.util;
 
 import com.sontaypham.storemvc.enums.ErrorCode;
 import com.sontaypham.storemvc.exception.ApiException;
+import com.sontaypham.storemvc.model.CustomOAuth2User;
 import com.sontaypham.storemvc.model.CustomUserDetails;
 import java.util.UUID;
 import org.springframework.security.core.Authentication;
@@ -11,8 +12,18 @@ import org.springframework.stereotype.Component;
 @Component("securityUtil")
 public class SecurityUtilBean {
   public UUID getUserId() {
-    CustomUserDetails customUserDetails = getCustomUserDetails();
-    return customUserDetails.getId();
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+      if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+          throw new ApiException(ErrorCode.UNAUTHENTICATED);
+      }
+      Object principal = authentication.getPrincipal();
+      if ( principal instanceof CustomUserDetails) {
+          return ((CustomUserDetails) principal).getId();
+      }else if ( principal instanceof CustomOAuth2User){
+          return ((CustomOAuth2User) principal).getUser().getId();
+      }
+      return null;
   }
 
   public String getCurrentUsername() {

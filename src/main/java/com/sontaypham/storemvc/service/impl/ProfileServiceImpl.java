@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -23,16 +25,20 @@ public class ProfileServiceImpl implements ProfileService {
 
   @Override
   public ProfileResponse getCurrentProfile() {
+      UUID userId = SecurityUtilStatic.getUserId();
     User user =
         userRepository
-            .findById(SecurityUtilStatic.getUserId())
+            .findById(userId)
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+    boolean hasPassword = user.getPassword() != null && !user.getPassword().isEmpty();
+
     OrderStats orderStats = orderRepository.getOrderStatsByUserId(user.getId());
-    long totalOrders = orderStats.totalOrders();
-    long pendingOrders = orderStats.pendingOrders();
-    long deliveredOrders = orderStats.deliveredOrders();
+    long totalOrders = (orderStats != null)  ? orderStats.totalOrders() : 0;
+    long pendingOrders =  (orderStats != null ) ? orderStats.pendingOrders() : 0;
+    long deliveredOrders =  (orderStats != null ) ? orderStats.deliveredOrders() : 0;
     return ProfileResponse.builder()
         .username(user.getUsername())
+         .hasPassword(hasPassword)
         .fullName(user.getFullName())
         .email(user.getEmail())
         .telPhone(user.getTelPhone())
