@@ -14,11 +14,9 @@ import com.sontaypham.storemvc.service.CartService;
 import com.sontaypham.storemvc.service.OrderService;
 import com.sontaypham.storemvc.service.UserService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,52 +30,53 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class OrderController {
   OrderService orderService;
   CartService cartService;
   UserService userService;
 
-    @GetMapping("/checkout")
-    public String checkout(
-            @RequestParam(name = "selectedCartItemIds", required = false) List<UUID> selectedCartItemIds,
-            Model model
-                          ) {
-        UUID userId = SecurityUtilStatic.getUserId();
-        UserResponse user = userService.findById(userId)
-                                       .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+  @GetMapping("/checkout")
+  public String checkout(
+      @RequestParam(name = "selectedCartItemIds", required = false) List<UUID> selectedCartItemIds,
+      Model model) {
+    UUID userId = SecurityUtilStatic.getUserId();
+    UserResponse user =
+        userService.findById(userId).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
-        CartResponse cart = cartService.getCartByUserId(userId);
+    CartResponse cart = cartService.getCartByUserId(userId);
 
-        if (cart.getItems().isEmpty()) {
-            return "redirect:/cart";
-        }
-
-        if (selectedCartItemIds != null && !selectedCartItemIds.isEmpty()) {
-            List<CartItemResponse> filteredItems = cart.getItems().stream()
-                                                       .filter(item -> selectedCartItemIds.contains(item.getId()))
-                                                       .toList();
-
-            cart.setItems(filteredItems);
-
-            BigDecimal newTotal = filteredItems.stream()
-                                               .map(CartItemResponse::getSubtotal)
-                                               .reduce(BigDecimal.ZERO, BigDecimal::add);
-            cart.setTotalPrice(newTotal);
-        } else {
-            return "redirect:/cart";
-        }
-
-        OrderCreationRequest request = new OrderCreationRequest();
-        request.setSelectedCartItemIds(selectedCartItemIds);
-        request.setShippingAddress(user.getAddress());
-
-        model.addAttribute("cart", cart);
-        model.addAttribute("request", request);
-
-        return "order/checkout";
+    if (cart.getItems().isEmpty()) {
+      return "redirect:/cart";
     }
+
+    if (selectedCartItemIds != null && !selectedCartItemIds.isEmpty()) {
+      List<CartItemResponse> filteredItems =
+          cart.getItems().stream()
+              .filter(item -> selectedCartItemIds.contains(item.getId()))
+              .toList();
+
+      cart.setItems(filteredItems);
+
+      BigDecimal newTotal =
+          filteredItems.stream()
+              .map(CartItemResponse::getSubtotal)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      cart.setTotalPrice(newTotal);
+    } else {
+      return "redirect:/cart";
+    }
+
+    OrderCreationRequest request = new OrderCreationRequest();
+    request.setSelectedCartItemIds(selectedCartItemIds);
+    request.setShippingAddress(user.getAddress());
+
+    model.addAttribute("cart", cart);
+    model.addAttribute("request", request);
+
+    return "order/checkout";
+  }
 
   @PostMapping("/create")
   public String createOrder(

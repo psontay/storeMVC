@@ -3,6 +3,7 @@ package com.sontaypham.storemvc.service;
 import com.sontaypham.storemvc.model.EmailDetails;
 
 public interface EmailService {
-    void sendTextEmail(EmailDetails emailDetails);
-    void sendTemplateEmail(EmailDetails emailDetails);
+  void sendTextEmail(EmailDetails emailDetails);
+
+  void sendTemplateEmail(EmailDetails emailDetails);
 }

@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContactRequest {
-    String fullName;
-    String email;
-    String message;
+  String fullName;
+  String email;
+  String message;
 }

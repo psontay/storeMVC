@@ -8,7 +8,6 @@ import com.sontaypham.storemvc.dto.response.user.ProfileResponse;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.service.*;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -37,26 +36,27 @@ public class HomeController {
   SupplierService supplierService;
   UserService userService;
 
-    @GetMapping
-    public String home(
-            @RequestParam(required = false) String q,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
-            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
+  @GetMapping
+  public String home(
+      @RequestParam(required = false) String q,
+      @RequestParam(required = false) BigDecimal minPrice,
+      @RequestParam(required = false) BigDecimal maxPrice,
+      @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC)
+          Pageable pageable,
+      Model model) {
 
-        Page<ProductResponse> page = productService.searchProducts(q, minPrice, maxPrice, pageable);
+    Page<ProductResponse> page = productService.searchProducts(q, minPrice, maxPrice, pageable);
 
-        model.addAttribute("page", page);
+    model.addAttribute("page", page);
 
-        model.addAttribute("searchQuery", q);
-        model.addAttribute("minPrice", minPrice);
-        model.addAttribute("maxPrice", maxPrice);
+    model.addAttribute("searchQuery", q);
+    model.addAttribute("minPrice", minPrice);
+    model.addAttribute("maxPrice", maxPrice);
 
-        model.addAttribute("currentCategoryId", null);
+    model.addAttribute("currentCategoryId", null);
 
-        return "home/home";
-    }
+    return "home/home";
+  }
 
   @GetMapping("/category/{categoryId}")
   public String viewCategory(
@@ -112,26 +112,28 @@ public class HomeController {
       ProfileResponse profileResponse = profileService.getCurrentProfile();
       model.addAttribute("profileResponse", profileResponse);
     } catch (Exception e) {
-        e.printStackTrace();
-      ra.addFlashAttribute("error", "Cannot access this profile because of an error!" + e.getMessage());
+      e.printStackTrace();
+      ra.addFlashAttribute(
+          "error", "Cannot access this profile because of an error!" + e.getMessage());
       return "redirect:/";
     }
     return "/user/profile";
   }
 
-    @PostMapping("/change-password")
-    public String changePassword(@ModelAttribute ChangePasswordRequest request, RedirectAttributes ra) {
-        try {
-            UUID userId = SecurityUtilStatic.getUserId();
-            userService.changePassword(userId, request);
-            ra.addFlashAttribute("success", "Change password successfully!");
-        } catch (ApiException e) {
-            ra.addFlashAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "An error occurred while changing password.");
-        }
-        return "redirect:/profile";
+  @PostMapping("/change-password")
+  public String changePassword(
+      @ModelAttribute ChangePasswordRequest request, RedirectAttributes ra) {
+    try {
+      UUID userId = SecurityUtilStatic.getUserId();
+      userService.changePassword(userId, request);
+      ra.addFlashAttribute("success", "Change password successfully!");
+    } catch (ApiException e) {
+      ra.addFlashAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      ra.addFlashAttribute("error", "An error occurred while changing password.");
     }
+    return "redirect:/profile";
+  }
 
   @GetMapping("/search")
   public String searchProducts(

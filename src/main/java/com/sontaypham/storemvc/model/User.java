@@ -1,7 +1,6 @@
 package com.sontaypham.storemvc.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@SQLDelete( sql = "update users set deleted_at = DATEADD(hour, 7, SYSUTCDATETIME()) where id  = ?")
+@SQLDelete(sql = "update users set deleted_at = DATEADD(hour, 7, SYSUTCDATETIME()) where id  = ?")
 @SQLRestriction("deleted_at is null")
 public class User {
   @Id
@@ -30,7 +29,7 @@ public class User {
   String username;
   String password;
 
-  @Column( name = "deleted_at")
+  @Column(name = "deleted_at")
   LocalDateTime deletedAt;
 
   @Column(columnDefinition = "NVARCHAR(255)")
@@ -62,6 +61,6 @@ public class User {
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   Cart cart;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<PasswordResetToken> passwordResetTokens;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  Set<PasswordResetToken> passwordResetTokens;
 }

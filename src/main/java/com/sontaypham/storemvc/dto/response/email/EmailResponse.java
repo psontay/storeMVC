@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmailResponse {
-    String message;
-    boolean success;
+  String message;
+  boolean success;
 }

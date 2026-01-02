@@ -1,15 +1,15 @@
-    package com.sontaypham.storemvc.dto.request.permission;
+package com.sontaypham.storemvc.dto.request.permission;
 
-    import lombok.*;
-    import lombok.experimental.FieldDefaults;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public class PermissionCreationRequest {
-      String name;
-      String description;
-    }
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PermissionCreationRequest {
+  String name;
+  String description;
+}

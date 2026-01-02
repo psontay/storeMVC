@@ -20,7 +20,8 @@ public interface ProductService {
 
   ProductResponse findByName(String name);
 
-  Page<ProductResponse> searchProducts(String keyword, BigDecimal minPrice , BigDecimal maxPrice, Pageable pageable );
+  Page<ProductResponse> searchProducts(
+      String keyword, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
   Page<ProductResponse> findByOrigin(String origin, Pageable pageable);
 
@@ -42,10 +43,14 @@ public interface ProductService {
 
   Page<ProductResponse> findByNameContainingIgnoreCase(@Nonnull String name, Pageable pageable);
 
-  Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String name, @Nonnull String supplierName, Pageable pageable);
+  Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(
+      @Nonnull String name, @Nonnull String supplierName, Pageable pageable);
 
   void delete(UUID id);
+
   void hardDelete(UUID id);
+
   Page<ProductResponse> getTrash(Pageable pageable);
+
   void restore(UUID id);
 }

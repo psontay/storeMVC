@@ -17,7 +17,6 @@ import com.sontaypham.storemvc.service.ProductService;
 import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,15 +55,17 @@ public class ProductServiceImpl implements ProductService {
                         .orElseThrow(() -> new ApiException(ErrorCode.CATEGORY_NOT_FOUND)))
             .collect(Collectors.toSet());
 
-
     BigDecimal originalPrice = request.getOriginalPrice();
     int discountPercent = request.getDiscountPercent();
     BigDecimal discountedPrice = BigDecimal.ZERO;
     BigDecimal finalPrice = originalPrice;
 
-    if ( originalPrice != null && discountPercent > 0 ) {
-        discountedPrice = originalPrice.multiply(BigDecimal.valueOf(discountPercent)).divide(BigDecimal.valueOf(100),0, java.math.RoundingMode.HALF_UP);
-        finalPrice = originalPrice.subtract(discountedPrice);
+    if (originalPrice != null && discountPercent > 0) {
+      discountedPrice =
+          originalPrice
+              .multiply(BigDecimal.valueOf(discountPercent))
+              .divide(BigDecimal.valueOf(100), 0, java.math.RoundingMode.HALF_UP);
+      finalPrice = originalPrice.subtract(discountedPrice);
     }
 
     Product product =
@@ -222,14 +223,15 @@ public class ProductServiceImpl implements ProductService {
         .map(productMapper::fromEntityToResponse);
   }
 
-    @Override
-    public Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(@Nonnull String name,
-                                                                                                  @Nonnull String supplierName,
-                                                                                                  Pageable pageable) {
-        return productRepository.findByProductNameOrSupplierNameContainingIgnoreCase(name, supplierName, pageable).map(productMapper::fromEntityToResponse);
-    }
+  @Override
+  public Page<ProductResponse> findByProductNameOrSupplierNameContainingIgnoreCase(
+      @Nonnull String name, @Nonnull String supplierName, Pageable pageable) {
+    return productRepository
+        .findByProductNameOrSupplierNameContainingIgnoreCase(name, supplierName, pageable)
+        .map(productMapper::fromEntityToResponse);
+  }
 
-    @Override
+  @Override
   @Transactional
   public void delete(UUID id) {
     Product product =
@@ -239,24 +241,26 @@ public class ProductServiceImpl implements ProductService {
     productRepository.delete(product);
   }
 
-    @Override
-    public void hardDelete(UUID id) {
-        productRepository.hardDeleteProduct(id);
-    }
+  @Override
+  public void hardDelete(UUID id) {
+    productRepository.hardDeleteProduct(id);
+  }
 
-    @Override
-    public Page<ProductResponse> getTrash(Pageable pageable) {
-        return productRepository.findAllDeleted(pageable).map(productMapper::fromEntityToResponse);
-    }
+  @Override
+  public Page<ProductResponse> getTrash(Pageable pageable) {
+    return productRepository.findAllDeleted(pageable).map(productMapper::fromEntityToResponse);
+  }
 
-    @Override
-    public void restore(UUID id) {
-        productRepository.restoreProduct(id);
-    }
+  @Override
+  public void restore(UUID id) {
+    productRepository.restoreProduct(id);
+  }
 
-    @Override
-    public Page<ProductResponse> searchProducts(String keyword, BigDecimal minPrice, BigDecimal maxPrice,
-                                                Pageable pageable) {
-        return productRepository.searchProducts(keyword, minPrice, maxPrice, pageable).map(productMapper::fromEntityToResponse);
-    }
+  @Override
+  public Page<ProductResponse> searchProducts(
+      String keyword, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+    return productRepository
+        .searchProducts(keyword, minPrice, maxPrice, pageable)
+        .map(productMapper::fromEntityToResponse);
+  }
 }

@@ -2,7 +2,6 @@ package com.sontaypham.storemvc.controller;
 
 import com.sontaypham.storemvc.dto.request.user.UserCreationRequest;
 import com.sontaypham.storemvc.dto.request.user.UserUpdateRequest;
-import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.dto.response.user.UserResponse;
 import com.sontaypham.storemvc.exception.ApiException;
 import com.sontaypham.storemvc.mapper.PermissionMapper;
@@ -12,10 +11,9 @@ import com.sontaypham.storemvc.repository.PermissionRepository;
 import com.sontaypham.storemvc.repository.RoleRepository;
 import com.sontaypham.storemvc.repository.UserRepository;
 import com.sontaypham.storemvc.service.UserService;
+import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import java.util.List;
 import java.util.UUID;
-
-import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
@@ -119,74 +117,81 @@ public class UserController {
     }
     return "redirect:/admin/users";
   }
-    @GetMapping("/search")
-    public String searchUsers(
-            @RequestParam String search,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model) {
 
-        populateUserList(page, size, search, model);
-        return "admin/user-management";
-    }
-    private void populateUserList(int page, int size, String search, Model model) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("username").ascending());
-        Page<UserResponse> userPage;
+  @GetMapping("/search")
+  public String searchUsers(
+      @RequestParam String search,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      Model model) {
 
-        if (search != null && !search.isBlank()) {
-            userPage = userService.findByUsernameOrEmailContainingIgnoreCase(search.trim(), pageable);
-            model.addAttribute("currentSearch", search.trim());
-        } else {
-            userPage = userService.findAll(pageable);
-        }
+    populateUserList(page, size, search, model);
+    return "admin/user-management";
+  }
 
-        model.addAttribute("userPage", userPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", size);
+  private void populateUserList(int page, int size, String search, Model model) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by("username").ascending());
+    Page<UserResponse> userPage;
 
-        List<String> permissions = permissionRepository.findAll().stream().map(Permission::getName).toList();
-        model.addAttribute("permissions", permissions);
-    }
-    @GetMapping("/trash")
-    public String trash(
-            @PageableDefault(size = 10, sort = "deleted_at", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
-        Page<UserResponse> page = userService.findAllDeleted(pageable);
-        model.addAttribute("userPage", page);
-        return "admin/user-trash";
+    if (search != null && !search.isBlank()) {
+      userPage = userService.findByUsernameOrEmailContainingIgnoreCase(search.trim(), pageable);
+      model.addAttribute("currentSearch", search.trim());
+    } else {
+      userPage = userService.findAll(pageable);
     }
 
-    @PostMapping("/restore/{id}")
-    public String restore(@PathVariable UUID id, RedirectAttributes ra) {
-        try {
-            userService.restore(id);
-            ra.addFlashAttribute("success", "User restored successfully!");
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error restoring user: " + e.getMessage());
-        }
+    model.addAttribute("userPage", userPage);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("pageSize", size);
+
+    List<String> permissions =
+        permissionRepository.findAll().stream().map(Permission::getName).toList();
+    model.addAttribute("permissions", permissions);
+  }
+
+  @GetMapping("/trash")
+  public String trash(
+      @PageableDefault(size = 10, sort = "deleted_at", direction = Sort.Direction.DESC)
+          Pageable pageable,
+      Model model) {
+    Page<UserResponse> page = userService.findAllDeleted(pageable);
+    model.addAttribute("userPage", page);
+    return "admin/user-trash";
+  }
+
+  @PostMapping("/restore/{id}")
+  public String restore(@PathVariable UUID id, RedirectAttributes ra) {
+    try {
+      userService.restore(id);
+      ra.addFlashAttribute("success", "User restored successfully!");
+    } catch (Exception e) {
+      ra.addFlashAttribute("error", "Error restoring user: " + e.getMessage());
+    }
+    return "redirect:/admin/users/trash";
+  }
+
+  @PostMapping("/hard-delete/{id}")
+  public String hardDelete(
+      @PathVariable UUID id,
+      @RequestParam("confirmPassword") String password,
+      RedirectAttributes ra) {
+    try {
+      UUID currentUserId = SecurityUtilStatic.getUserId();
+      User currentUser =
+          userRepository
+              .findById(currentUserId)
+              .orElseThrow(() -> new Exception("Current user not found"));
+
+      if (!passwordEncoder.matches(password, currentUser.getPassword())) {
+        ra.addFlashAttribute("error", "Incorrect password! Deletion cancelled.");
         return "redirect:/admin/users/trash";
+      }
+
+      userService.hardDelete(id);
+      ra.addFlashAttribute("success", "User deleted forever!");
+    } catch (Exception e) {
+      ra.addFlashAttribute("error", "Error: " + e.getMessage());
     }
-
-    @PostMapping("/hard-delete/{id}")
-    public String hardDelete(
-            @PathVariable UUID id,
-            @RequestParam("confirmPassword") String password,
-            RedirectAttributes ra) {
-        try {
-            UUID currentUserId = SecurityUtilStatic.getUserId();
-            User currentUser = userRepository.findById(currentUserId)
-                                             .orElseThrow(() -> new Exception("Current user not found"));
-
-            if (!passwordEncoder.matches(password, currentUser.getPassword())) {
-                ra.addFlashAttribute("error", "Incorrect password! Deletion cancelled.");
-                return "redirect:/admin/users/trash";
-            }
-
-            userService.hardDelete(id);
-            ra.addFlashAttribute("success", "User deleted forever!");
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error: " + e.getMessage());
-        }
-        return "redirect:/admin/users/trash";
-    }
+    return "redirect:/admin/users/trash";
+  }
 }

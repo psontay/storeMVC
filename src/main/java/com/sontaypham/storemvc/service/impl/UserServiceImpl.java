@@ -24,7 +24,6 @@ import com.sontaypham.storemvc.service.UserService;
 import com.sontaypham.storemvc.util.SecurityUtilStatic;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -125,31 +124,34 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND)));
   }
 
-    // delete feat
+  // delete feat
 
   @Override
   @Transactional
   public void deleteByUsername(String username) {
-      User user =  userRepository.findByUsername(username).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+    User user =
+        userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
     userRepository.delete(user);
   }
 
-    @Override
-    public Page<UserResponse> findAllDeleted(Pageable pageable) {
-        return userRepository.findAllDeleted(pageable).map(userMapper::toUserResponse);
-    }
+  @Override
+  public Page<UserResponse> findAllDeleted(Pageable pageable) {
+    return userRepository.findAllDeleted(pageable).map(userMapper::toUserResponse);
+  }
 
-    @Override
-    public void restore(UUID id) {
-        userRepository.restore(id);
-    }
+  @Override
+  public void restore(UUID id) {
+    userRepository.restore(id);
+  }
 
-    @Override
-    public void hardDelete(UUID id) {
-        userRepository.hardDelete(id);
-    }
+  @Override
+  public void hardDelete(UUID id) {
+    userRepository.hardDelete(id);
+  }
 
-    @Override
+  @Override
   @Transactional
   public UserResponse updateUser(UserUpdateRequest request) {
     User user =
@@ -205,87 +207,108 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public void changePassword(UUID id, ChangePasswordRequest request) {
-      if ( !id.equals(SecurityUtilStatic.getUserId())) {
-          throw new ApiException(ErrorCode.FORBIDDEN);
-      }else{
-          User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-          boolean hasPassword = user.getPassword() != null && !user.getPassword().isEmpty();
-          if ( hasPassword) {
-              if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
-          }
-          user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-          userRepository.save(user);
+    if (!id.equals(SecurityUtilStatic.getUserId())) {
+      throw new ApiException(ErrorCode.FORBIDDEN);
+    } else {
+      User user =
+          userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+      boolean hasPassword = user.getPassword() != null && !user.getPassword().isEmpty();
+      if (hasPassword) {
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+          throw new ApiException(ErrorCode.PASSWORD_NOT_MATCHES);
       }
+      user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+      userRepository.save(user);
+    }
   }
 
-@Override
-@Transactional
-public ForgotPasswordStatus forgotPassword(String email) {
+  @Override
+  @Transactional
+  public ForgotPasswordStatus forgotPassword(String email) {
     User user = userRepository.findByEmail(email).orElse(null);
-    if ( user == null) return ForgotPasswordStatus.EMAIL_NOT_FOUND;
+    if (user == null) return ForgotPasswordStatus.EMAIL_NOT_FOUND;
     String rawToken = UUID.randomUUID().toString();
     String hashedToken = hashToken(rawToken);
     PasswordResetToken passwordResetToken =
-            PasswordResetToken.builder().user(user).tokenHash(hashedToken).expirationAt(LocalDateTime.now().plusMinutes(5)).used(false).build();
+        PasswordResetToken.builder()
+            .user(user)
+            .tokenHash(hashedToken)
+            .expirationAt(LocalDateTime.now().plusMinutes(5))
+            .used(false)
+            .build();
     tokenPasswordRepository.save(passwordResetToken);
-    try{
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("token", rawToken);
-        EmailDetails emailDetails =
-                EmailDetails.builder().to(email).subject("Reset Password Request").templateName("email/reset" +
-                                                                                                "-password").variables(variables).build();
-        emailService.sendTemplateEmail(emailDetails);
-        return ForgotPasswordStatus.SUCCESS;
-    }catch(Exception e) {
-        log.error("send email failed w msg: "+ e.getMessage());
-        return ForgotPasswordStatus.SEND_EMAIL_FAILED;
+    try {
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("token", rawToken);
+      EmailDetails emailDetails =
+          EmailDetails.builder()
+              .to(email)
+              .subject("Reset Password Request")
+              .templateName("email/reset" + "-password")
+              .variables(variables)
+              .build();
+      emailService.sendTemplateEmail(emailDetails);
+      return ForgotPasswordStatus.SUCCESS;
+    } catch (Exception e) {
+      log.error("send email failed w msg: " + e.getMessage());
+      return ForgotPasswordStatus.SEND_EMAIL_FAILED;
     }
-}
+  }
 
-    @Override
-    @Transactional
-    public void resetPassword(UpdatePasswordRequest updatePasswordRequest) {
-        String hasedToken = hashToken(updatePasswordRequest.getToken());
-        PasswordResetToken passwordResetToken =
-                tokenPasswordRepository.findByTokenHash(hasedToken).orElseThrow(() -> new ApiException(ErrorCode.INVALID_TOKEN));
-        if ( passwordResetToken.isUsed() ) {
-            throw new ApiException(ErrorCode.TOKEN_USED);
-        }
-        if ( passwordResetToken.getExpirationAt().isBefore(LocalDateTime.now())) {
-            throw new ApiException(ErrorCode.TOKEN_EXPIRED);
-        }
-        User user = passwordResetToken.getUser();
-        user.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
-        userRepository.save(user);
-        passwordResetToken.setUsed(true);
-        tokenPasswordRepository.save(passwordResetToken);
+  @Override
+  @Transactional
+  public void resetPassword(UpdatePasswordRequest updatePasswordRequest) {
+    String hasedToken = hashToken(updatePasswordRequest.getToken());
+    PasswordResetToken passwordResetToken =
+        tokenPasswordRepository
+            .findByTokenHash(hasedToken)
+            .orElseThrow(() -> new ApiException(ErrorCode.INVALID_TOKEN));
+    if (passwordResetToken.isUsed()) {
+      throw new ApiException(ErrorCode.TOKEN_USED);
     }
-    public boolean isValidatePasswordResetToken(String rawToken) {
-      String hashedToken = hashToken(rawToken);
-      return tokenPasswordRepository.findByTokenHash(hashedToken).map( t -> !t.isUsed() && t.getExpirationAt().isAfter(LocalDateTime.now())).orElse(false);
+    if (passwordResetToken.getExpirationAt().isBefore(LocalDateTime.now())) {
+      throw new ApiException(ErrorCode.TOKEN_EXPIRED);
     }
+    User user = passwordResetToken.getUser();
+    user.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
+    userRepository.save(user);
+    passwordResetToken.setUsed(true);
+    tokenPasswordRepository.save(passwordResetToken);
+  }
 
-    @Override
+  public boolean isValidatePasswordResetToken(String rawToken) {
+    String hashedToken = hashToken(rawToken);
+    return tokenPasswordRepository
+        .findByTokenHash(hashedToken)
+        .map(t -> !t.isUsed() && t.getExpirationAt().isAfter(LocalDateTime.now()))
+        .orElse(false);
+  }
+
+  @Override
   public Page<UserResponse> findAll(Pageable pageable) {
     return userRepository.findAll(pageable).map(userMapper::toUserResponse);
   }
 
-    @Override
-    public Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase(String keyword, Pageable pageable) {
-        return userRepository.findByUsernameOrEmailContainingIgnoreCase(keyword,keyword, pageable).map(userMapper::toUserResponse);
-    }
+  @Override
+  public Page<UserResponse> findByUsernameOrEmailContainingIgnoreCase(
+      String keyword, Pageable pageable) {
+    return userRepository
+        .findByUsernameOrEmailContainingIgnoreCase(keyword, keyword, pageable)
+        .map(userMapper::toUserResponse);
+  }
 
-    @Override
-    public Optional<UserResponse> findById(UUID id) {
-        return userRepository.findById(id).map(userMapper::toUserResponse);
+  @Override
+  public Optional<UserResponse> findById(UUID id) {
+    return userRepository.findById(id).map(userMapper::toUserResponse);
+  }
+
+  private String hashToken(String token) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      byte[] encodedhash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+      return HexFormat.of().formatHex(encodedhash); // Java 17+
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException("Error hashing token", e);
     }
-    private String hashToken(String token) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedhash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(encodedhash); // Java 17+
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error hashing token", e);
-        }
-    }
+  }
 }

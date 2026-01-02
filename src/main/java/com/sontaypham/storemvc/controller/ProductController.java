@@ -58,35 +58,36 @@ public class ProductController {
     return "admin/product-management";
   }
 
-    @GetMapping("/edit/{id}")
-    public String editForm(
-            @PathVariable UUID id,
-            @RequestParam(required = false) String name,
-            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model,
-            RedirectAttributes ra) {
+  @GetMapping("/edit/{id}")
+  public String editForm(
+      @PathVariable UUID id,
+      @RequestParam(required = false) String name,
+      @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC)
+          Pageable pageable,
+      Model model,
+      RedirectAttributes ra) {
 
-        Page<ProductResponse> page =
-                (name != null && !name.isBlank())
-                        ? productService.findByNameContaining(name.trim(), pageable)
-                        : productService.findAll(pageable);
+    Page<ProductResponse> page =
+        (name != null && !name.isBlank())
+            ? productService.findByNameContaining(name.trim(), pageable)
+            : productService.findAll(pageable);
 
-        model.addAttribute("page", page);
-        model.addAttribute("currentName", name);
+    model.addAttribute("page", page);
+    model.addAttribute("currentName", name);
 
-        try {
-            ProductResponse product = productService.findById(id);
-            model.addAttribute("editProduct", product);
+    try {
+      ProductResponse product = productService.findById(id);
+      model.addAttribute("editProduct", product);
 
-            model.addAttribute("categories", categoryService.findAll());
-            model.addAttribute("suppliers", supplierService.findAll());
+      model.addAttribute("categories", categoryService.findAll());
+      model.addAttribute("suppliers", supplierService.findAll());
 
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Product not found!");
-            return "redirect:/admin/products";
-        }
-        return "admin/product-management";
+    } catch (Exception e) {
+      ra.addFlashAttribute("error", "Product not found!");
+      return "redirect:/admin/products";
     }
+    return "admin/product-management";
+  }
 
   @PostMapping("/create")
   public String create(
@@ -135,61 +136,67 @@ public class ProductController {
     }
     return "redirect:/admin/products";
   }
-    @GetMapping("/search")
-    public String search(
-            @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC)
-            Pageable pageable,
-            Model model) {
 
-        Page<ProductResponse> page =
-                productService.findByProductNameOrSupplierNameContainingIgnoreCase(
-                        keyword != null ? keyword : "",
-                        keyword != null ? keyword : "",
-                        pageable);
+  @GetMapping("/search")
+  public String search(
+      @RequestParam(required = false) String keyword,
+      @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC)
+          Pageable pageable,
+      Model model) {
 
-        model.addAttribute("page", page);
-        model.addAttribute("currentName", keyword);
-        model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("suppliers", supplierService.findAll());
-        return "admin/product-management";
+    Page<ProductResponse> page =
+        productService.findByProductNameOrSupplierNameContainingIgnoreCase(
+            keyword != null ? keyword : "", keyword != null ? keyword : "", pageable);
+
+    model.addAttribute("page", page);
+    model.addAttribute("currentName", keyword);
+    model.addAttribute("categories", categoryService.findAll());
+    model.addAttribute("suppliers", supplierService.findAll());
+    return "admin/product-management";
+  }
+
+  @GetMapping("/trash")
+  public String trash(
+      @PageableDefault(size = 12, sort = "deleted_at", direction = Sort.Direction.DESC)
+          Pageable pageable,
+      Model model) {
+
+    Page<ProductResponse> page = productService.getTrash(pageable);
+    model.addAttribute("page", page);
+    return "admin/product-trash";
+  }
+
+  @PostMapping("/restore/{id}")
+  public String restore(@PathVariable UUID id, RedirectAttributes ra) {
+    try {
+      productService.restore(id);
+      ra.addFlashAttribute("success", "Product restored successfully!");
+    } catch (Exception e) {
+      ra.addFlashAttribute("error", "Error restoring product.");
     }
-    @GetMapping("/trash")
-    public String trash(
-            @PageableDefault(size = 12, sort = "deleted_at", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
+    return "redirect:/admin/products/trash";
+  }
 
-        Page<ProductResponse> page = productService.getTrash(pageable);
-        model.addAttribute("page", page);
-        return "admin/product-trash";
-    }
-
-    @PostMapping("/restore/{id}")
-    public String restore(@PathVariable UUID id, RedirectAttributes ra) {
-        try {
-            productService.restore(id);
-            ra.addFlashAttribute("success", "Product restored successfully!");
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error restoring product.");
-        }
+  @PostMapping("/hard-delete/{id}")
+  public String hardDelete(
+      @PathVariable UUID id,
+      @RequestParam("confirmPassword") String password,
+      RedirectAttributes ra) {
+    try {
+      UUID currentUserId = SecurityUtilStatic.getUserId();
+      User user =
+          userRepository
+              .findById(currentUserId)
+              .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+      if (!passwordEncoder.matches(password, user.getPassword())) {
+        ra.addFlashAttribute("error", "Incorrect password! Deletion cancelled.");
         return "redirect:/admin/products/trash";
+      }
+      productService.hardDelete(id);
+      ra.addFlashAttribute("success", "Product deleted forever!");
+    } catch (Exception e) {
+      ra.addFlashAttribute("error", "Error deleting product: " + e.getMessage());
     }
-
-    @PostMapping("/hard-delete/{id}")
-    public String hardDelete(@PathVariable UUID id , @RequestParam("confirmPassword") String password, RedirectAttributes ra) {
-        try {
-            UUID currentUserId = SecurityUtilStatic.getUserId();
-            User user = userRepository.findById(currentUserId).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-            if ( !passwordEncoder.matches(password, user.getPassword())) {
-                ra.addFlashAttribute("error", "Incorrect password! Deletion cancelled.");
-                return "redirect:/admin/products/trash";
-            }
-            productService.hardDelete(id);
-            ra.addFlashAttribute("success", "Product deleted forever!");
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error deleting product: " + e.getMessage());
-        }
-        return "redirect:/admin/products/trash";
-    }
-
+    return "redirect:/admin/products/trash";
+  }
 }

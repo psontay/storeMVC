@@ -10,18 +10,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtilStatic {
   public static UUID getUserId() {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-      if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
-          throw new ApiException(ErrorCode.UNAUTHENTICATED);
-      }
-      Object principal = authentication.getPrincipal();
-      if ( principal instanceof CustomUserDetails) {
-          return ((CustomUserDetails) principal).getId();
-      }else if ( principal instanceof CustomOAuth2User){
-          return ((CustomOAuth2User) principal).getUser().getId();
-      }
-      return null;
+    if (authentication == null
+        || !authentication.isAuthenticated()
+        || authentication.getPrincipal().equals("anonymousUser")) {
+      throw new ApiException(ErrorCode.UNAUTHENTICATED);
+    }
+    Object principal = authentication.getPrincipal();
+    if (principal instanceof CustomUserDetails) {
+      return ((CustomUserDetails) principal).getId();
+    } else if (principal instanceof CustomOAuth2User) {
+      return ((CustomOAuth2User) principal).getUser().getId();
+    }
+    return null;
   }
 
   public static String getCurrentUsername() {

@@ -44,45 +44,53 @@ public class AuthenticationController {
       return "auth/auth";
     }
   }
+
   @GetMapping("/forgot-password")
   public String showForgotPasswordPage(Model model) {
-      return "auth/forgot-password";
+    return "auth/forgot-password";
   }
-  @PostMapping("/forgot-password")
-    public String forgotPassword(@RequestParam("email") String email , RedirectAttributes ra) {
-      ForgotPasswordStatus status = userService.forgotPassword(email);
-      switch (status) {
-          case SUCCESS:
-              ra.addFlashAttribute("success", "Email sent successfully!");
-              break;
-          case EMAIL_NOT_FOUND:
-              ra.addFlashAttribute("error", "Email not found!");
-              break;
-          case SEND_EMAIL_FAILED:
-              ra.addFlashAttribute("error", "Send email failed!");
-              break;
-      }
-      return "redirect:/auth/forgot-password";
-  }
-    @GetMapping("/reset-password")
-    public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
-      if (!userService.isValidatePasswordResetToken(token)) { return "redirect:/auth/signin?error=invalid_token"; }
 
-        model.addAttribute("token", token);
-        return "auth/reset-password-form";
+  @PostMapping("/forgot-password")
+  public String forgotPassword(@RequestParam("email") String email, RedirectAttributes ra) {
+    ForgotPasswordStatus status = userService.forgotPassword(email);
+    switch (status) {
+      case SUCCESS:
+        ra.addFlashAttribute("success", "Email sent successfully!");
+        break;
+      case EMAIL_NOT_FOUND:
+        ra.addFlashAttribute("error", "Email not found!");
+        break;
+      case SEND_EMAIL_FAILED:
+        ra.addFlashAttribute("error", "Send email failed!");
+        break;
     }
-    @PostMapping("/reset-password")
-    public String handleResetPassword(@RequestParam("token") String token,
-                                      @RequestParam("password") String password,
-                                      RedirectAttributes ra) {
-        try {
-            UpdatePasswordRequest request = UpdatePasswordRequest.builder().token(token).newPassword(password).build();
-            userService.resetPassword(request);
-            ra.addFlashAttribute("msg", "Password reset successfully! Please login.");
-            return "redirect:/auth/signin";
-        } catch (ApiException e) {
-            ra.addFlashAttribute("error", e.getMessage());
-            return "redirect:/auth/reset-password?token=" + token;
-        }
+    return "redirect:/auth/forgot-password";
+  }
+
+  @GetMapping("/reset-password")
+  public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
+    if (!userService.isValidatePasswordResetToken(token)) {
+      return "redirect:/auth/signin?error=invalid_token";
     }
+
+    model.addAttribute("token", token);
+    return "auth/reset-password-form";
+  }
+
+  @PostMapping("/reset-password")
+  public String handleResetPassword(
+      @RequestParam("token") String token,
+      @RequestParam("password") String password,
+      RedirectAttributes ra) {
+    try {
+      UpdatePasswordRequest request =
+          UpdatePasswordRequest.builder().token(token).newPassword(password).build();
+      userService.resetPassword(request);
+      ra.addFlashAttribute("msg", "Password reset successfully! Please login.");
+      return "redirect:/auth/signin";
+    } catch (ApiException e) {
+      ra.addFlashAttribute("error", e.getMessage());
+      return "redirect:/auth/reset-password?token=" + token;
+    }
+  }
 }

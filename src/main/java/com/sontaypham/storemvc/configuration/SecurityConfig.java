@@ -14,14 +14,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
   private final String[] publicEndpoints = {
-    "/", "/auth/signin", "/auth/register", "/auth/logout", "/css/**", "/js/**", "/images/**", "/auth/forgot-password"
-          , "/auth/reset-password"
+    "/",
+    "/auth/signin",
+    "/auth/register",
+    "/auth/logout",
+    "/css/**",
+    "/js/**",
+    "/images/**",
+    "/auth/forgot-password",
+    "/auth/reset-password"
   };
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-          HttpSecurity http, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
-          CustomOAuth2UserService customOAuth2UserService)
+      HttpSecurity http,
+      CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+      CustomOAuth2UserService customOAuth2UserService)
       throws Exception {
     http.authorizeHttpRequests(
         authorizeRequests ->
@@ -45,7 +53,13 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/auth/signin?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"));
-    http.oauth2Login( oauth2 -> oauth2.loginPage("/auth/signin").userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)).successHandler(customAuthenticationSuccessHandler).failureUrl("/auth/signin?error=true"));
+    http.oauth2Login(
+        oauth2 ->
+            oauth2
+                .loginPage("/auth/signin")
+                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureUrl("/auth/signin?error=true"));
 
     return http.build();
   }

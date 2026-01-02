@@ -45,18 +45,21 @@ public class CartController {
     }
     return 0;
   }
-    @PostMapping("/cart/remove-multi")
-    public String removeMultiFromCart(
-            @RequestParam(value = "selectedCartItemIds", required = false) List<UUID> cartItemIds,
-            RedirectAttributes redirectAttributes) {
 
-        if (cartItemIds != null && !cartItemIds.isEmpty()) {
-            cartService.removeCartItems(cartItemIds);
-            redirectAttributes.addFlashAttribute("successMessage", "Removed selected products successfully.");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Please select at least one product to remove.");
-        }
+  @PostMapping("/cart/remove-multi")
+  public String removeMultiFromCart(
+      @RequestParam(value = "selectedCartItemIds", required = false) List<UUID> cartItemIds,
+      RedirectAttributes redirectAttributes) {
 
-        return "redirect:/cart";
+    if (cartItemIds != null && !cartItemIds.isEmpty()) {
+      cartService.removeCartItems(cartItemIds);
+      redirectAttributes.addFlashAttribute(
+          "successMessage", "Removed selected products successfully.");
+    } else {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "Please select at least one product to remove.");
     }
+
+    return "redirect:/cart";
+  }
 }

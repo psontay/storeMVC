@@ -10,7 +10,6 @@ import com.sontaypham.storemvc.repository.OrderRepository;
 import com.sontaypham.storemvc.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -75,7 +74,7 @@ public class AdminOrderController {
           orderRepository
               .findById(orderId)
               .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-    orderService.updateOrderStatus(order.getId() , request);
+      orderService.updateOrderStatus(order.getId(), request);
       redirectAttributes.addFlashAttribute("success", "Update order has been saved successfully");
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("error", "Update order failed: " + e.getMessage());
@@ -111,34 +110,36 @@ public class AdminOrderController {
             : Sort.Direction.DESC;
     return Sort.by(direction, property);
   }
-    @GetMapping("/search")
-    public String search(
-            @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
 
-        Page<OrderResponse> page;
+  @GetMapping("/search")
+  public String search(
+      @RequestParam(required = false) String keyword,
+      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+          Pageable pageable,
+      Model model) {
 
-        if (keyword == null || keyword.trim().isEmpty()) {
-            page = Page.empty();
-        } else {
-            try {
-                UUID orderId = UUID.fromString(keyword);
+    Page<OrderResponse> page;
 
-                OrderResponse order = orderService.findById(orderId);
+    if (keyword == null || keyword.trim().isEmpty()) {
+      page = Page.empty();
+    } else {
+      try {
+        UUID orderId = UUID.fromString(keyword);
 
-                page = new PageImpl<>(List.of(order), pageable, 1);
+        OrderResponse order = orderService.findById(orderId);
 
-            } catch (IllegalArgumentException e) {
-                page = Page.empty(pageable);
-            } catch (Exception e) {
-                page = Page.empty(pageable);
-            }
-        }
+        page = new PageImpl<>(List.of(order), pageable, 1);
 
-        model.addAttribute("page", page);
-        model.addAttribute("currentKeyword", keyword);
-
-        return "admin/order-management";
+      } catch (IllegalArgumentException e) {
+        page = Page.empty(pageable);
+      } catch (Exception e) {
+        page = Page.empty(pageable);
+      }
     }
+
+    model.addAttribute("page", page);
+    model.addAttribute("currentKeyword", keyword);
+
+    return "admin/order-management";
+  }
 }

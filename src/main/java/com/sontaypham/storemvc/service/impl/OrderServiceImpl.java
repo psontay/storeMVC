@@ -142,42 +142,51 @@ public class OrderServiceImpl implements OrderService {
     return orderMapper.fromEntityToResponseDetails(order);
   }
 
-    @Override
-    @Transactional
-    public void updateOrderStatus(UUID orderId, OrderUpdateStatusRequest orderUpdateStatusRequest) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
-        if (orderUpdateStatusRequest.getOrderStatus().equals(OrderStatus.CONFIRMED) ) {
-            Set<OrderItem> orderItems = order.getOrderItems();
-            orderItems.forEach( oi -> oi.getProduct().setStockQuantity(oi.getProduct().getStockQuantity() - oi.getQuantity()));
-        }
-        order.setOrderStatus(orderUpdateStatusRequest.getOrderStatus());
-        Order saved = orderRepository.save(order);
-        OrderResponse orderResponse = orderMapper.fromEntityToResponse(saved);
-        if ( orderResponse.getOrderStatus().equals(OrderStatus.CONFIRMED) ) {
-            try{
-                Map<String, Object> variables = new HashMap<>();
-                variables.put("order", orderResponse);
-
-                EmailDetails emailDetails = new EmailDetails();
-                emailDetails.setTo(orderResponse.getUserEmail());
-                emailDetails.setSubject("GreenShop - Order Confirmation #" + saved.getId());
-                emailDetails.setTemplateName("email/order-confirmation");
-                emailDetails.setVariables(variables);
-
-                emailService.sendTemplateEmail(emailDetails);
-            }catch(Exception e){
-                log.info("Error while sending confirmation message : "+e.getMessage());
-            }
-        }
+  @Override
+  @Transactional
+  public void updateOrderStatus(UUID orderId, OrderUpdateStatusRequest orderUpdateStatusRequest) {
+    Order order =
+        orderRepository
+            .findById(orderId)
+            .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+    if (orderUpdateStatusRequest.getOrderStatus().equals(OrderStatus.CONFIRMED)) {
+      Set<OrderItem> orderItems = order.getOrderItems();
+      orderItems.forEach(
+          oi ->
+              oi.getProduct()
+                  .setStockQuantity(oi.getProduct().getStockQuantity() - oi.getQuantity()));
     }
+    order.setOrderStatus(orderUpdateStatusRequest.getOrderStatus());
+    Order saved = orderRepository.save(order);
+    OrderResponse orderResponse = orderMapper.fromEntityToResponse(saved);
+    if (orderResponse.getOrderStatus().equals(OrderStatus.CONFIRMED)) {
+      try {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("order", orderResponse);
 
-    @Override
-    public String getDefaultShippingAddress(UUID userId) {
-        return "";
-    }
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setTo(orderResponse.getUserEmail());
+        emailDetails.setSubject("GreenShop - Order Confirmation #" + saved.getId());
+        emailDetails.setTemplateName("email/order-confirmation");
+        emailDetails.setVariables(variables);
 
-    @Override
-    public OrderResponse findById(UUID id) {
-        return orderRepository.findById(id).map(orderMapper::fromEntityToResponse).orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+        emailService.sendTemplateEmail(emailDetails);
+      } catch (Exception e) {
+        log.info("Error while sending confirmation message : " + e.getMessage());
+      }
     }
+  }
+
+  @Override
+  public String getDefaultShippingAddress(UUID userId) {
+    return "";
+  }
+
+  @Override
+  public OrderResponse findById(UUID id) {
+    return orderRepository
+        .findById(id)
+        .map(orderMapper::fromEntityToResponse)
+        .orElseThrow(() -> new ApiException(ErrorCode.ORDER_NOT_FOUND));
+  }
 }

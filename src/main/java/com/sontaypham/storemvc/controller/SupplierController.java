@@ -5,7 +5,6 @@ import com.sontaypham.storemvc.dto.request.supplier.SupplierUpdateRequest;
 import com.sontaypham.storemvc.dto.response.supplier.SupplierResponse;
 import com.sontaypham.storemvc.service.SupplierService;
 import jakarta.validation.Valid;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -107,27 +106,28 @@ public class SupplierController {
     }
     return "redirect:/admin/suppliers";
   }
-    @GetMapping("/search")
-    public String search(
-            @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
-        Page<SupplierResponse> page;
-        if (keyword == null || keyword.trim().isEmpty()) {
-            page = supplierService.findAll(pageable);
-        } else {
-            try {
-                SupplierResponse supplier = supplierService.getSupplierByName(keyword);
 
-                page = new PageImpl<>(List.of(supplier), pageable, 1);
-            } catch (Exception e) {
-                page = Page.empty(pageable);
-            }
-        }
+  @GetMapping("/search")
+  public String search(
+      @RequestParam(required = false) String keyword,
+      @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+      Model model) {
+    Page<SupplierResponse> page;
+    if (keyword == null || keyword.trim().isEmpty()) {
+      page = supplierService.findAll(pageable);
+    } else {
+      try {
+        SupplierResponse supplier = supplierService.getSupplierByName(keyword);
 
-        model.addAttribute("page", page);
-        model.addAttribute("currentName", keyword);
-
-        return "admin/supplier-management";
+        page = new PageImpl<>(List.of(supplier), pageable, 1);
+      } catch (Exception e) {
+        page = Page.empty(pageable);
+      }
     }
+
+    model.addAttribute("page", page);
+    model.addAttribute("currentName", keyword);
+
+    return "admin/supplier-management";
+  }
 }

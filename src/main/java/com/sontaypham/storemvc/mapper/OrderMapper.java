@@ -28,8 +28,8 @@ public interface OrderMapper {
   @Mapping(target = "orderId", source = "id")
   @Mapping(target = "userEmail", source = "user.email")
   @Mapping(target = "orderItems", ignore = true)
-  @Mapping( target = "username" , source = "user.username")
-  @Mapping( target = "telPhone" , source = "user.telPhone")
+  @Mapping(target = "username", source = "user.username")
+  @Mapping(target = "telPhone", source = "user.telPhone")
   OrderResponse fromEntityToResponse(Order order);
 
   @Mapping(target = "orderId", source = "id")

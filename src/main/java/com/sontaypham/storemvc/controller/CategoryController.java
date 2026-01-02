@@ -6,7 +6,6 @@ import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
 import com.sontaypham.storemvc.service.CategoryService;
 import com.sontaypham.storemvc.service.ProductService;
 import jakarta.validation.Valid;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -103,29 +102,30 @@ public class CategoryController {
     }
     return "redirect:/admin/categories";
   }
-    @GetMapping("/search")
-    public String search(
-            @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
 
-        Page<CategoryResponse> page;
+  @GetMapping("/search")
+  public String search(
+      @RequestParam(required = false) String keyword,
+      @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+      Model model) {
 
-        if (keyword == null || keyword.trim().isEmpty()) {
-            page = categoryService.findAll(pageable);
-        } else {
-            try {
-                CategoryResponse category = categoryService.findByName(keyword);
+    Page<CategoryResponse> page;
 
-                page = new PageImpl<>(List.of(category), pageable, 1);
-            } catch (Exception e) {
-                page = Page.empty(pageable);
-            }
-        }
+    if (keyword == null || keyword.trim().isEmpty()) {
+      page = categoryService.findAll(pageable);
+    } else {
+      try {
+        CategoryResponse category = categoryService.findByName(keyword);
 
-        model.addAttribute("page", page);
-        model.addAttribute("currentName", keyword);
-
-        return "admin/category-management";
+        page = new PageImpl<>(List.of(category), pageable, 1);
+      } catch (Exception e) {
+        page = Page.empty(pageable);
+      }
     }
+
+    model.addAttribute("page", page);
+    model.addAttribute("currentName", keyword);
+
+    return "admin/category-management";
+  }
 }

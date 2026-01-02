@@ -50,6 +50,11 @@ spring:
               - user:email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-name: Github
+        provider:
+          github:
+            user-name-attribute: login
+          google:
+            user-name-attribute: email
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html

@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdatePasswordRequest {
-    String token;
-    String newPassword;
+  String token;
+  String newPassword;
 }

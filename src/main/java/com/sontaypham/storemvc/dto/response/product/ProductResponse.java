@@ -26,7 +26,6 @@ public class ProductResponse {
   BigDecimal discountedPrice;
   int discountPercent;
 
-
   LocalDateTime createdAt;
   LocalDateTime updatedAt;
   LocalDateTime deletedAt;
