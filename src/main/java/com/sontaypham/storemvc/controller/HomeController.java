@@ -1,6 +1,7 @@
 package com.sontaypham.storemvc.controller;
 
 import com.sontaypham.storemvc.dto.request.user.ChangePasswordRequest;
+import com.sontaypham.storemvc.dto.request.user.UserUpdateProfileRequest;
 import com.sontaypham.storemvc.dto.response.category.CategoryResponse;
 import com.sontaypham.storemvc.dto.response.product.ProductResponse;
 import com.sontaypham.storemvc.dto.response.supplier.SupplierResponse;
@@ -134,6 +135,18 @@ public class HomeController {
     }
     return "redirect:/profile";
   }
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute UserUpdateProfileRequest request, RedirectAttributes ra) {
+        try {
+            UUID currentUserId = SecurityUtilStatic.getUserId();
+            userService.updateUserProfile(currentUserId, request);
+
+            ra.addFlashAttribute("success", "Profile updated successfully!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Update failed: " + e.getMessage());
+        }
+        return "redirect:/profile";
+    }
 
   @GetMapping("/search")
   public String searchProducts(

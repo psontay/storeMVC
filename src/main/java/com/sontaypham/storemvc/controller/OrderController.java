@@ -115,10 +115,9 @@ public class OrderController {
   @GetMapping("/{orderId}")
   public String viewOrderDetail(
       @PathVariable UUID orderId,
-      @AuthenticationPrincipal CustomUserDetails userDetails,
       Model model) {
-
-    OrderResponse order = orderService.getOrderDetailsByIdAndUserId(orderId, userDetails.getId());
+    UUID userId = SecurityUtilStatic.getUserId();
+    OrderResponse order = orderService.getOrderDetailsByIdAndUserId(orderId, userId);
     model.addAttribute("order", order);
 
     return "order/details";

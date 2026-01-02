@@ -192,10 +192,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public void updateUserProfile(String username, UserUpdateProfileRequest request) {
+  public void updateUserProfile(UUID id, UserUpdateProfileRequest request) {
     User user =
         userRepository
-            .findByUsername(username)
+            .findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
     user.setFullName(request.getFullName());
     user.setTelPhone(request.getTelPhone());

@@ -1,39 +1,67 @@
-// ==================== MODAL THÊM GIỎ HÀNG (trang chủ) ====================
+// ==================== MODAL THÊM GIỎ HÀNG (Dùng chung Home & Detail) ====================
 let currentProductId = null;
 let currentProductName = null;
 
 document.addEventListener('DOMContentLoaded', function () {
+    // 1. XỬ LÝ MODAL (Code cũ của bạn)
     const modal = document.getElementById('addToCartModal');
     if (modal) {
         modal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
+
+            // Lấy dữ liệu từ Data Attribute
             currentProductId = button.getAttribute('data-product-id');
             currentProductName = button.getAttribute('data-product-name');
+            const productImageAttr = button.getAttribute('data-product-image');
 
+            // Cập nhật Tên
             document.getElementById('modalProductName').textContent = currentProductName;
-            const img = button.closest('.product-card')?.querySelector('img');
-            document.getElementById('modalProductImage').src = img ? img.src : '';
 
+            // XỬ LÝ ẢNH
+            const modalImg = document.getElementById('modalProductImage');
+            if (productImageAttr && productImageAttr.trim() !== "") {
+                let finalSrc = productImageAttr;
+                if (!productImageAttr.startsWith('http') && !productImageAttr.startsWith('/')) {
+                    finalSrc = '/' + productImageAttr;
+                }
+                modalImg.src = finalSrc;
+            } else {
+                const imgInCard = button.closest('.product-card')?.querySelector('img');
+                modalImg.src = imgInCard ? imgInCard.src : 'https://via.placeholder.com/80';
+            }
+
+            // Reset số lượng
             document.getElementById('quantityInput').value = 1;
+        });
+    }
+
+    // 2. FIX QUAN TRỌNG: KẾT NỐI NÚT CONFIRM VỚI HÀM XỬ LÝ
+    // (Lần trước bạn bị thiếu đoạn này nên nút bấm không chạy)
+    const btnConfirm = document.getElementById('btnConfirmAddToCart');
+    if (btnConfirm) {
+        btnConfirm.addEventListener('click', function() {
+            confirmAddToCart();
         });
     }
 });
 
-function changeQuantity(delta) {
-    const input = document.getElementById('quantityInput');
-    let value = parseInt(input.value) || 1;
-    value += delta;
-    if (value < 1) value = 1;
-    if (value > 99) value = 99;
-    input.value = value;
-}
 
+// Hàm xử lý logic gọi API
 async function confirmAddToCart() {
     if (!currentProductId) return alert('Error: Product not found!');
 
     const quantity = parseInt(document.getElementById('quantityInput').value) || 1;
-    const token = document.querySelector('meta[name="_csrf"]').content;
-    const header = document.querySelector('meta[name="_csrf_header"]').content;
+
+    // Lấy token từ thẻ meta (Giờ HTML đã có đủ 2 thẻ nên sẽ không bị lỗi nữa)
+    const tokenMeta = document.querySelector('meta[name="_csrf"]');
+    const headerMeta = document.querySelector('meta[name="_csrf_header"]');
+
+    if (!tokenMeta || !headerMeta) {
+        return alert('Lỗi bảo mật CSRF: Thiếu thẻ meta trong HTML header!');
+    }
+
+    const token = tokenMeta.content;
+    const header = headerMeta.content;
 
     try {
         const res = await fetch('/api/cart/add', {
@@ -52,15 +80,34 @@ async function confirmAddToCart() {
                 badge.textContent = data.totalItems;
                 badge.style.display = data.totalItems > 0 ? 'inline' : 'none';
             }
-            bootstrap.Modal.getInstance(document.getElementById('addToCartModal')).hide();
+            // Đóng modal đúng cách
+            const modalEl = document.getElementById('addToCartModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+
             showToast(`Adding "${currentProductName}" into cart!`, 'success');
         } else {
             alert('Adding failed!');
         }
     } catch (err) {
+        console.error(err); // Log lỗi ra console để debug nếu cần
         alert('Lỗi kết nối!');
     }
 }
+
+// ... Phần còn lại của file giữ nguyên ...
+
+// ... Các hàm changeQuantity, confirmAddToCart giữ nguyên như cũ ...
+
+function changeQuantity(delta) {
+    const input = document.getElementById('quantityInput');
+    let value = parseInt(input.value) || 1;
+    value += delta;
+    if (value < 1) value = 1;
+    if (value > 99) value = 99;
+    input.value = value;
+}
+
 
 // ==================== TRANG GIỎ HÀNG (/cart) ====================
 async function updateQuantity(button, delta) {

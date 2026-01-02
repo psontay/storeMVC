@@ -24,7 +24,7 @@ public interface UserService {
 
   void deleteByUsername(String username);
 
-  void updateUserProfile(String username, UserUpdateProfileRequest request);
+  void updateUserProfile(UUID id, UserUpdateProfileRequest request);
 
   UserResponse updateUser(UserUpdateRequest request);
 
